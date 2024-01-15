@@ -3,8 +3,8 @@ import minimalmodbus
 import time
 import os
 from datetime import datetime
-from DataCollectorUtilities import detect_serial_ports, check_db_connection, read_digital_input, read_high_resolution_register, update_database, insert_database
-
+from DatabaseOperations import check_db_connection, read_digital_input, read_high_resolution_register, update_database, insert_database
+from ModbusDeviceManager import detect_com_port, initialize_modbus_device, configure_modbus_instrument
 
 # Constantes Globales
 DEVICE_DESCRIPTIONS = ["DigiRail Connect", "USB-SERIAL CH340"]
@@ -16,33 +16,8 @@ HR_COUNTER1_HI = 23
 HR_COUNTER2_LO = 24
 HR_COUNTER2_HI = 25
 
-def detect_com_port(descriptions):
-    for desc in descriptions:
-        port = detect_serial_ports(desc)
-        if port:
-            print(f"Puerto {desc} detectado: {port}\n")
-            return port, desc
-    print("No se detectaron puertos COM para tu dispositivo.")
-    return None, None
-
-def initialize_modbus_device():
-    com_port, device_description = detect_com_port(DEVICE_DESCRIPTIONS)
-    if com_port is None:
-        input("Presiona una tecla para salir")
-        exit()
-    return com_port, device_description
-
-# Uso de las funciones refactorizadas
 seg = 1
-com_port, device_description = initialize_modbus_device()
-def configure_modbus_instrument(com_port, device_address):
-    try:
-        instrument = minimalmodbus.Instrument(com_port, device_address)
-        print(f"Puerto {device_description} detectado: {com_port}\n")
-        return instrument
-    except Exception as e:
-        print("Error al configurar el puerto serie:", str(e))
-        return None
+com_port, device_description = initialize_modbus_device(DEVICE_DESCRIPTIONS)
 
 def read_and_update_data(instrument, connection):
     D1_state = read_digital_input(instrument, D1)
@@ -67,11 +42,10 @@ def handle_update_timing():
     print(f"Tiempo para la siguiente actualización: {round(seg, 1)} segundos")
     return fecha_ahora, seg
 
-# Ciclo principal
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     connection = check_db_connection()
-    instrument = configure_modbus_instrument(com_port, DEVICE_ADDRESS)
+    instrument = configure_modbus_instrument(com_port, DEVICE_ADDRESS,device_description)
     if instrument and connection:
         HR_COUNTER1 = read_and_update_data(instrument, connection)
         fecha_ahora, seg = handle_update_timing()
