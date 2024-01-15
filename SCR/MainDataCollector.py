@@ -1,4 +1,4 @@
-#novus_usb_v0.py
+#MainDataCollector.py
 import minimalmodbus
 import time
 import os
