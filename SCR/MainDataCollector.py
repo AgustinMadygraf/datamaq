@@ -3,8 +3,12 @@ import minimalmodbus
 import time
 import os
 from datetime import datetime
-from DatabaseOperations import check_db_connection, read_digital_input, read_high_resolution_register, update_database, insert_database
+from DatabaseOperations import check_db_connection, update_database, insert_database
 from ModbusDeviceManager import detect_com_port, initialize_modbus_device, configure_modbus_instrument
+from InstrumentDataReaders import read_digital_input, read_high_resolution_register
+from logs.config_logger import configurar_logging
+
+logger = configurar_logging()
 
 # Constantes Globales
 DEVICE_DESCRIPTIONS = ["DigiRail Connect", "USB-SERIAL CH340"]
@@ -38,8 +42,8 @@ def handle_update_timing():
     fecha_ahora = int(time.time())
     fecha_sig = ((fecha_ahora // 300 + 1) * 300)
     seg = fecha_sig - fecha_ahora
-    print(f"Próxima actualización a las {datetime.fromtimestamp(fecha_sig)}")
-    print(f"Tiempo para la siguiente actualización: {round(seg, 1)} segundos")
+    logger.info(f"Próxima actualización a las {datetime.fromtimestamp(fecha_sig)}")
+    logger.info(f"Tiempo para la siguiente actualización: {round(seg, 1)} segundos")
     return fecha_ahora, seg
 
 while True:
@@ -55,6 +59,6 @@ while True:
                 insert_database(connection, fecha_ahora, HR_COUNTER1)
                 time.sleep(15)
             except Exception as e:
-                print("Error al insertar en la base de datos:", e)
+                logger.error("Error al insertar en la base de datos:", e)
 
     time.sleep(1)
