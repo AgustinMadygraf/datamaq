@@ -3,8 +3,9 @@ import minimalmodbus
 import time
 import os
 from datetime import datetime
-from DatabaseOperations import check_db_connection, read_digital_input, read_high_resolution_register, update_database, insert_database
+from DatabaseOperations import check_db_connection, update_database, insert_database
 from ModbusDeviceManager import detect_com_port, initialize_modbus_device, configure_modbus_instrument
+from InstrumentDataReaders import read_digital_input, read_high_resolution_register
 
 # Constantes Globales
 DEVICE_DESCRIPTIONS = ["DigiRail Connect", "USB-SERIAL CH340"]
