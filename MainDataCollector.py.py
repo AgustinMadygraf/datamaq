@@ -3,7 +3,7 @@ import minimalmodbus
 import time
 import os
 from datetime import datetime
-from DataCollector_aux import detect_serial_ports, check_db_connection, read_digital_input, read_high_resolution_register, update_database, insert_database
+from DataCollectorUtilities import detect_serial_ports, check_db_connection, read_digital_input, read_high_resolution_register, update_database, insert_database
 
 seg = 1
 device_description = "DigiRail Connect"  
