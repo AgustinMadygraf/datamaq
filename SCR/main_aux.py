@@ -2,6 +2,8 @@
 import serial.tools.list_ports
 import pymysql
 import os
+from utils import check_db_connection, detect_serial_ports
+
 
 # Configuración de la base de datos MySQL
 db_config = {
@@ -13,51 +15,30 @@ db_config = {
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-
-def detect_serial_ports(device_description):
-    available_ports = list(serial.tools.list_ports.comports())
-    for port, desc, hwid in available_ports:
-        if device_description in desc:
-            return port
-    return None
-
-# Función para verificar la conexión a la base de datos
-def check_db_connection():
+def safe_modbus_read(method, *args, **kwargs):
     try:
-        connection = pymysql.connect(**db_config)
-        return connection
+        return method(*args, **kwargs)
     except Exception as e:
-        print(f"Error de conexión a la base de datos: {e}")
+        print(f"Error al leer del dispositivo Modbus: {e}")
         return None
 
-# Función para leer una entrada digital
 def read_digital_input(instrument, address):
-    if instrument:
-        try:
-            result = instrument.read_bit(address, functioncode=2)
-            return result
-        except Exception as e:
-            print(f"Error al leer entrada digital en registro {address}: {e}")
-    return None
+    return safe_modbus_read(instrument.read_bit, address, functioncode=2)
 
-# Función para leer registros de alta resolución
 def read_high_resolution_register(instrument, address_lo, address_hi):
-    if instrument:
-        try:
-            value_lo = instrument.read_register(address_lo, functioncode=3)
-            value_hi = instrument.read_register(address_hi, functioncode=3)
-            return value_lo, value_hi
-        except Exception as e:
-            print(f"Error al leer registro de alta resolución en registros {address_lo} y {address_hi}: {e}")
-    return None, None
+    value_lo = safe_modbus_read(instrument.read_register, address_lo, functioncode=3)
+    value_hi = safe_modbus_read(instrument.read_register, address_hi, functioncode=3)
+    return value_lo, value_hi
+
 
 # Función para actualizar registros en la base de datos
-def update_database(connection, address, value,descripcion):
+def update_database(connection, address, value, descripcion):
     if connection:
         try:
             with connection.cursor() as cursor:
-                sql = f"UPDATE registros_modbus SET valor = {value} WHERE direccion_modbus = {address}"
-                cursor.execute(sql)
+                # Uso de parámetros en lugar de interpolación directa de strings para evitar SQL Injection
+                sql = "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s"
+                cursor.execute(sql, (value, address))
                 connection.commit()
                 print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
         except Exception as e:

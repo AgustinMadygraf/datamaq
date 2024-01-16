@@ -1,8 +1,8 @@
 #SCR/main.py
-import minimalmodbus
-import time
+from main_aux import detect_serial_ports as detect_serial_ports_aux, check_db_connection as check_db_connection_aux, read_digital_input, read_high_resolution_register, update_database
+from utils import clear_screen, check_db_connection, detect_serial_ports
 import os
-from main_aux import detect_serial_ports, check_db_connection, read_digital_input, read_high_resolution_register, update_database
+import minimalmodbus
 
 class ModbusConnectionError(Exception):
     """Excepción para errores de conexión con el dispositivo Modbus."""
@@ -27,7 +27,6 @@ else:
         input ("Presiona una tecla para salir")
         exit()
 
-time.sleep(1)
 # Dirección del dispositivo Modbus (ajusta la dirección del dispositivo según tu configuración)
 device_address = 1
 # Entradas digitales

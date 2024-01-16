@@ -9,14 +9,26 @@ class DebugAndAboveFilter(logging.Filter):
         # Excluir los registros de nivel INFO del archivo de log
         return record.levelno != logging.INFO
 
+#SCR/logs/config_logger.py
+import logging
+from logging.handlers import RotatingFileHandler
+import datetime
+import os
+
 def configurar_logging():
     logger = logging.getLogger()
     if logger.hasHandlers():
         return logger
 
-    # Configuración básica
-    filename = 'SCR/logs/sistema.log'
+    # Mejora: Utilizar un directorio de logs configurado a través de una variable de entorno
+    log_directory = os.getenv('LOG_DIRECTORY', 'SCR/logs')
+    if not os.path.exists(log_directory):
+        os.makedirs(log_directory)
+    filename = os.path.join(log_directory, 'sistema.log')
+
     format = '%(asctime)s - %(levelname)s - %(module)s - %(filename)s:%(lineno)d: %(message)s'
+    # ...
+
     maxBytes = 10485760  # 10MB
     backupCount = 5
     formatter = logging.Formatter(format)
