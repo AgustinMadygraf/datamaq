@@ -1,6 +1,7 @@
 
 import serial.tools.list_ports
 import pymysql
+import os
 
 # Configuración de la base de datos MySQL
 db_config = {
@@ -9,6 +10,8 @@ db_config = {
     'password': '12345678',
     'db': 'novus'  # Base de datos y subíndice
 }
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def detect_serial_ports(device_description):
