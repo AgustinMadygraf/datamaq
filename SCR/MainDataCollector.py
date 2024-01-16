@@ -66,10 +66,14 @@ def process_data_and_update(instrument, connection):
         fecha_ahora, seg = handle_update_timing()
 
         if seg < 2 and HR_COUNTER1 is not None:
-            insert_database(connection, fecha_ahora, HR_COUNTER1)
+            try:
+                insert_database(connection, fecha_ahora, HR_COUNTER1, HR_COUNTER1_LO, HR_COUNTER1_HI)
+            except TypeError:
+                logger.error("Error: Faltan argumentos en la llamada a insert_database()")
             time.sleep(15)  # Espera antes de la próxima inserción
     except Exception as e:
         logger.error(f"Error al procesar datos y actualizar la base de datos: {e}")
+
 
 def main():
     while True:

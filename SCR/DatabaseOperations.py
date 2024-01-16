@@ -35,17 +35,18 @@ def update_database(connection, address, value, descripcion):
                 print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
         except Exception as e:
             print(f"Error al actualizar el registro en la base de datos: {e}")
-
-def insert_database(connection, fecha_ahora, HR_COUNTER1):
+            
+def insert_database(connection, fecha_ahora, HR_COUNTER1_LO, HR_COUNTER1_HI, HR_COUNTER2_LO, HR_COUNTER2_HI):
     if connection:
         try:
             with connection.cursor() as cursor:
-                sql = f"INSERT INTO `maq_bolsas`( `unixtime`, `HR_COUNTER1`) VALUES ({fecha_ahora}, {HR_COUNTER1})"
+                sql = f"INSERT INTO `maq_bolsas`(`unixtime`, `HR_COUNTER1_LO`, `HR_COUNTER1_HI`, `HR_COUNTER2_LO`, `HR_COUNTER2_HI`) VALUES ({fecha_ahora}, {HR_COUNTER1_LO}, {HR_COUNTER1_HI}, {HR_COUNTER2_LO}, {HR_COUNTER2_HI})"
                 cursor.execute(sql)
                 connection.commit()
-                print(f"Registro Insertado: unixtime = {fecha_ahora}, HR_COUNTER1= {HR_COUNTER1} , timestamp = {datetime.fromtimestamp(fecha_ahora)}")
+                print(f"Registro Insertado: unixtime = {fecha_ahora}, HR_COUNTER1_LO= {HR_COUNTER1_LO}, HR_COUNTER1_HI= {HR_COUNTER1_HI}, HR_COUNTER2_LO= {HR_COUNTER2_LO}, HR_COUNTER2_HI= {HR_COUNTER2_HI}, timestamp = {datetime.fromtimestamp(fecha_ahora)}")
         except Exception as e:
             print(f"Error al insertar el registro en la base de datos: {e}")
+
 
 
 
