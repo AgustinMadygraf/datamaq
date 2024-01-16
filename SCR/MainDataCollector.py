@@ -5,6 +5,8 @@ from DatabaseOperations import check_db_connection, update_database, insert_data
 from ModbusDeviceManager import initialize_modbus_device, configure_modbus_instrument
 from InstrumentDataReaders import read_digital_input, read_high_resolution_register
 from logs.config_logger import configurar_logging
+import cProfile
+import pstats
 
 logger = configurar_logging()
 
@@ -20,6 +22,14 @@ HR_COUNTER2_HI = 25
 
 seg = 1
 com_port, device_description = initialize_modbus_device(DEVICE_DESCRIPTIONS)
+
+class SpecificDatabaseException(Exception):
+    """Excepción específica para errores de base de datos."""
+    pass
+
+class SpecificInstrumentException(Exception):
+    """Excepción específica para errores de instrumentos."""
+    pass
 
 def read_register_and_update_db(instrument, address_lo, address_hi, connection, description):
     lo, hi = read_high_resolution_register(instrument, address_lo, address_hi)
@@ -50,29 +60,6 @@ def handle_update_timing():
     logger.info(f"Tiempo para la siguiente actualización: {round(seg, 1)} segundos")
     return fecha_ahora, seg
 
-
-# Resto de las importaciones...
-
-def main_loop():
-    while True:
-        
-        try:
-            connection = check_db_connection()
-            if not connection:
-                logger.warning("No se pudo establecer la conexión con la base de datos.")
-                time.sleep(10)  # Espera antes de reintentar
-                continue
-
-            instrument = configure_modbus_instrument(com_port, DEVICE_ADDRESS, device_description)
-            if instrument:
-                process_data_and_update(instrument, connection)
-
-        except Exception as e:
-            logger.error(f"Error inesperado en el bucle principal: {e}")
-            time.sleep(10)  # Espera antes de reintentar para evitar ciclos de error rápidos
-
-        time.sleep(1)  # Pequeña pausa para evitar uso excesivo de CPU
-
 def process_data_and_update(instrument, connection):
     """ Procesa los datos y actualiza la base de datos. """
     try:
@@ -85,5 +72,50 @@ def process_data_and_update(instrument, connection):
     except Exception as e:
         logger.error(f"Error al procesar datos y actualizar la base de datos: {e}")
 
+def main():
+    while True:
+        try:
+            connection = intentar_conexion_db()
+            instrument = intentar_conexion_instrumento(com_port, DEVICE_ADDRESS, device_description)
+
+            if instrument and connection:
+                process_data_and_update(instrument, connection)
+
+        except SpecificDatabaseException as db_error:
+            logger.error(f"Error de base de datos: {db_error}")
+        except SpecificInstrumentException as instrument_error:
+            logger.error(f"Error de instrumento: {instrument_error}")
+        except Exception as e:
+            logger.error(f"Error inesperado: {e}")
+
+        time.sleep(1)
+
+def intentar_conexion_instrumento(com_port, device_address, device_description):
+    for _ in range(3):  # Número de reintentos
+        try:
+            instrument = configure_modbus_instrument(com_port, device_address, device_description)
+            if instrument:
+                return instrument
+        except SpecificInstrumentException as instrument_error:
+            logger.warning(f"Reintentando conexión con el instrumento: {instrument_error}")
+            time.sleep(5)
+    raise SpecificInstrumentException("No se pudo establecer la conexión con el instrumento.")
+
+def intentar_conexion_db():
+    for _ in range(3):  # Número de reintentos
+        try:
+            connection = check_db_connection()
+            if connection:
+                return connection
+        except SpecificDatabaseException as db_error:
+            logger.warning(f"Reintentando conexión a la base de datos: {db_error}")
+            time.sleep(5)
+    raise SpecificDatabaseException("No se pudo establecer la conexión con la base de datos.")
+
 if __name__ == "__main__":
-    main_loop()
+    with cProfile.Profile() as pr:
+        main()
+
+    stats = pstats.Stats(pr)
+    stats.sort_stats(pstats.SortKey.TIME)
+    stats.print_stats()
