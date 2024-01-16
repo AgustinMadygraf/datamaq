@@ -29,12 +29,14 @@ def update_database(connection, address, value, descripcion):
     if connection:
         try:
             with connection.cursor() as cursor:
-                sql = f"UPDATE registros_modbus SET valor = {value} WHERE direccion_modbus = {address}"
-                cursor.execute(sql)
+                # Utiliza parámetros seguros para evitar SQL Injection
+                sql = "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s"
+                cursor.execute(sql, (value, address))
                 connection.commit()
                 print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
         except Exception as e:
             print(f"Error al actualizar el registro en la base de datos: {e}")
+
             
 def insert_database(connection, fecha_ahora, HR_COUNTER1_LO, HR_COUNTER1_HI,HR_COUNTER2_LO, HR_COUNTER2_HI,):
     if connection:

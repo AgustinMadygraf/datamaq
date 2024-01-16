@@ -59,7 +59,7 @@ def handle_update_timing():
     logger.info(f"Tiempo para la siguiente actualización: {round(seg, 1)} segundos")
     return fecha_ahora, seg
 
-def process_data_and_update(instrument, connection):
+def process_data_and_update(instrument, connection): #################################################################################################
     """ Procesa los datos y actualiza la base de datos. """
     try:
         HR_COUNTER1 = read_and_update_data(instrument, connection)
@@ -67,7 +67,7 @@ def process_data_and_update(instrument, connection):
 
         if seg < 2 and HR_COUNTER1 is not None:
             try:
-                insert_database(connection, fecha_ahora, HR_COUNTER1_LO, HR_COUNTER1_HI,HR_COUNTER2_LO, HR_COUNTER2_HI,)
+                insert_database(connection, fecha_ahora, HR_COUNTER1_LO, HR_COUNTER1_HI,HR_COUNTER2_LO, HR_COUNTER2_HI,) #############################################
 
             except TypeError:
                 logger.error("Error: Faltan argumentos en la llamada a insert_database()")
