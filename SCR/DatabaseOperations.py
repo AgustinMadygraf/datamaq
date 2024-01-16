@@ -36,7 +36,7 @@ def update_database(connection, address, value, descripcion):
         except Exception as e:
             print(f"Error al actualizar el registro en la base de datos: {e}")
             
-def insert_database(connection, fecha_ahora, HR_COUNTER1_LO, HR_COUNTER1_HI, HR_COUNTER2_LO, HR_COUNTER2_HI):
+def insert_database(connection, fecha_ahora, HR_COUNTER1_LO, HR_COUNTER1_HI,HR_COUNTER2_LO, HR_COUNTER2_HI,):
     if connection:
         try:
             with connection.cursor() as cursor:
