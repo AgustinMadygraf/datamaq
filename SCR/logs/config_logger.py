@@ -1,7 +1,8 @@
+#SCR/logs/config_logger.py
 import logging
 from logging.handlers import RotatingFileHandler
 import datetime
-import os
+
 
 class DebugAndAboveFilter(logging.Filter):
     def filter(self, record):
