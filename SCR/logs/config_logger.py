@@ -35,7 +35,7 @@ def configurar_logging():
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
-    logger.info("\n\n--------------- Nueva Sesión - {} - Nivel de Registro: {} ---------------\n\n".format(
+    logger.debug("\n\n--------------- Nueva Sesión - {} - Nivel de Registro: {} ---------------\n\n".format(
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), logging.getLevelName(logger.getEffectiveLevel())))
 
     return logger

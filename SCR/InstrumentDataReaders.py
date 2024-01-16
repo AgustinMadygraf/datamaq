@@ -1,8 +1,4 @@
-
-
-
-
-# Función para leer una entrada digital
+#SCR/InstrumentDataReaders.py
 def read_digital_input(instrument, address):
     if instrument:
         try:
@@ -12,7 +8,6 @@ def read_digital_input(instrument, address):
             print(f"Error al leer entrada digital en registro {address}: {e}")
     return None
 
-# Función para leer registros de alta resolución
 def read_high_resolution_register(instrument, address_lo, address_hi):
     if instrument:
         try:

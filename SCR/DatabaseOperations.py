@@ -3,7 +3,6 @@ import serial.tools.list_ports
 import pymysql
 from datetime import datetime
 
-# Configuración de la base de datos MySQL
 db_config = {
     'host': 'localhost',
     'user': 'root',
@@ -18,7 +17,6 @@ def detect_serial_ports(device_description):
             return port
     return None
 
-# Función para verificar la conexión a la base de datos
 def check_db_connection():
     try:
         connection = pymysql.connect(**db_config)
@@ -27,7 +25,6 @@ def check_db_connection():
         print(f"Error de conexión a la base de datos: {e}")
         return None
 
-# Función para actualizar registros en la base de datos
 def update_database(connection, address, value, descripcion):
     if connection:
         try:
