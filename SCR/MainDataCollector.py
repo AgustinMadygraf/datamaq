@@ -5,7 +5,6 @@ from DatabaseOperations import check_db_connection, update_database, insert_data
 from ModbusDeviceManager import initialize_modbus_device, configure_modbus_instrument
 from InstrumentDataReaders import read_digital_input, read_high_resolution_register
 from logs.config_logger import configurar_logging
-import cProfile
 import pstats
 
 logger = configurar_logging()
@@ -113,9 +112,5 @@ def intentar_conexion_db():
     raise SpecificDatabaseException("No se pudo establecer la conexión con la base de datos.")
 
 if __name__ == "__main__":
-    with cProfile.Profile() as pr:
         main()
 
-    stats = pstats.Stats(pr)
-    stats.sort_stats(pstats.SortKey.TIME)
-    stats.print_stats()
