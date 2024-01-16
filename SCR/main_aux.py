@@ -1,4 +1,4 @@
-#SCR/main_aux.py
+
 import serial.tools.list_ports
 import pymysql
 
