@@ -57,3 +57,22 @@ def inicializar_conexion_modbus():
             input("Presiona una tecla para salir")
             exit()
     return com_port, device_address
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ModbusConnectionError(Exception):
+    """Excepción para errores de conexión con el dispositivo Modbus."""
+    pass

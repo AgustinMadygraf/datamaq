@@ -1,7 +1,7 @@
 #SCR/main.py
 from main_aux import  read_high_resolution_register, update_database
 from utils import check_db_connection
-from controller import read_digital_input, inicializar_conexion_modbus
+from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError
 from logs.config_logger import configurar_logging
 import minimalmodbus
 import time
@@ -72,8 +72,6 @@ def process_modbus_operations():
         process_high_resolution_register(instrument, connection)
     else:
         logger.error("Conexión a Modbus o base de datos fallida.")
-
-
 
 def establish_db_connection():
     """
@@ -249,10 +247,6 @@ def process_and_update(instrument, read_func, update_args_list):
     if all(value is not None for value in (result if isinstance(result, tuple) else [result])):
         for update_args in update_args_list:
             update_database(*update_args, result)
-
-class ModbusConnectionError(Exception):
-    """Excepción para errores de conexión con el dispositivo Modbus."""
-    pass
 
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""
