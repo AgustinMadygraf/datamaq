@@ -1,12 +1,12 @@
+#controller.py
+from logs.config_logger import configurar_logging
+from db_operations import update_database
+import serial.tools.list_ports
+
 D1 = 70
 D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
-
-from logs.config_logger import configurar_logging
-from main_aux import   update_database
-import serial.tools.list_ports
-
 
 logger = configurar_logging()
 
@@ -181,11 +181,6 @@ def read_high_resolution_register(instrument, address_lo, address_hi):
     if value_lo is None or value_hi is None:
         return None, None
     return value_lo, value_hi
-
-
-
-
-
 
 class ModbusConnectionError(Exception):
     """Excepción para errores de conexión con el dispositivo Modbus."""

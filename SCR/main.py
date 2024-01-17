@@ -1,6 +1,5 @@
 #SCR/main.py
-from main_aux import   update_database
-from db_operations import check_db_connection
+from db_operations import check_db_connection, update_database
 from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register
 from logs.config_logger import configurar_logging
 import minimalmodbus
