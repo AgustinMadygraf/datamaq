@@ -5,19 +5,34 @@ import os
 import minimalmodbus
 import time
 
-# Entradas digitales
 D1 = 70
 D2 = 71
-# Contador
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
 
 
 
 def main_loop():
+    """
+    Ejecuta el bucle principal del programa, procesando operaciones Modbus continuamente.
+
+    Esta función define un bucle infinito que, en cada iteración, espera un segundo y luego
+    ejecuta las operaciones relacionadas con Modbus. Está diseñada para mantener el programa
+    en ejecución y procesando datos de manera continua.
+
+    Proceso:
+        - Entra en un bucle infinito.
+        - En cada iteración, pausa la ejecución durante un segundo para evitar la sobrecarga.
+        - Llama a la función `process_modbus_operations` para realizar las operaciones necesarias con el dispositivo Modbus.
+
+    Nota:
+        - Este bucle es infinito y el programa debe ser detenido manualmente o mediante señales del sistema.
+        - La pausa de un segundo es importante para evitar el uso excesivo de recursos, especialmente en un contexto de comunicación con hardware.
+    """
     while True:
         time.sleep(1)
         process_modbus_operations()
+
 
 def process_modbus_operations():
     """
@@ -64,8 +79,64 @@ def establish_db_connection():
     )
 
 
+def establish_modbus_connection():
+    """
+    Establece una conexión con un dispositivo Modbus utilizando un puerto serie específico.
+
+    Utiliza la función `establish_connection` para crear y configurar una instancia de 
+    `minimalmodbus.Instrument`. Esta instancia se utiliza para interactuar con un dispositivo 
+    Modbus a través de un puerto serie. En caso de error al configurar la conexión, se levanta
+    una excepción `ModbusConnectionError`.
+
+    Returns:
+        Una instancia de `minimalmodbus.Instrument` configurada para comunicarse con el 
+        dispositivo Modbus si la conexión es exitosa; de lo contrario, levanta una excepción.
+
+    Proceso:
+        - Intenta crear y configurar una instancia de `minimalmodbus.Instrument` usando el puerto
+          serie especificado en `com_port` y la dirección del dispositivo en `device_address`.
+        - Si falla la configuración del puerto serie, se levanta `ModbusConnectionError` con un
+          mensaje de error.
+    """
+    return establish_connection(
+        lambda: minimalmodbus.Instrument(com_port, device_address), 
+        "Error al configurar el puerto serie", 
+        ModbusConnectionError
+    )
 
 
+
+
+
+
+def establish_connection(connect_func, error_message, error_exception):
+    """
+    Intenta establecer una conexión o realizar una operación y maneja las excepciones.
+
+    Esta función general se utiliza para intentar realizar cualquier operación que pueda lanzar
+    una excepción. Captura excepciones genéricas y, en caso de error, imprime un mensaje de error
+    personalizado y lanza una excepción específica.
+
+    Args:
+        connect_func (function): Función sin argumentos que intenta establecer una conexión o realizar una operación.
+        error_message (str): Mensaje de error personalizado para mostrar si la operación falla.
+        error_exception (Exception): Tipo de excepción a lanzar si la operación falla.
+
+    Returns:
+        El resultado de la función `connect_func` si la operación es exitosa.
+
+    Raises:
+        error_exception: Una excepción específica con un mensaje detallado si `connect_func` falla.
+
+    Proceso:
+        - Intenta ejecutar `connect_func`.
+        - Si se produce una excepción, imprime `error_message` con detalles del error y lanza `error_exception`.
+    """
+    try:
+        return connect_func()
+    except Exception as e:
+        print(f"{error_message}: {e}")
+        raise error_exception(f"{error_message}. Detalles: {e}") from e
 
 
 
@@ -215,21 +286,6 @@ device_address = 1
 
 
 
-def establish_connection(connect_func, error_message, error_exception):
-    try:
-        return connect_func()
-    except Exception as e:
-        print(f"{error_message}: {e}")
-        raise error_exception(f"{error_message}. Detalles: {e}") from e
-
-
-
-def establish_modbus_connection():
-    return establish_connection(
-        lambda: minimalmodbus.Instrument(com_port, device_address), 
-        "Error al configurar el puerto serie", 
-        ModbusConnectionError
-    )
 
 
 
