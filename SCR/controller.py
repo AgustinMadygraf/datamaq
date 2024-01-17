@@ -4,7 +4,6 @@ HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
 
 from logs.config_logger import configurar_logging
-from main_aux import safe_modbus_read, read_high_resolution_register
 from main_aux import   update_database
 import serial.tools.list_ports
 
@@ -138,9 +137,50 @@ def detect_serial_ports(device_description):
             return port
     return None
 
+def safe_modbus_read(method, *args, **kwargs):
+    """
+    Realiza una lectura segura de un dispositivo Modbus.
 
+    Envuelve la llamada a un método de lectura Modbus en un bloque try-except para manejar excepciones.
+    Proporciona un mecanismo de recuperación y registro de errores en caso de fallas en la lectura.
 
+    Args:
+        method (callable): Método de lectura Modbus a ser invocado.
+        *args: Argumentos posicionales para el método de lectura.
+        **kwargs: Argumentos de palabra clave para el método de lectura.
 
+    Returns:
+        El resultado del método de lectura si es exitoso, o None si ocurre una excepción.
+    """
+    try:
+        return method(*args, **kwargs)
+    except Exception as e:
+        logger.error(f"Error al leer del dispositivo Modbus: {e}")
+        return None
+
+def read_high_resolution_register(instrument, address_lo, address_hi):
+    """
+    Lee dos registros de un dispositivo Modbus para obtener un valor de alta resolución.
+
+    Esta función realiza lecturas seguras de dos registros consecutivos en un dispositivo Modbus,
+    generalmente utilizados para representar un valor de alta resolución (como un contador de 32 bits).
+    Utiliza la función 'safe_modbus_read' para manejar posibles errores en la lectura.
+
+    Args:
+        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
+        address_lo (int): La dirección del registro de resolución baja.
+        address_hi (int): La dirección del registro de resolución alta.
+
+    Returns:
+        tuple: Una tupla conteniendo los valores leídos de los registros de resolución baja y alta,
+               o (None, None) si alguna de las lecturas falla.
+    """
+    value_lo = safe_modbus_read(instrument.read_register, address_lo, functioncode=3)
+    value_hi = safe_modbus_read(instrument.read_register, address_hi, functioncode=3)
+
+    if value_lo is None or value_hi is None:
+        return None, None
+    return value_lo, value_hi
 
 
 
