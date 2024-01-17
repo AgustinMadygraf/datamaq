@@ -42,6 +42,33 @@ def process_modbus_operations():
         process_high_resolution_register(instrument, connection)
 
 
+def establish_db_connection():
+    """
+    Establece una conexión con la base de datos utilizando una función auxiliar.
+
+    Esta función utiliza `establish_connection`, una función de alto nivel, para intentar
+    establecer una conexión con la base de datos. Si la conexión falla, se maneja 
+    la excepción correspondiente.
+
+    Returns:
+        Una conexión activa a la base de datos si es exitosa; de lo contrario, levanta una excepción.
+
+    Proceso:
+        - Intenta establecer una conexión con la base de datos utilizando `check_db_connection`.
+        - Si falla la conexión, se levanta `DatabaseConnectionError` con un mensaje de error.
+    """
+    return establish_connection(
+        check_db_connection, 
+        "Error de conexión a la base de datos", 
+        DatabaseConnectionError
+    )
+
+
+
+
+
+
+
 def process_digital_input(instrument, connection):
     """
     Procesa las entradas digitales de un dispositivo Modbus y actualiza la base de datos.
@@ -187,10 +214,6 @@ else:
 device_address = 1
 
 
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
 
 def establish_connection(connect_func, error_message, error_exception):
     try:
@@ -199,12 +222,7 @@ def establish_connection(connect_func, error_message, error_exception):
         print(f"{error_message}: {e}")
         raise error_exception(f"{error_message}. Detalles: {e}") from e
 
-def establish_db_connection():
-    return establish_connection(
-        check_db_connection, 
-        "Error de conexión a la base de datos", 
-        DatabaseConnectionError
-    )
+
 
 def establish_modbus_connection():
     return establish_connection(
