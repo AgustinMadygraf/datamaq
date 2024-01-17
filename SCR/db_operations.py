@@ -1,28 +1,12 @@
 # utils.py
-import serial.tools.list_ports
 import functools
 import pymysql
 from config.db_config import get_db_config  
 
-def detect_serial_ports(device_description):
-    """
-    Busca y retorna el nombre del puerto serie que coincide con la descripción del dispositivo dada.
 
-    Esta función recorre todos los puertos serie disponibles en el sistema y compara la descripción
-    de cada uno con la descripción del dispositivo proporcionada. Si encuentra una coincidencia,
-    retorna el nombre del puerto serie correspondiente.
 
-    Args:
-        device_description (str): La descripción del dispositivo Modbus a buscar entre los puertos serie.
 
-    Returns:
-        str/None: El nombre del puerto serie que coincide con la descripción del dispositivo, o None si no se encuentra.
-    """
-    available_ports = list(serial.tools.list_ports.comports())
-    for port, desc, hwid in available_ports:
-        if device_description in desc:
-            return port
-    return None
+
 
 def reconnect_on_failure(func):
     """

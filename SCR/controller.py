@@ -5,12 +5,11 @@ HR_COUNTER1_HI = 23
 
 from logs.config_logger import configurar_logging
 from main_aux import safe_modbus_read, read_high_resolution_register
-from utils import detect_serial_ports
 from main_aux import   update_database
+import serial.tools.list_ports
 
 
 logger = configurar_logging()
-
 
 def read_digital_input(instrument, address):
     """
@@ -63,7 +62,6 @@ def inicializar_conexion_modbus():
             input("Presiona una tecla para salir")
             exit()
     return com_port, device_address
-
 
 def process_high_resolution_register(instrument, connection):
     """
@@ -120,7 +118,25 @@ def process_and_update(instrument, read_func, update_args_list):
         for update_args in update_args_list:
             update_database(*update_args, result)
 
+def detect_serial_ports(device_description):
+    """
+    Busca y retorna el nombre del puerto serie que coincide con la descripción del dispositivo dada.
 
+    Esta función recorre todos los puertos serie disponibles en el sistema y compara la descripción
+    de cada uno con la descripción del dispositivo proporcionada. Si encuentra una coincidencia,
+    retorna el nombre del puerto serie correspondiente.
+
+    Args:
+        device_description (str): La descripción del dispositivo Modbus a buscar entre los puertos serie.
+
+    Returns:
+        str/None: El nombre del puerto serie que coincide con la descripción del dispositivo, o None si no se encuentra.
+    """
+    available_ports = list(serial.tools.list_ports.comports())
+    for port, desc, hwid in available_ports:
+        if device_description in desc:
+            return port
+    return None
 
 
 

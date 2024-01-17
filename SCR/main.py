@@ -1,6 +1,6 @@
 #SCR/main.py
 from main_aux import   update_database
-from utils import check_db_connection
+from db_operations import check_db_connection
 from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register
 from logs.config_logger import configurar_logging
 import minimalmodbus
@@ -192,8 +192,6 @@ def process_input_and_update(instrument, connection, read_function, address, des
             update_database(connection, address, state, descripcion=description)
     except minimalmodbus.ModbusException as e:
         raise ModbusReadError(f"Error al leer la dirección {address} del dispositivo Modbus: {e}") from e
-
-
 
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""
