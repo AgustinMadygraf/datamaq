@@ -1,0 +1,13 @@
+{
+    "modbus": {
+      "device_address": 1,
+      "descriptions": ["DigiRail Connect", "USB-SERIAL CH340"]
+    },
+    "database": {
+      "host": "localhost",
+      "user": "root",
+      "password": "1234567",
+      "dbname": "novus"
+    }
+  }
+  
