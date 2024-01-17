@@ -1,9 +1,10 @@
 #SCR/main.py
-from main_aux import  read_digital_input, read_high_resolution_register, update_database
+from main_aux import  read_high_resolution_register, update_database
 from utils import check_db_connection, detect_serial_ports
+from controller import read_digital_input
+from logs.config_logger import configurar_logging
 import minimalmodbus
 import time
-from logs.config_logger import configurar_logging
 import signal
 
 # Configurar logging
