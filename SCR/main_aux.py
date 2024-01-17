@@ -16,11 +16,26 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def safe_modbus_read(method, *args, **kwargs):
+    """
+    Realiza una lectura segura de un dispositivo Modbus.
+
+    Envuelve la llamada a un método de lectura Modbus en un bloque try-except para manejar excepciones.
+    Proporciona un mecanismo de recuperación y registro de errores en caso de fallas en la lectura.
+
+    Args:
+        method (callable): Método de lectura Modbus a ser invocado.
+        *args: Argumentos posicionales para el método de lectura.
+        **kwargs: Argumentos de palabra clave para el método de lectura.
+
+    Returns:
+        El resultado del método de lectura si es exitoso, o None si ocurre una excepción.
+    """
     try:
         return method(*args, **kwargs)
     except Exception as e:
         print(f"Error al leer del dispositivo Modbus: {e}")
         return None
+
 
 def read_digital_input(instrument, address):
     return safe_modbus_read(instrument.read_bit, address, functioncode=2)
@@ -31,15 +46,23 @@ def read_high_resolution_register(instrument, address_lo, address_hi):
     return value_lo, value_hi
 
 
-# Función para actualizar registros en la base de datos
-def update_database(connection, address, value, descripcion):
+def build_update_query(address, value):
+    return "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s", (value, address)
+
+def execute_query(connection, query, params):
     if connection:
         try:
             with connection.cursor() as cursor:
-                # Uso de parámetros en lugar de interpolación directa de strings para evitar SQL Injection
-                sql = "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s"
-                cursor.execute(sql, (value, address))
+                cursor.execute(query, params)
                 connection.commit()
-                print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
         except Exception as e:
-            print(f"Error al actualizar el registro en la base de datos: {e}")
+            print(f"Error al ejecutar la consulta en la base de datos: {e}")
+            return False
+    return True
+
+def update_database(connection, address, value, descripcion):
+    query, params = build_update_query(address, value)
+    if execute_query(connection, query, params):
+        print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
+    else:
+        print(f"No se pudo actualizar el registro: dirección {address}, {descripcion}")

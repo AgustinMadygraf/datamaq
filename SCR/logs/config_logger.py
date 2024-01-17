@@ -15,41 +15,41 @@ from logging.handlers import RotatingFileHandler
 import datetime
 import os
 
+def create_handler(handler_class, level, format, **kwargs):
+    handler = handler_class(**kwargs)
+    handler.setLevel(level)
+    handler.setFormatter(logging.Formatter(format))
+    return handler
+
 def configurar_logging():
     logger = logging.getLogger()
     if logger.hasHandlers():
         return logger
 
-    # Mejora: Utilizar un directorio de logs configurado a través de una variable de entorno
-    log_directory = os.getenv('LOG_DIRECTORY', 'SCR/logs')
-    if not os.path.exists(log_directory):
-        os.makedirs(log_directory)
-    filename = os.path.join(log_directory, 'sistema.log')
+    log_format = '%(asctime)s - %(levelname)s - %(module)s - %(filename)s:%(lineno)d: %(message)s'
+    log_file = 'SCR/logs/sistema.log'
+    max_bytes = 10485760  # 10MB
+    backup_count = 5
 
-    format = '%(asctime)s - %(levelname)s - %(module)s - %(filename)s:%(lineno)d: %(message)s'
-    # ...
-
-    maxBytes = 10485760  # 10MB
-    backupCount = 5
-    formatter = logging.Formatter(format)
-
-    # File Handler con filtro para excluir INFO
-    file_handler = RotatingFileHandler(filename, maxBytes=maxBytes, backupCount=backupCount)
+    file_handler = create_handler(
+        RotatingFileHandler, 
+        logging.DEBUG, 
+        log_format, 
+        filename=log_file, 
+        maxBytes=max_bytes, 
+        backupCount=backup_count
+    )
     file_handler.addFilter(DebugAndAboveFilter())  # Aplicar el filtro
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(formatter)
 
-    # Console Handler para INFO y superiores
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter(formatter)
+    console_handler = create_handler(
+        logging.StreamHandler, 
+        logging.INFO, 
+        log_format
+    )
 
     logger.setLevel(logging.DEBUG)  # Nivel más bajo para capturar todos los mensajes
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
-
-    logger.debug("\n\n--------------- Nueva Sesión - {} - Nivel de Registro: {} ---------------\n\n".format(
-        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), logging.getLevelName(logger.getEffectiveLevel())))
 
     return logger
 

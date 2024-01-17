@@ -52,30 +52,53 @@ def process_modbus_operations():
         process_digital_input(instrument, connection)
         process_high_resolution_register(instrument, connection)
 
-def establish_db_connection():
+def establish_connection(connect_func, error_message, error_exception):
     try:
-        return check_db_connection()
+        return connect_func()
     except Exception as e:
-        print("Error de conexión a la base de datos:", str(e))
-        raise DatabaseConnectionError("No se pudo conectar a la base de datos.") from e
+        print(f"{error_message}: {e}")
+        raise error_exception(f"{error_message}. Detalles: {e}") from e
+
+def establish_db_connection():
+    return establish_connection(
+        check_db_connection, 
+        "Error de conexión a la base de datos", 
+        DatabaseConnectionError
+    )
 
 def establish_modbus_connection():
-    try:
-        return minimalmodbus.Instrument(com_port, device_address)
-    except Exception as e:
-        print("Error al configurar el puerto serie:", str(e))
-        raise ModbusConnectionError("No se pudo conectar con el dispositivo Modbus.") from e
+    return establish_connection(
+        lambda: minimalmodbus.Instrument(com_port, device_address), 
+        "Error al configurar el puerto serie", 
+        ModbusConnectionError
+    )
+
+def process_and_update(instrument, read_func, update_args_list):
+    result = read_func(instrument)
+    if all(value is not None for value in (result if isinstance(result, tuple) else [result])):
+        for update_args in update_args_list:
+            update_database(*update_args, result)
+
+def process_input_and_update(instrument, connection, read_function, address, description):
+    state = read_function(instrument, address)
+    if state is not None:
+        update_database(connection, address, state, descripcion=description)
 
 def process_digital_input(instrument, connection):
-    D1_state = read_digital_input(instrument, D1)
-    if D1_state is not None:
-        update_database(connection, D1, D1_state, descripcion="HR_INPUT1_STATE")
+    process_input_and_update(instrument, connection, read_digital_input, D1, "HR_INPUT1_STATE")
+
+# Y similarmente para otras funciones de procesamiento...
+
 
 def process_high_resolution_register(instrument, connection):
-    HR_COUNTER1_lo, HR_COUNTER1_hi = read_high_resolution_register(instrument, HR_COUNTER1_LO, HR_COUNTER1_HI)
-    if HR_COUNTER1_lo is not None and HR_COUNTER1_hi is not None:
-        update_database(connection, HR_COUNTER1_LO, HR_COUNTER1_lo, descripcion="HR_COUNTER1_LO ")
-        update_database(connection, HR_COUNTER1_HI, HR_COUNTER1_hi, descripcion="HR_COUNTER1_HI ")
+    process_and_update(
+        instrument, 
+        lambda inst: read_high_resolution_register(inst, HR_COUNTER1_LO, HR_COUNTER1_HI), 
+        [
+            (connection, HR_COUNTER1_LO, "HR_COUNTER1_LO"),
+            (connection, HR_COUNTER1_HI, "HR_COUNTER1_HI")
+        ]
+    )
 
 
 main_loop()
