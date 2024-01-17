@@ -1,7 +1,5 @@
-
-import serial.tools.list_ports
+#SCR/main_aux.py
 import pymysql
-import os
 from logs.config_logger import configurar_logging
 
 logger = configurar_logging()
@@ -120,27 +118,29 @@ def execute_query(connection, query, params):
         logger.error(f"Error al ejecutar la consulta en la base de datos: {e}")
         return False
 
-#########################################################################################################
-
-# Configuración de la base de datos MySQL
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '12345678',
-    'db': 'novus'  # Base de datos y subíndice
-}
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
 def read_high_resolution_register(instrument, address_lo, address_hi):
+    """
+    Lee dos registros de un dispositivo Modbus para obtener un valor de alta resolución.
+
+    Esta función realiza lecturas seguras de dos registros consecutivos en un dispositivo Modbus,
+    generalmente utilizados para representar un valor de alta resolución (como un contador de 32 bits).
+    Utiliza la función 'safe_modbus_read' para manejar posibles errores en la lectura.
+
+    Args:
+        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
+        address_lo (int): La dirección del registro de resolución baja.
+        address_hi (int): La dirección del registro de resolución alta.
+
+    Returns:
+        tuple: Una tupla conteniendo los valores leídos de los registros de resolución baja y alta,
+               o (None, None) si alguna de las lecturas falla.
+    """
     value_lo = safe_modbus_read(instrument.read_register, address_lo, functioncode=3)
     value_hi = safe_modbus_read(instrument.read_register, address_hi, functioncode=3)
+
+    if value_lo is None or value_hi is None:
+        return None, None
     return value_lo, value_hi
-
-def build_update_query(address, value):
-    return "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s", (value, address)
-
-
 
 class DatabaseUpdateError(Exception):
     """Excepción para errores en la actualización de la base de datos."""

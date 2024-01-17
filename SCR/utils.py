@@ -1,6 +1,5 @@
 # utils.py
 import serial.tools.list_ports
-import os
 import functools
 import pymysql
 from config.db_config import get_db_config  
@@ -25,32 +24,20 @@ def detect_serial_ports(device_description):
             return port
     return None
 
-
-
-
-################################################################################
-# Configuración de la base de datos MySQL
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '12345678',
-    'db': 'novus'
-}
-
-def clear_screen():
-    """
-    Limpia la pantalla de la consola.
-
-    Determina el sistema operativo y ejecuta el comando correspondiente para limpiar la pantalla de la consola. 
-    Utiliza 'cls' para Windows y 'clear' para sistemas basados en Unix.
-    """
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-
-
-
 def reconnect_on_failure(func):
+    """
+    Decorador que intenta reconectar a la base de datos en caso de un fallo en la conexión.
+
+    Este decorador envuelve una función que realiza operaciones de base de datos. Si se detecta
+    un error de conexión operacional o de MySQL durante la ejecución de la función, intenta
+    establecer una nueva conexión y reintentar la operación.
+
+    Args:
+        func (function): La función que se va a decorar.
+
+    Returns:
+        function: La función envuelta con lógica de manejo de errores y reconexión.
+    """
     @functools.wraps(func)
     def wrapper_reconnect(*args, **kwargs):
         try:
@@ -69,6 +56,17 @@ def reconnect_on_failure(func):
 
 @reconnect_on_failure
 def check_db_connection():
+    """
+    Establece una conexión a la base de datos utilizando la configuración definida.
+
+    Esta función intenta conectarse a la base de datos utilizando los parámetros especificados
+    en la configuración de la base de datos. Está decorada con 'reconnect_on_failure', lo que
+    asegura que intentará reconectar automáticamente en caso de fallar la conexión inicial.
+
+    Returns:
+        pymysql.connections.Connection: Un objeto de conexión a la base de datos.
+    """
     db_config = get_db_config()  # Obtener la configuración de la base de datos
     connection = pymysql.connect(**db_config)
     return connection
+
