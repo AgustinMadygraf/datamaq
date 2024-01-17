@@ -66,56 +66,20 @@ def process_high_resolution_register(instrument, connection):
     """
     Procesa y actualiza los registros de alta resolución de un dispositivo Modbus.
 
-    Lee los valores de los registros de alta resolución especificados en un dispositivo Modbus
-    y actualiza la base de datos con estos valores. Se utiliza una función lambda para leer
-    los registros de alta resolución y luego se actualizan los valores correspondientes en la base de datos.
+    Lee los valores de los registros HR_COUNTER1_LO y HR_COUNTER1_HI del dispositivo Modbus
+    y actualiza la base de datos con estos valores individualmente.
 
     Args:
         instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
         connection (pymysql.connections.Connection): Conexión a la base de datos para actualizar los valores.
-
-    Proceso:
-        - Lee los valores de los registros HR_COUNTER1_LO y HR_COUNTER1_HI del dispositivo Modbus.
-        - Actualiza la base de datos con estos valores, utilizando las descripciones "HR_COUNTER1_LO" y "HR_COUNTER1_HI".
     """
-    process_and_update(
-        instrument, 
-        lambda inst: read_high_resolution_register(inst, HR_COUNTER1_LO, HR_COUNTER1_HI), 
-        [
-            (connection, HR_COUNTER1_LO, "HR_COUNTER1_LO"),
-            (connection, HR_COUNTER1_HI, "HR_COUNTER1_HI")
-        ]
-    )
+    value_lo = safe_modbus_read(instrument.read_register, HR_COUNTER1_LO, functioncode=3)
+    if value_lo is not None:
+        update_database(connection, HR_COUNTER1_LO, value_lo, "HR_COUNTER1_LO")
 
-def process_and_update(instrument, read_func, update_args_list):
-    """
-    Lee un valor o valores de un dispositivo Modbus y actualiza la base de datos según corresponda.
-
-    Utiliza una función de lectura proporcionada para obtener un resultado del dispositivo Modbus.
-    Si el resultado es válido (no None y no contiene valores None), procede a actualizar la base de datos
-    con los argumentos especificados en `update_args_list`.
-
-    Args:
-        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        read_func (function): Función de lectura para obtener datos del dispositivo Modbus.
-        update_args_list (list of tuples): Lista de argumentos para pasar a la función `update_database`.
-                                         Cada tupla debe contener los argumentos necesarios para una actualización.
-
-    Proceso:
-        - Obtiene un resultado de `read_func`.
-        - Imprime el resultado para depuración.
-        - Verifica que todos los valores en el resultado sean válidos (no None).
-        - Si son válidos, itera sobre `update_args_list` y actualiza la base de datos con cada conjunto de argumentos y el resultado.
-
-    Notas:
-        - La función `read_func` debería devolver un valor único o una tupla de valores.
-        - `update_args_list` contiene tuplas con los argumentos para `update_database`, excluyendo el último argumento que es el resultado de `read_func`.
-        - Esta función se utiliza para procesar y actualizar múltiples valores en la base de datos en una sola operación, basándose en una lectura de Modbus.
-    """
-    result = read_func(instrument)
-    if all(value is not None for value in (result if isinstance(result, tuple) else [result])):
-        for update_args in update_args_list:
-            update_database(*update_args, result)
+    value_hi = safe_modbus_read(instrument.read_register, HR_COUNTER1_HI, functioncode=3)
+    if value_hi is not None:
+        update_database(connection, HR_COUNTER1_HI, value_hi, "HR_COUNTER1_HI")
 
 def detect_serial_ports(device_description):
     """
@@ -157,30 +121,6 @@ def safe_modbus_read(method, *args, **kwargs):
     except Exception as e:
         logger.error(f"Error al leer del dispositivo Modbus: {e}")
         return None
-
-def read_high_resolution_register(instrument, address_lo, address_hi):
-    """
-    Lee dos registros de un dispositivo Modbus para obtener un valor de alta resolución.
-
-    Esta función realiza lecturas seguras de dos registros consecutivos en un dispositivo Modbus,
-    generalmente utilizados para representar un valor de alta resolución (como un contador de 32 bits).
-    Utiliza la función 'safe_modbus_read' para manejar posibles errores en la lectura.
-
-    Args:
-        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        address_lo (int): La dirección del registro de resolución baja.
-        address_hi (int): La dirección del registro de resolución alta.
-
-    Returns:
-        tuple: Una tupla conteniendo los valores leídos de los registros de resolución baja y alta,
-               o (None, None) si alguna de las lecturas falla.
-    """
-    value_lo = safe_modbus_read(instrument.read_register, address_lo, functioncode=3)
-    value_hi = safe_modbus_read(instrument.read_register, address_hi, functioncode=3)
-
-    if value_lo is None or value_hi is None:
-        return None, None
-    return value_lo, value_hi
 
 class ModbusConnectionError(Exception):
     """Excepción para errores de conexión con el dispositivo Modbus."""

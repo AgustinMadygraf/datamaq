@@ -62,15 +62,22 @@ def process_modbus_operations():
         * Procesa los registros de alta resolución del dispositivo Modbus.
     - Si alguna conexión falla, el proceso se detiene y se manejan las excepciones correspondientes.
     """
-    com_port, device_address = inicializar_conexion_modbus()
-    connection = establish_db_connection()
+    try:
+        com_port, device_address = inicializar_conexion_modbus()
+    except ModbusConnectionError as e:
+        logger.error(f"Error de conexión Modbus: {e}")
+        return
+
+    try:
+        connection = establish_db_connection()
+    except DatabaseConnectionError as e:
+        logger.error(f"Error de conexión a la base de datos: {e}")
+        return
+
     instrument = establish_modbus_connection(com_port, device_address)
    
-    if connection and instrument:
-        process_digital_input(instrument, connection)
-        process_high_resolution_register(instrument, connection)
-    else:
-        logger.error("Conexión a Modbus o base de datos fallida.")
+    process_digital_input(instrument, connection)
+    process_high_resolution_register(instrument, connection)
 
 def establish_db_connection():
     """
