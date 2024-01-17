@@ -10,22 +10,22 @@ D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
 
-device_description = "DigiRail Connect"  
-com_port = detect_serial_ports(device_description)
-if com_port:
-    print(f"Puerto {device_description} detectado: {com_port}\n")
-else:
-    device_description = "USB-SERIAL CH340"  
+def inicio():
+    device_address = 1
+    device_description = "DigiRail Connect"  
     com_port = detect_serial_ports(device_description)
     if com_port:
-        print(f"Puerto detectado: {com_port}\n")
+        print(f"Puerto {device_description} detectado: {com_port}\n")
     else:
-        print("No se detectaron puertos COM para tu dispositivo.")
-        input ("Presiona una tecla para salir")
-        exit()
-
-# Dirección del dispositivo Modbus (ajusta la dirección del dispositivo según tu configuración)
-device_address = 1
+        device_description = "USB-SERIAL CH340"  
+        com_port = detect_serial_ports(device_description)
+        if com_port:
+            print(f"Puerto detectado: {com_port}\n")
+        else:
+            print("No se detectaron puertos COM para tu dispositivo.")
+            input ("Presiona una tecla para salir")
+            exit()
+    return com_port,device_address 
 
 
 
@@ -67,9 +67,10 @@ def process_modbus_operations():
         * Procesa los registros de alta resolución del dispositivo Modbus.
     - Si alguna conexión falla, el proceso se detiene y se manejan las excepciones correspondientes.
     """
+    com_port, device_address = inicio()
     connection = establish_db_connection()
-    instrument = establish_modbus_connection()
-
+    instrument = establish_modbus_connection(com_port, device_address)
+   
     if connection and instrument:
         process_digital_input(instrument, connection)
         process_high_resolution_register(instrument, connection)
@@ -96,7 +97,7 @@ def establish_db_connection():
     )
 
 
-def establish_modbus_connection():
+def establish_modbus_connection(com_port, device_address):
     """
     Establece una conexión con un dispositivo Modbus utilizando un puerto serie específico.
 
