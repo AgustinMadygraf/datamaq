@@ -4,6 +4,7 @@ from utils import check_db_connection, detect_serial_ports
 import minimalmodbus
 import time
 from logs.config_logger import configurar_logging
+import signal
 
 # Configurar logging
 logger = configurar_logging()
@@ -30,10 +31,21 @@ def main_loop():
         - Este bucle es infinito y el programa debe ser detenido manualmente o mediante señales del sistema.
         - La pausa de un segundo es importante para evitar el uso excesivo de recursos, especialmente en un contexto de comunicación con hardware.
     """
-    while True:
+    global running
+    running = True
+    signal.signal(signal.SIGINT, handle_signal)
+    signal.signal(signal.SIGTERM, handle_signal)
+    
+    while running:
+        print("")
         logger.info("Ejecutando iteración del bucle principal.")
         time.sleep(1)
         process_modbus_operations()
+
+def handle_signal(signum, frame):
+    global running
+    running = False
+    logger.info("Señal de terminación recibida. Terminando el bucle principal...")
 
 def process_modbus_operations():
     """
@@ -216,7 +228,6 @@ def process_input_and_update(instrument, connection, read_function, address, des
     except minimalmodbus.ModbusException as e:
         raise ModbusReadError(f"Error al leer la dirección {address} del dispositivo Modbus: {e}") from e
 
-
 def process_high_resolution_register(instrument, connection):
     """
     Procesa y actualiza los registros de alta resolución de un dispositivo Modbus.
@@ -283,8 +294,5 @@ class DatabaseConnectionError(Exception):
 class ModbusReadError(Exception):
     """Excepción para errores de lectura del dispositivo Modbus."""
     pass
-
-
-
 
 main_loop()
