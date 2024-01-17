@@ -1,4 +1,4 @@
-# db_operations.py
+#SCR/db_operations.py
 import pymysql
 from logs.config_logger import configurar_logging
 import functools

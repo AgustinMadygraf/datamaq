@@ -1,4 +1,4 @@
-#controller.py
+#SCR/controller.py
 from logs.config_logger import configurar_logging
 from db_operations import update_database
 import serial.tools.list_ports
@@ -49,6 +49,7 @@ def inicializar_conexion_modbus():
     device_address = 1
     device_description = "DigiRail Connect"  
     com_port = detect_serial_ports(device_description)
+    print("")
     if com_port:
         logger.info(f"Puerto {device_description} detectado: {com_port}")
     else:
