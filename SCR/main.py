@@ -10,6 +10,25 @@ D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
 
+device_description = "DigiRail Connect"  
+com_port = detect_serial_ports(device_description)
+if com_port:
+    print(f"Puerto {device_description} detectado: {com_port}\n")
+else:
+    device_description = "USB-SERIAL CH340"  
+    com_port = detect_serial_ports(device_description)
+    if com_port:
+        print(f"Puerto detectado: {com_port}\n")
+    else:
+        print("No se detectaron puertos COM para tu dispositivo.")
+        input ("Presiona una tecla para salir")
+        exit()
+
+# Dirección del dispositivo Modbus (ajusta la dirección del dispositivo según tu configuración)
+device_address = 1
+
+
+
 def main_loop():
     """
     Ejecuta el bucle principal del programa, procesando operaciones Modbus continuamente.
@@ -29,6 +48,7 @@ def main_loop():
     """
     #inicio()
     while True:
+        print("")
         time.sleep(1)
         process_modbus_operations()
 
@@ -237,34 +257,5 @@ class ModbusConnectionError(Exception):
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""
     pass
-
-# def inicio():
-device_description = "DigiRail Connect"  
-com_port = detect_serial_ports(device_description)
-if com_port:
-    print(f"Puerto {device_description} detectado: {com_port}\n")
-else:
-    device_description = "USB-SERIAL CH340"  
-    com_port = detect_serial_ports(device_description)
-    if com_port:
-        print(f"Puerto detectado: {com_port}\n")
-    else:
-        print("No se detectaron puertos COM para tu dispositivo.")
-        input ("Presiona una tecla para salir")
-        exit()
-
-# Dirección del dispositivo Modbus (ajusta la dirección del dispositivo según tu configuración)
-device_address = 1
-
-
-
-
-
-
-
-
-
-
-
 
 main_loop()
