@@ -1,7 +1,6 @@
 #SCR/main.py
-from main_aux import detect_serial_ports as detect_serial_ports_aux, check_db_connection as check_db_connection_aux, read_digital_input, read_high_resolution_register, update_database
-from utils import clear_screen, check_db_connection, detect_serial_ports
-import os
+from main_aux import detect_serial_ports, check_db_connection, read_digital_input, read_high_resolution_register, update_database
+from utils import check_db_connection, detect_serial_ports
 import minimalmodbus
 import time
 
@@ -9,25 +8,6 @@ D1 = 70
 D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
-
-def inicio():
-    device_address = 1
-    device_description = "DigiRail Connect"  
-    com_port = detect_serial_ports(device_description)
-    if com_port:
-        print(f"Puerto {device_description} detectado: {com_port}\n")
-    else:
-        device_description = "USB-SERIAL CH340"  
-        com_port = detect_serial_ports(device_description)
-        if com_port:
-            print(f"Puerto detectado: {com_port}\n")
-        else:
-            print("No se detectaron puertos COM para tu dispositivo.")
-            input ("Presiona una tecla para salir")
-            exit()
-    return com_port,device_address 
-
-
 
 def main_loop():
     """
@@ -46,7 +26,6 @@ def main_loop():
         - Este bucle es infinito y el programa debe ser detenido manualmente o mediante señales del sistema.
         - La pausa de un segundo es importante para evitar el uso excesivo de recursos, especialmente en un contexto de comunicación con hardware.
     """
-    #inicio()
     while True:
         print("")
         time.sleep(1)
@@ -67,13 +46,49 @@ def process_modbus_operations():
         * Procesa los registros de alta resolución del dispositivo Modbus.
     - Si alguna conexión falla, el proceso se detiene y se manejan las excepciones correspondientes.
     """
-    com_port, device_address = inicio()
+    com_port, device_address = inicializar_conexion_modbus()
     connection = establish_db_connection()
     instrument = establish_modbus_connection(com_port, device_address)
    
     if connection and instrument:
         process_digital_input(instrument, connection)
         process_high_resolution_register(instrument, connection)
+
+def inicializar_conexion_modbus():
+    """
+    Inicializa la conexión con el dispositivo Modbus, detectando el puerto serie adecuado.
+
+    Esta función busca un puerto serie disponible que coincida con las descripciones de los dispositivos
+    'DigiRail Connect' o 'USB-SERIAL CH340'. Si se encuentra un puerto correspondiente, se retorna su nombre
+    junto con la dirección predefinida del dispositivo Modbus.
+
+    Returns:
+        tuple: Una tupla que contiene el nombre del puerto serie encontrado y la dirección del dispositivo Modbus.
+
+    Raises:
+        SystemExit: Si no se detecta ningún puerto COM para el dispositivo.
+
+    Proceso:
+        - Intenta detectar un puerto serie para 'DigiRail Connect'.
+        - Si no se encuentra, intenta detectar 'USB-SERIAL CH340'.
+        - Si se encuentra un puerto, retorna su nombre y la dirección del dispositivo Modbus.
+        - Si no se detecta ningún puerto, muestra un mensaje de error y sale del programa.
+    """
+    device_address = 1
+    device_description = "DigiRail Connect"  
+    com_port = detect_serial_ports(device_description)
+    if com_port:
+        print(f"Puerto {device_description} detectado: {com_port}\n")
+    else:
+        device_description = "USB-SERIAL CH340"  
+        com_port = detect_serial_ports(device_description)
+        if com_port:
+            print(f"Puerto detectado: {com_port}\n")
+        else:
+            print("No se detectaron puertos COM para tu dispositivo.")
+            input("Presiona una tecla para salir")
+            exit()
+    return com_port, device_address
 
 def establish_db_connection():
     """
@@ -95,7 +110,6 @@ def establish_db_connection():
         "Error de conexión a la base de datos", 
         DatabaseConnectionError
     )
-
 
 def establish_modbus_connection(com_port, device_address):
     """
@@ -170,7 +184,6 @@ def process_digital_input(instrument, connection):
     process_input_and_update(instrument, connection, read_digital_input, D1, "HR_INPUT1_STATE")
     process_input_and_update(instrument, connection, read_digital_input, D2, "HR_INPUT2_STATE")
     
-
 def process_input_and_update(instrument, connection, read_function, address, description):
     """
     Lee un valor de un dispositivo Modbus y actualiza la base de datos.
@@ -193,7 +206,6 @@ def process_input_and_update(instrument, connection, read_function, address, des
     state = read_function(instrument, address)
     if state is not None:
         update_database(connection, address, state, descripcion=description)
-
 
 def process_high_resolution_register(instrument, connection):
     """
@@ -219,7 +231,6 @@ def process_high_resolution_register(instrument, connection):
             (connection, HR_COUNTER1_HI, "HR_COUNTER1_HI")
         ]
     )
-
 
 def process_and_update(instrument, read_func, update_args_list):
     """

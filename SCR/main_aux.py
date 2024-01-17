@@ -11,10 +11,6 @@ def update_database(connection, address, value, descripcion):
     else:
         print(f"No se pudo actualizar el registro: dirección {address}, {descripcion}")
 
-
-
-
-
 # Configuración de la base de datos MySQL
 db_config = {
     'host': 'localhost',
@@ -46,7 +42,6 @@ def safe_modbus_read(method, *args, **kwargs):
         print(f"Error al leer del dispositivo Modbus: {e}")
         return None
 
-
 def read_digital_input(instrument, address):
     return safe_modbus_read(instrument.read_bit, address, functioncode=2)
 
@@ -54,7 +49,6 @@ def read_high_resolution_register(instrument, address_lo, address_hi):
     value_lo = safe_modbus_read(instrument.read_register, address_lo, functioncode=3)
     value_hi = safe_modbus_read(instrument.read_register, address_hi, functioncode=3)
     return value_lo, value_hi
-
 
 def build_update_query(address, value):
     return "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s", (value, address)

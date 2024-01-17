@@ -23,7 +23,6 @@ def clear_screen():
     """
     os.system('cls' if os.name == 'nt' else 'clear')
 
-
 def detect_serial_ports(device_description):
     available_ports = list(serial.tools.list_ports.comports())
     for port, desc, hwid in available_ports:
