@@ -1,7 +1,7 @@
 #SCR/main.py
-from main_aux import  read_high_resolution_register, update_database
+from main_aux import   update_database
 from utils import check_db_connection
-from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError
+from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register
 from logs.config_logger import configurar_logging
 import minimalmodbus
 import time
@@ -193,60 +193,7 @@ def process_input_and_update(instrument, connection, read_function, address, des
     except minimalmodbus.ModbusException as e:
         raise ModbusReadError(f"Error al leer la dirección {address} del dispositivo Modbus: {e}") from e
 
-def process_high_resolution_register(instrument, connection):
-    """
-    Procesa y actualiza los registros de alta resolución de un dispositivo Modbus.
 
-    Lee los valores de los registros de alta resolución especificados en un dispositivo Modbus
-    y actualiza la base de datos con estos valores. Se utiliza una función lambda para leer
-    los registros de alta resolución y luego se actualizan los valores correspondientes en la base de datos.
-
-    Args:
-        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        connection (pymysql.connections.Connection): Conexión a la base de datos para actualizar los valores.
-
-    Proceso:
-        - Lee los valores de los registros HR_COUNTER1_LO y HR_COUNTER1_HI del dispositivo Modbus.
-        - Actualiza la base de datos con estos valores, utilizando las descripciones "HR_COUNTER1_LO" y "HR_COUNTER1_HI".
-    """
-    process_and_update(
-        instrument, 
-        lambda inst: read_high_resolution_register(inst, HR_COUNTER1_LO, HR_COUNTER1_HI), 
-        [
-            (connection, HR_COUNTER1_LO, "HR_COUNTER1_LO"),
-            (connection, HR_COUNTER1_HI, "HR_COUNTER1_HI")
-        ]
-    )
-
-def process_and_update(instrument, read_func, update_args_list):
-    """
-    Lee un valor o valores de un dispositivo Modbus y actualiza la base de datos según corresponda.
-
-    Utiliza una función de lectura proporcionada para obtener un resultado del dispositivo Modbus.
-    Si el resultado es válido (no None y no contiene valores None), procede a actualizar la base de datos
-    con los argumentos especificados en `update_args_list`.
-
-    Args:
-        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        read_func (function): Función de lectura para obtener datos del dispositivo Modbus.
-        update_args_list (list of tuples): Lista de argumentos para pasar a la función `update_database`.
-                                         Cada tupla debe contener los argumentos necesarios para una actualización.
-
-    Proceso:
-        - Obtiene un resultado de `read_func`.
-        - Imprime el resultado para depuración.
-        - Verifica que todos los valores en el resultado sean válidos (no None).
-        - Si son válidos, itera sobre `update_args_list` y actualiza la base de datos con cada conjunto de argumentos y el resultado.
-
-    Notas:
-        - La función `read_func` debería devolver un valor único o una tupla de valores.
-        - `update_args_list` contiene tuplas con los argumentos para `update_database`, excluyendo el último argumento que es el resultado de `read_func`.
-        - Esta función se utiliza para procesar y actualizar múltiples valores en la base de datos en una sola operación, basándose en una lectura de Modbus.
-    """
-    result = read_func(instrument)
-    if all(value is not None for value in (result if isinstance(result, tuple) else [result])):
-        for update_args in update_args_list:
-            update_database(*update_args, result)
 
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""
