@@ -3,6 +3,10 @@ from main_aux import detect_serial_ports, check_db_connection, read_digital_inpu
 from utils import check_db_connection, detect_serial_ports
 import minimalmodbus
 import time
+from logs.config_logger import configurar_logging
+
+# Configurar logging
+logger = configurar_logging()
 
 D1 = 70
 D2 = 71
@@ -27,7 +31,7 @@ def main_loop():
         - La pausa de un segundo es importante para evitar el uso excesivo de recursos, especialmente en un contexto de comunicación con hardware.
     """
     while True:
-        print("")
+        logger.info("Ejecutando iteración del bucle principal.")
         time.sleep(1)
         process_modbus_operations()
 
@@ -53,6 +57,8 @@ def process_modbus_operations():
     if connection and instrument:
         process_digital_input(instrument, connection)
         process_high_resolution_register(instrument, connection)
+    else:
+        logger.error("Conexión a Modbus o base de datos fallida.")
 
 def inicializar_conexion_modbus():
     """
@@ -78,14 +84,14 @@ def inicializar_conexion_modbus():
     device_description = "DigiRail Connect"  
     com_port = detect_serial_ports(device_description)
     if com_port:
-        print(f"Puerto {device_description} detectado: {com_port}\n")
+        logger.info(f"Puerto {device_description} detectado: {com_port}")
     else:
         device_description = "USB-SERIAL CH340"  
         com_port = detect_serial_ports(device_description)
         if com_port:
-            print(f"Puerto detectado: {com_port}\n")
+            logger.info(f"Puerto detectado: {com_port}\n")
         else:
-            print("No se detectaron puertos COM para tu dispositivo.")
+            logger.error("No se detectaron puertos COM para tudispositivo.")
             input("Presiona una tecla para salir")
             exit()
     return com_port, device_address
@@ -162,7 +168,7 @@ def establish_connection(connect_func, error_message, error_exception):
     try:
         return connect_func()
     except Exception as e:
-        print(f"{error_message}: {e}")
+        logger.error(f"{error_message}: {e}")
         raise error_exception(f"{error_message}. Detalles: {e}") from e
 
 def process_digital_input(instrument, connection):
