@@ -1,6 +1,6 @@
 #SCR/main.py
 from db_operations import check_db_connection, update_database
-from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register
+from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register, limpiar_pantalla
 from logs.config_logger import configurar_logging
 from DataTransfer import MainTransfer
 import minimalmodbus
@@ -38,11 +38,12 @@ def main_loop():
     signal.signal(signal.SIGTERM, handle_signal)
     
     while running:
-        print("")
         logger.info("Ejecutando iteración del bucle principal.")
-        time.sleep(1)
         MainTransfer()
         process_modbus_operations()
+        time.sleep(1)
+        limpiar_pantalla()
+
 
 def handle_signal(signum, frame):
     global running
@@ -200,6 +201,8 @@ def process_input_and_update(instrument, connection, read_function, address, des
             update_database(connection, address, state, descripcion=description)
     except minimalmodbus.ModbusException as e:
         raise ModbusReadError(f"Error al leer la dirección {address} del dispositivo Modbus: {e}") from e
+
+
 
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""

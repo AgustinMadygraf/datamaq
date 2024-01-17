@@ -2,6 +2,8 @@
 from logs.config_logger import configurar_logging
 from db_operations import update_database
 import serial.tools.list_ports
+import os
+import platform
 
 D1 = 70
 D2 = 71
@@ -49,7 +51,6 @@ def inicializar_conexion_modbus():
     device_address = 1
     device_description = "DigiRail Connect"  
     com_port = detect_serial_ports(device_description)
-    print("")
     if com_port:
         logger.info(f"Puerto {device_description} detectado: {com_port}")
     else:
@@ -122,6 +123,15 @@ def safe_modbus_read(method, *args, **kwargs):
     except Exception as e:
         logger.error(f"Error al leer del dispositivo Modbus: {e}")
         return None
+
+def limpiar_pantalla():
+    """
+    Limpia la consola de comandos según el sistema operativo.
+    """
+    if platform.system() == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
 
 class ModbusConnectionError(Exception):
     """Excepción para errores de conexión con el dispositivo Modbus."""
