@@ -9,12 +9,6 @@ class DebugAndAboveFilter(logging.Filter):
         # Excluir los registros de nivel INFO del archivo de log
         return record.levelno != logging.INFO
 
-#SCR/logs/config_logger.py
-import logging
-from logging.handlers import RotatingFileHandler
-import datetime
-import os
-
 def create_handler(handler_class, level, format, **kwargs):
     handler = handler_class(**kwargs)
     handler.setLevel(level)

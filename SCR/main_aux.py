@@ -4,6 +4,16 @@ import pymysql
 import os
 from utils import check_db_connection, detect_serial_ports
 
+def update_database(connection, address, value, descripcion):
+    query, params = build_update_query(address, value)
+    if execute_query(connection, query, params):
+        print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
+    else:
+        print(f"No se pudo actualizar el registro: dirección {address}, {descripcion}")
+
+
+
+
 
 # Configuración de la base de datos MySQL
 db_config = {
@@ -60,9 +70,3 @@ def execute_query(connection, query, params):
             return False
     return True
 
-def update_database(connection, address, value, descripcion):
-    query, params = build_update_query(address, value)
-    if execute_query(connection, query, params):
-        print(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
-    else:
-        print(f"No se pudo actualizar el registro: dirección {address}, {descripcion}")
