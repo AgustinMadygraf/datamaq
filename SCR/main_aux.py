@@ -2,7 +2,6 @@
 import serial.tools.list_ports
 import pymysql
 import os
-from utils import check_db_connection, detect_serial_ports
 from logs.config_logger import configurar_logging
 
 logger = configurar_logging()

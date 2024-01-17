@@ -1,5 +1,5 @@
 #SCR/main.py
-from main_aux import detect_serial_ports, check_db_connection, read_digital_input, read_high_resolution_register, update_database
+from main_aux import  read_digital_input, read_high_resolution_register, update_database
 from utils import check_db_connection, detect_serial_ports
 import minimalmodbus
 import time
