@@ -3,4 +3,4 @@ SCR/__pycache__/
 SCR/logs/sistema.log
 SCR/logs/__pycache__
 SCR/config/__pycache__/
-installer.py
+DigiRail.bat
