@@ -203,9 +203,13 @@ def process_input_and_update(instrument, connection, read_function, address, des
         - Utiliza la función de lectura para obtener el valor de la dirección específica del dispositivo Modbus.
         - Si se obtiene un valor (distinto de None), actualiza la base de datos con este valor y la descripción proporcionada.
     """
-    state = read_function(instrument, address)
-    if state is not None:
-        update_database(connection, address, state, descripcion=description)
+    try:
+        state = read_function(instrument, address)
+        if state is not None:
+            update_database(connection, address, state, descripcion=description)
+    except minimalmodbus.ModbusException as e:
+        raise ModbusReadError(f"Error al leer la dirección {address} del dispositivo Modbus: {e}") from e
+
 
 def process_high_resolution_register(instrument, connection):
     """
@@ -269,5 +273,12 @@ class ModbusConnectionError(Exception):
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""
     pass
+
+class ModbusReadError(Exception):
+    """Excepción para errores de lectura del dispositivo Modbus."""
+    pass
+
+
+
 
 main_loop()
