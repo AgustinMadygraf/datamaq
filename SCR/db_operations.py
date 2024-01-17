@@ -29,7 +29,7 @@ def update_database(connection, address, value, descripcion):
     try:
         query, params = build_update_query(address, value)
         if execute_query(connection, query, params):
-            logger.info(f"Registro actualizado: dirección {address}, {descripcion} valor {value}")
+            logger.info(f"Registro actualizado: dirección {address}, descripción: {descripcion} valor {value}")
         else:
             logger.error(f"No se pudo actualizar el registro: dirección {address}, {descripcion}")
     except pymysql.MySQLError as e:
