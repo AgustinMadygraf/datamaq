@@ -10,8 +10,6 @@ D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
 
-
-
 def main_loop():
     """
     Ejecuta el bucle principal del programa, procesando operaciones Modbus continuamente.
@@ -29,10 +27,10 @@ def main_loop():
         - Este bucle es infinito y el programa debe ser detenido manualmente o mediante señales del sistema.
         - La pausa de un segundo es importante para evitar el uso excesivo de recursos, especialmente en un contexto de comunicación con hardware.
     """
+    #inicio()
     while True:
         time.sleep(1)
         process_modbus_operations()
-
 
 def process_modbus_operations():
     """
@@ -55,7 +53,6 @@ def process_modbus_operations():
     if connection and instrument:
         process_digital_input(instrument, connection)
         process_high_resolution_register(instrument, connection)
-
 
 def establish_db_connection():
     """
@@ -104,11 +101,6 @@ def establish_modbus_connection():
         ModbusConnectionError
     )
 
-
-
-
-
-
 def establish_connection(connect_func, error_message, error_exception):
     """
     Intenta establecer una conexión o realizar una operación y maneja las excepciones.
@@ -137,8 +129,6 @@ def establish_connection(connect_func, error_message, error_exception):
     except Exception as e:
         print(f"{error_message}: {e}")
         raise error_exception(f"{error_message}. Detalles: {e}") from e
-
-
 
 def process_digital_input(instrument, connection):
     """
@@ -240,24 +230,6 @@ def process_and_update(instrument, read_func, update_args_list):
         for update_args in update_args_list:
             update_database(*update_args, result)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class ModbusConnectionError(Exception):
     """Excepción para errores de conexión con el dispositivo Modbus."""
     pass
@@ -266,7 +238,7 @@ class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión con la base de datos."""
     pass
 
-
+# def inicio():
 device_description = "DigiRail Connect"  
 com_port = detect_serial_ports(device_description)
 if com_port:
