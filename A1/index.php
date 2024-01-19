@@ -39,9 +39,36 @@
 
     <br>
     <br>
-    <?php require "dashboard.php"; ?>
-    <?php require "power_info_display.php"; ?>
-    <?php require "chart_viewer.php"; ?>
+    <?php 
+        //require "dashboard.php";
+        //require "power_info_display.php";
+        //require "chart_viewer.php"; 
+        echo "<br><br>";
+        //$sql = "SELECT *  from `inst_bt_a1` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
+        $sql = "SELECT `unixtime`,`variacion` FROM `variacion`";
+        echo "sql: <br>".$sql."<br>";
 
+        $rawdata = getArraySQL($sql);
+        
+        // Inicio de la tabla
+        echo "<table>";
+        
+        // Cabecera de la tabla
+        echo "<tr><th>Unixtime</th><th>Variación</th></tr>";
+        
+        // Cuerpo de la tabla
+        for ($i = 15; $i < count($rawdata); $i++) {
+            echo "<tr>";
+            echo "<td>" . $rawdata[$i]['unixtime'] . "</td>";
+            echo "<td>" . $rawdata[$i]['variacion'] . "</td>";
+            echo "</tr>";
+        }
+        
+        // Fin de la tabla
+        echo "</table>";
+        ?>
+        
+
+    ?>
 </body>
 </html>

@@ -23,7 +23,7 @@ $class = $ls_class[$periodo];
 // Conectar a la base de datos
 function conectarBD() {
     require 'includes/conn.php';
-    $BD = "powermeter";
+    $BD = "novus";
     $conexion = mysqli_connect($server, $usuario, $pass, $BD);
     if (!$conexion) {
         echo 'Ha sucedido un error inesperado en la conexión de la base de datos<br>';
@@ -92,8 +92,6 @@ $tiempo2 = $conta/1000 ;
 $sql = "SELECT `unixtime`, `potencia_III`  from `inst_bt_a1` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
 $rawdata = getArraySQL($sql);
 
-echo "<br><br>";
-$sql2 = "SELECT *  from `variacion` ";
-//$rawdata2 = getArraySQL($sql2);
+
 
 ?>
