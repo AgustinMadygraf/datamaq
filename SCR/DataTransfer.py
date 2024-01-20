@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from logs.config_logger import configurar_logging
 from db_operations import check_db_connection  
+import pymysql
 
 
 logger = configurar_logging()
@@ -29,17 +30,21 @@ def MainTransfer():
             transferir_datos(consulta1,consulta2)
             consulta1 = """
             SELECT 
-                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValor,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValor,
+                (SELECT unixtime FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS unixtime,
+                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER1_LO,
+                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER1_LO,
                 (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER1
+                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER1,
+                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER2_LO,
+                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER2_LO,
+                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
+                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER2
             FROM ProductionLog
             LIMIT 1;
-
             """
             consulta2 = """
-            INSERT INTO intervalproduction (unixtime, HR_COUNTER1)
-            VALUES (%s, %s)
+            INSERT INTO intervalproduction (unixtime, HR_COUNTER1,HR_COUNTER1)
+            VALUES (%s,%s,%s)
             """
             transferir_datos(consulta1,consulta2)
 
@@ -50,42 +55,71 @@ def MainTransfer():
     except Exception as e:
         logger.error(f"Error en MainTransfer: {e}")
 
-def transferir_datos(consulta1,consulta2):
+def transferir_datos(consulta1, consulta2):
     """
     Función principal para transferir datos.
     """
-    conn = check_db_connection()
     try:
-        logger.info("Iniciando la transferencia de datos.")
-        datos = obtener_datos(conn,consulta1)
-        insertar_datos(conn, datos,consulta2)
-        logger.info("Transferencia de datos completada exitosamente.")
+        conn = check_db_connection()
+        if not conn:
+            logger.error("No se pudo establecer una conexión con la base de datos.")
+            return
+
+        with conn.cursor() as cursor:
+            logger.info("Iniciando la transferencia de datos.")
+            datos = obtener_datos(cursor, consulta1)
+            if datos:
+                insertar_datos(cursor, datos, consulta2)
+                conn.commit()
+                logger.info("Transferencia de datos completada exitosamente.")
+            else:
+                logger.warning("No se obtuvieron datos para transferir.")
+
+    except pymysql.MySQLError as e:
+        logger.error(f"Error de MySQL durante la transferencia de datos: {e}")
+        conn.rollback()
     except Exception as e:
-        logger.error(f"Error durante la transferencia de datos: {e}")
+        logger.error(f"Error inesperado durante la transferencia de datos: {e}")
         conn.rollback()
     finally:
-        conn.close()
-        logger.info("Conexión a la base de datos cerrada.")
+        if conn:
+            conn.close()
+            logger.info("Conexión a la base de datos cerrada.")
 
-def obtener_datos(conn,consulta1):
+
+def obtener_datos(conn, consulta1):
     """
     Obtiene los datos de 'registros_modbus'.
     """
-    unixtime = int(time.time())
-    cursor = conn.cursor()
-    
-    # Preparar la consulta SQL para obtener los valores deseados    
-    cursor.execute(consulta1, (unixtime,))
-    return cursor.fetchall()
+    try:
+        unixtime = int(time.time())
+        with conn.cursor() as cursor:
+            cursor.execute(consulta1, (unixtime,))
+            return cursor.fetchall()
+    except pymysql.MySQLError as e:
+        logger.error(f"Error de MySQL al obtener datos: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Error inesperado al obtener datos: {e}")
+        return None
 
-def insertar_datos(conn, datos,consulta2):
+def insertar_datos(conn, datos, consulta2):
     """
     Inserta los datos obtenidos en 'ProductionLog'.
     """
-    cursor = conn.cursor()
-    for fila in datos:
-        cursor.execute(consulta2, fila)
-    conn.commit()
+    try:
+        with conn.cursor() as cursor:
+            for fila in datos:
+                cursor.execute(consulta2, fila)
+            conn.commit()
+            logger.info(f"{len(datos)} registros insertados con éxito.")
+    except pymysql.MySQLError as e:
+        logger.error(f"Error de MySQL al insertar datos: {e}")
+        conn.rollback()
+    except Exception as e:
+        logger.error(f"Error inesperado al insertar datos: {e}")
+        conn.rollback()
+
 
 
 def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
