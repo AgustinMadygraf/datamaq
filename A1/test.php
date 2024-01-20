@@ -1,149 +1,33 @@
-<!-- index.php -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="CSS/index.css">
-    <link rel="stylesheet" type="text/css" href="CSS/header.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/imagenes/favicon.ico" type="image/x-icon">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/series-label.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <style>
-        /* Estilos para la tabla */
-        table {
-        border-collapse: collapse; /* Combina los bordes de las celdas */
-        width: 100%;
-        }
+<?php
 
-        /* Estilo para todas las celdas */
-        table, th, td {
-        border: 2px solid black; /* Define el grosor y el color del borde */
-        }
+include 'includes/database.php'; // O puedes usar require 'database.php';
 
-        /* Estilo para las celdas de encabezado (th) */
-        th {
-        background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
-        }
-    </style>
+// Proceso principal
 
-    
-</head>
-<body>
+try {
+    $conexion = conectarBD($server, $usuario, $pass, $BD);
+    $sql = "SELECT * FROM `inst_bt_a1`";
+    $rawdata = getArraySQL($conexion, $sql);
 
-    <br>
-    <br>
-    <?php 
+    // Inicio de la tabla
+    echo "<table>";
 
+    // Cabecera de la tabla
+    echo "<tr><th>Unixtime</th><th>Variación</th></tr>";
 
-        date_default_timezone_set('America/Argentina/Buenos_Aires');
-        setlocale(LC_TIME, "spanish");
-        $segundos = 60;   // Refrescar cada 60 segundos
+    // Cuerpo de la tabla
+    for ($i = 15; $i < count($rawdata); $i++) {
+        echo "<tr>";
+        echo "<td>" . $rawdata[$i]['unixtime'] . "</td>";
+        echo "<td>" . $rawdata[$i]['potencia_III'] . "</td>";
+        echo "</tr>";
+    }
 
+    // Fin de la tabla
+    echo "</table>";
 
-        // Variable que registra qué período de tiempo mostrar por defecto
-        $periodo = 'semana';
-        $ls_periodos = ['mes' => 2419200, 'semana' => 604800, 'turno' => 28800];
-        $ls_class = ['mes' => [1, 0, 0], 'semana' => [0, 1, 0], 'turno' => [0, 0, 1]];
-        $ref_class = ['presione', 'presado'];
-        $menos_periodo = ['mes' => 'semana', 'semana' => 'turno', 'turno' => 'turno'];
-
-        // Comprobar si se cambió el período a través de GET
-        if ($_GET && array_key_exists("periodo", $_GET)) {
-            if (array_key_exists($_GET["periodo"], $ls_periodos)) {
-                $periodo = $_GET["periodo"];
-            }
-        }
-        $class = $ls_class[$periodo];
-
-        // Conectar a la base de datos
-        function conectarBD() {
-            require 'includes/conn.php';
-            $BD = "powermeter";
-            $conexion = mysqli_connect($server, $usuario, $pass, $BD);
-            if (!$conexion) {
-                echo 'Ha sucedido un error inesperado en la conexión de la base de datos<br>';
-            }
-            return $conexion;
-        }
-
-        // Desconectar la conexión a la base de datos
-        function desconectarBD($conexion) {
-            $close = mysqli_close($conexion);
-            if (!$close) {
-                echo 'Ha sucedido un error inesperado en la desconexión de la base de datos<br>';
-            }
-            return $close;
-        }
-
-        // Obtener un array multidimensional con el resultado de la consulta
-        function getArraySQL($sql) {
-            $conexion = conectarBD();
-            if (!$result = mysqli_query($conexion, $sql)) die();
-
-            $rawdata = array();
-            $i = 0;
-            while ($row = mysqli_fetch_array($result)) {
-                $rawdata[$i] = $row;
-                $i++;
-            }
-
-            desconectarBD($conexion);
-            return $rawdata;
-        }
-
-        function sql_query($campo) {
-            return "SELECT `unixtime`, `$campo` FROM `inst_bt_a1`  ORDER BY `unixtime` DESC LIMIT 1";
-        }
-
-        $res = getArraySQL(sql_query("potencia_III"));
-        $unixtime = $res[0]['unixtime'] ;
-
-
-
-
-        // Si la variable 'test' aparece en $_GET, el refresco se hace cada segundo en vez de cada 20 segundos.
-        header("Refresh:" . $segundos);
-
-        // Valores para la ubicación del degradado de advertencia
-        $d = array();
-        for ($i = 0; $i < 4; $i++) {
-            $d[$i] = 350 - $pot - 10 * $i;
-        }
-
-        $date = date(DATE_RFC2822);
-        $newDate = date("D, d M Y" . (" 00:00:00") . " O");
-
-        $valorInicial = $unixtime * 1000;
-        $conta = $valorInicial;
-        if ($_GET && array_key_exists("conta", $_GET)) {
-            $conta = $_GET["conta"];
-            if ($conta > $valorInicial) {
-                $conta = $valorInicial;
-            }
-        }
-
-        $tiempo1 = ($conta/1000) - $ls_periodos[$periodo] - 80*60;
-        $tiempo2 = $conta/1000 ;
-        $sql = "SELECT `unixtime`, `potencia_III`  from `inst_bt_a1` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
-        $rawdata = getArraySQL($sql);
-
-
-
-
-
-
-        require "power_info_display.php";
-        require "chart_viewer.php"; 
-
-        ?>
-        
-
-</body>
-</html>
+    desconectarBD($conexion);
+} catch (Exception $e) {
+    echo 'Error: ' . $e->getMessage();
+}
+?>
