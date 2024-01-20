@@ -32,13 +32,13 @@ def MainTransfer():
                 (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValor,
                 (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValor,
                 (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS Variacion
+                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER1
             FROM ProductionLog
             LIMIT 1;
 
             """
             consulta2 = """
-            INSERT INTO ProductionLog (unixtime, Variacion)
+            INSERT INTO intervalproduction (unixtime, HR_COUNTER1)
             VALUES (%s, %s, %s, %s, %s)
             """
             transferir_datos(consulta1,consulta2)
