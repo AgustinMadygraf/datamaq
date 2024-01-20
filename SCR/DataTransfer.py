@@ -39,7 +39,7 @@ def MainTransfer():
             """
             consulta2 = """
             INSERT INTO intervalproduction (unixtime, HR_COUNTER1)
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s)
             """
             transferir_datos(consulta1,consulta2)
 
