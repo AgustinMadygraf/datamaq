@@ -23,8 +23,6 @@ def MainTransfer():
            (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER2_HI') AS HR_COUNTER2_HI
             """
             transferir_datos(consulta)
-            consulta2 = ""
-            transferir_datos(consulta2)
             time.sleep(10)
 
         else:
