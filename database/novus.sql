@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `maq_bolsas`
 --
 
-CREATE TABLE `maq_bolsas` (
+CREATE TABLE `ProductionLog` (
   `ID` int(11) NOT NULL,
   `unixtime` int(11) NOT NULL,
   `HR_COUNTER1_LO` int(11) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `maq_bolsas` (
 -- Volcado de datos para la tabla `maq_bolsas`
 --
 
-INSERT INTO `maq_bolsas` (`ID`, `unixtime`, `HR_COUNTER1_LO`, `HR_COUNTER1_HI`, `HR_COUNTER2_LO`, `HR_COUNTER2_HI`) VALUES
+INSERT INTO `ProductionLog` (`ID`, `unixtime`, `HR_COUNTER1_LO`, `HR_COUNTER1_HI`, `HR_COUNTER2_LO`, `HR_COUNTER2_HI`) VALUES
 (9, 1705586400, 47438, 3, 49428, 0),
 (10, 1705586700, 47438, 3, 49428, 0),
 (11, 1705587000, 47438, 3, 49428, 0),
@@ -573,33 +573,11 @@ INSERT INTO `registros_modbus` (`ID`, `direccion_modbus`, `registro`, `descripci
 
 -- --------------------------------------------------------
 
---
--- Estructura Stand-in para la vista `variacion`
--- (Véase abajo para la vista actual)
---
-CREATE TABLE `variacion` (
-`ID` int(11)
-,`unixtime` int(11)
-,`variacion` bigint(12)
-);
-
--- --------------------------------------------------------
-
---
--- Estructura para la vista `variacion`
---
-DROP TABLE IF EXISTS `variacion`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `variacion`  AS  select `a`.`ID` AS `ID`,`a`.`unixtime` AS `unixtime`,(`a`.`HR_COUNTER1_LO` - coalesce((select `b`.`HR_COUNTER1_LO` from `maq_bolsas` `b` where (`b`.`ID` < `a`.`ID`) order by `b`.`ID` desc limit 1),0)) AS `variacion` from `maq_bolsas` `a` ;
-
---
--- Índices para tablas volcadas
---
 
 --
 -- Indices de la tabla `maq_bolsas`
 --
-ALTER TABLE `maq_bolsas`
+ALTER TABLE `ProductionLog`
   ADD PRIMARY KEY (`ID`);
 
 --
@@ -615,7 +593,7 @@ ALTER TABLE `registros_modbus`
 --
 -- AUTO_INCREMENT de la tabla `maq_bolsas`
 --
-ALTER TABLE `maq_bolsas`
+ALTER TABLE `ProductionLog`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=337;
 
 --

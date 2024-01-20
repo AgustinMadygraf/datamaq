@@ -68,12 +68,12 @@ def obtener_datos(conn):
 
 def insertar_datos(conn, datos):
     """
-    Inserta los datos obtenidos en 'maq_bolsas'.
+    Inserta los datos obtenidos en 'ProductionLog'.
     """
     cursor = conn.cursor()
     for fila in datos:
         cursor.execute("""
-            INSERT INTO maq_bolsas (unixtime, HR_COUNTER1_LO, HR_COUNTER1_HI, HR_COUNTER2_LO, HR_COUNTER2_HI)
+            INSERT INTO ProductionLog (unixtime, HR_COUNTER1_LO, HR_COUNTER1_HI, HR_COUNTER2_LO, HR_COUNTER2_HI)
             VALUES (%s, %s, %s, %s, %s)
         """, fila)
     conn.commit()
