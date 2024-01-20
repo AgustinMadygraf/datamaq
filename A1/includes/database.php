@@ -4,7 +4,7 @@
 $server = getenv('DB_SERVER') ?: 'localhost';
 $usuario = getenv('DB_USER') ?: 'root';
 $pass = getenv('DB_PASS') ?: '12345678';
-$BD = getenv('DB_NAME') ?: 'powermeter';
+$BD = getenv('DB_NAME') ?: 'novus';
 
 // Funciones
 

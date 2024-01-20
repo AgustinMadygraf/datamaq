@@ -42,6 +42,7 @@
     <?php 
         require "dashboard.php";
         require "power_info_display.php";
+        //echo "<div id='container' class='graf'></div>";
         require "chart_viewer.php"; 
         echo "<br><br>";
         $sql = "SELECT *  from `inst_bt_a1` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
