@@ -28,26 +28,6 @@ def MainTransfer():
             VALUES (%s, %s, %s, %s, %s)
             """
             transferir_datos(consulta1,consulta2)
-            consulta1 = """
-            SELECT 
-                (SELECT unixtime FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS unixtime,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER1_LO,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER1_LO,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER1,
-                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER2_LO,
-                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER2_LO,
-                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER2
-            FROM ProductionLog
-            LIMIT 1;
-            """
-            consulta2 = """
-            INSERT INTO intervalproduction (unixtime, HR_COUNTER1,HR_COUNTER1)
-            VALUES (%s,%s,%s)
-            """
-            transferir_datos(consulta1,consulta2)
-
             time.sleep(10)
 
         else:
@@ -136,7 +116,7 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     minuto_actual = ahora.minute
     segundo_actual = ahora.second
 
-    cercano_a_multiplo = minuto_actual % 5 <= tolerancia / 60 and segundo_actual <= tolerancia
+    cercano_a_multiplo = minuto_actual % 1 <= tolerancia / 60 and segundo_actual <= tolerancia
     logger.info(f"Chequeando tiempo: {ahora}, cercano a múltiplo de 5: {'sí' if cercano_a_multiplo else 'no'}")
     return cercano_a_multiplo
 
