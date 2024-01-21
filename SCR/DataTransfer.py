@@ -47,9 +47,10 @@ def transferir_datos(consulta1, consulta2):
 
         with conn.cursor() as cursor:
             logger.info("Iniciando la transferencia de datos.")
-            datos = obtener_datos(cursor, consulta1)
+            unixtime = int(time.time())
+            datos = obtener_datos(cursor, consulta1, (unixtime,))
             if datos:
-                insertar_datos(cursor, datos, consulta2)
+                insertar_datos(conn, datos, consulta2)
                 conn.commit()
                 logger.info("Transferencia de datos completada exitosamente.")
             else:
@@ -67,21 +68,27 @@ def transferir_datos(consulta1, consulta2):
             logger.info("Conexión a la base de datos cerrada.")
 
 
-def obtener_datos(conn, consulta1):
+
+def obtener_datos(cursor, consulta, parametros):
     """
-    Obtiene los datos de 'registros_modbus'.
+    Ejecuta una consulta SQL y devuelve los resultados.
+
+    Args:
+        cursor: Cursor de la base de datos.
+        consulta (str): Consulta SQL a ejecutar.
+        parametros (tuple): Parámetros para la consulta SQL.
+
+    Returns:
+        list: Resultados de la consulta o None en caso de error.
     """
     try:
-        unixtime = int(time.time())
-        with conn.cursor() as cursor:
-            cursor.execute(consulta1, (unixtime,))
-            return cursor.fetchall()
+        cursor.execute(consulta, parametros)
+        return cursor.fetchall()
     except pymysql.MySQLError as e:
-        logger.error(f"Error de MySQL al obtener datos: {e}")
-        return None
+        logger.error(f"Error de MySQL al ejecutar consulta: {e}")
     except Exception as e:
-        logger.error(f"Error inesperado al obtener datos: {e}")
-        return None
+        logger.error(f"Error inesperado al ejecutar consulta: {e}")
+    return None
 
 def insertar_datos(conn, datos, consulta2):
     """
