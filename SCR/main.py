@@ -42,7 +42,7 @@ def main_loop():
         MainTransfer()
         process_modbus_operations()
         time.sleep(1)
-        limpiar_pantalla()
+        #limpiar_pantalla()
 
 
 def handle_signal(signum, frame):

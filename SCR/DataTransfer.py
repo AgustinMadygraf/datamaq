@@ -29,7 +29,7 @@ def MainTransfer():
             """
             transferir_datos(consulta1,consulta2)
             consulta1 = """
-            SELECT 
+            SELECT %s, 
                 (SELECT unixtime FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS unixtime,
                 (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER1_LO,
                 (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER1_LO,
@@ -43,9 +43,10 @@ def MainTransfer():
             LIMIT 1;
             """
             consulta2 = """
-            INSERT INTO intervalproduction (unixtime, HR_COUNTER1,HR_COUNTER2)
-            VALUES (%s,%s,%s)
+            INSERT INTO intervalproduction (unixtime, HR_COUNTER1, HR_COUNTER2)
+            VALUES (%s, %s, %s)
             """
+
             transferir_datos(consulta1,consulta2)
 
 
@@ -115,18 +116,24 @@ def insertar_datos(conn, datos, consulta2):
     """
     Inserta los datos obtenidos en 'ProductionLog'.
     """
+    # Cambios aquí: Usa formato de cadena correctamente
+    logger.info("conn: %s", conn)
+    logger.info("datos: %s", datos)
+    logger.info("consulta2: %s", consulta2)
+    
     try:
         with conn.cursor() as cursor:
             for fila in datos:
                 cursor.execute(consulta2, fila)
             conn.commit()
-            logger.info(f"{len(datos)} registros insertados con éxito.")
+            logger.info("%s registros insertados con éxito.", len(datos))
     except pymysql.MySQLError as e:
-        logger.error(f"Error de MySQL al insertar datos: {e}")
+        logger.error("Error de MySQL al insertar datos: %s", e)
         conn.rollback()
     except Exception as e:
-        logger.error(f"Error inesperado al insertar datos: {e}")
+        logger.error("Error inesperado al insertar datos: %s", e)
         conn.rollback()
+
 
 
 
