@@ -23,7 +23,7 @@ $class = $ls_class[$periodo];
 // Conectar a la base de datos
 function conectarBD() {
     require 'conn.php';
-    $BD = "powermeter";
+    $BD = "novus";
     $conexion = mysqli_connect($server, $usuario, $pass, $BD);
     if (!$conexion) {
         echo 'Ha sucedido un error inesperado en la conexión de la base de datos<br>';
@@ -57,10 +57,11 @@ function getArraySQL($sql) {
 }
 
 function sql_query($campo) {
-    return "SELECT `unixtime`, `$campo` FROM `inst_bt_a1`  ORDER BY `unixtime` DESC LIMIT 1";
+    return "SELECT `unixtime`, `$campo` FROM `intervalproduction`  ORDER BY `unixtime` DESC LIMIT 1";
 }
 
-$res = getArraySQL(sql_query("potencia_III"));
+$res = getArraySQL(sql_query("HR_COUNTER1"));
+$vel_ult = $res[0]['HR_COUNTER1'] ;
 $unixtime = $res[0]['unixtime'] ;
 
 
@@ -89,7 +90,7 @@ if ($_GET && array_key_exists("conta", $_GET)) {
 
 $tiempo1 = ($conta/1000) - $ls_periodos[$periodo] - 80*60;
 $tiempo2 = $conta/1000 ;
-$sql = "SELECT `unixtime`, `potencia_III`  from `inst_bt_a1` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
+$sql = "SELECT `unixtime`, `HR_COUNTER1`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
 $rawdata = getArraySQL($sql);
 
 

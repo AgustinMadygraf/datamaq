@@ -81,9 +81,9 @@
                 tickPixelInterval: 1
             },
             yAxis: {    
-                type: 'logarithmic', // Establece el eje vertical como logarítmico
+                //type: 'logarithmic', // Establece el eje vertical como logarítmico
                 title: {
-                    text: '[RPM]'
+                    text: '[Producción]'
                 },
                 plotLines: [{
                     value: 0,
@@ -95,7 +95,7 @@
                 formatter: function () {
                     return '<b>' + this.series.name + '</b><br/>' +
                         Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 1) + ' W';
+                        Highcharts.numberFormat(this.y, 1) + '  Bolsas';
                 }
             },
             legend: {
@@ -106,23 +106,23 @@
             },
             series: [
                 {
-                    name: 'RPM maq bolsas',
+                    name: 'Bolsas',
                     animation: false,
                     data: (function () {
                         var data = [];
                         <?php for ($i = 15; $i < count($rawdata); $i++) { ?>
-                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["potencia_III"] ?>]);
+                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER1"] ?>]);
                         <?php } ?>
                         return data;
                     })()
                 },
                 {
-                    name: 'produccion',
+                    name: 'marcha',
                     animation: false,
                     data: (function () {
                         var data = [];
                         <?php for ($i = 15; $i < count($rawdata); $i++) { ?>
-                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, 20]);
+                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, 100]);
                         <?php } ?>
                         return data;
                     })()

@@ -4,10 +4,10 @@
     <div class="cabecera">
       <div class="c1">
         <p1>
-          <?php $potinst = 20;
-                echo "Velocidad instantánea ".round($potinst,1);
+          <?php $vel_ult = $vel_ult/5;
+                echo "Velocidad <br>".round($vel_ult,1)." bolsas por minuto";
           ?>
-           RPM</p1>
+           </p1>
       </div>
     </div>
         <div id="container" class="graf"></div>

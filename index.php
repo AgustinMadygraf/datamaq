@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Control y Registro de la Producción</title>
     <link rel="stylesheet" type="text/css" href="CSS/index.css">
     <link rel="stylesheet" type="text/css" href="CSS/header.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,8 +33,6 @@
         background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
         }
     </style>
-
-    
 </head>
 <body>
 
@@ -41,11 +40,9 @@
     <br>
     <?php 
         require "includes/dashboard.php";
-        require "includes/power_info_display.php";
-        //echo "<div id='container' class='graf'></div>";
+        require "includes/header.php";
+        require "includes/info_display.php";
         require "includes/chart_viewer.php"; 
-        ?>
-        
-
+        ?>     
 </body>
 </html>
