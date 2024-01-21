@@ -28,6 +28,27 @@ def MainTransfer():
             VALUES (%s, %s, %s, %s, %s)
             """
             transferir_datos(consulta1,consulta2)
+            consulta1 = """
+            SELECT 
+                (SELECT unixtime FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS unixtime,
+                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER1_LO,
+                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER1_LO,
+                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
+                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER1,
+                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER2_LO,
+                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER2_LO,
+                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
+                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER2
+            FROM ProductionLog
+            LIMIT 1;
+            """
+            consulta2 = """
+            INSERT INTO intervalproduction (unixtime, HR_COUNTER1,HR_COUNTER2)
+            VALUES (%s,%s,%s)
+            """
+            transferir_datos(consulta1,consulta2)
+
+
             time.sleep(10)
 
         else:
