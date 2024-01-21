@@ -613,5 +613,6 @@ CREATE TABLE IntervalProduction (
   unixtime int(11) NOT NULL,
   HR_COUNTER1 int(11) NOT NULL,
   HR_COUNTER2 int(11) NOT NULL,
+  `datetime` datetime GENERATED ALWAYS AS (from_unixtime(`unixtime`)) VIRTUAL,
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

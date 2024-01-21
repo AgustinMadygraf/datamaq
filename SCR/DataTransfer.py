@@ -29,16 +29,12 @@ def MainTransfer():
             """
             transferir_datos(consulta1,consulta2)
             consulta1 = """
-            SELECT %s, 
+            SELECT 
                 (SELECT unixtime FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS unixtime,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER1_LO,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER1_LO,
-                (SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER1,
-                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) AS UltimoValorHR_COUNTER2_LO,
-                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS PenultimoValorHR_COUNTER2_LO,
-                (SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog)) AS HR_COUNTER2
+                ((SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
+                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog))) AS HR_COUNTER1,
+                ((SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
+                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog))) AS HR_COUNTER2
             FROM ProductionLog
             LIMIT 1;
             """
@@ -70,7 +66,7 @@ def transferir_datos(consulta1, consulta2):
         with conn.cursor() as cursor:
             logger.info("Iniciando la transferencia de datos.")
             unixtime = int(time.time())
-            datos = obtener_datos(cursor, consulta1, (unixtime,))
+            datos = obtener_datos(cursor, consulta1)
             if datos:
                 insertar_datos(conn, datos, consulta2)
                 conn.commit()
@@ -91,20 +87,19 @@ def transferir_datos(consulta1, consulta2):
 
 
 
-def obtener_datos(cursor, consulta, parametros):
+def obtener_datos(cursor, consulta):
     """
     Ejecuta una consulta SQL y devuelve los resultados.
 
     Args:
         cursor: Cursor de la base de datos.
         consulta (str): Consulta SQL a ejecutar.
-        parametros (tuple): Parámetros para la consulta SQL.
 
     Returns:
         list: Resultados de la consulta o None en caso de error.
     """
     try:
-        cursor.execute(consulta, parametros)
+        cursor.execute(consulta)
         return cursor.fetchall()
     except pymysql.MySQLError as e:
         logger.error(f"Error de MySQL al ejecutar consulta: {e}")
@@ -112,19 +107,25 @@ def obtener_datos(cursor, consulta, parametros):
         logger.error(f"Error inesperado al ejecutar consulta: {e}")
     return None
 
+
 def insertar_datos(conn, datos, consulta2):
     """
-    Inserta los datos obtenidos en 'ProductionLog'.
+    Inserta los datos obtenidos en 'intervalproduction'.
+
+    Args:
+        conn: Conexión a la base de datos.
+        datos: Datos a insertar.
+        consulta2 (str): Consulta SQL para la inserción de datos.
     """
-    # Cambios aquí: Usa formato de cadena correctamente
-    logger.info("conn: %s", conn)
-    logger.info("datos: %s", datos)
-    logger.info("consulta2: %s", consulta2)
-    
     try:
         with conn.cursor() as cursor:
             for fila in datos:
-                cursor.execute(consulta2, fila)
+                # Asegurarse de que 'fila' tiene exactamente tres elementos
+                # Por ejemplo: fila = (unixtime, HR_COUNTER1, HR_COUNTER2)
+                if len(fila) == 3:
+                    cursor.execute(consulta2, fila)
+                else:
+                    logger.warning("Fila con número incorrecto de elementos: %s", fila)
             conn.commit()
             logger.info("%s registros insertados con éxito.", len(datos))
     except pymysql.MySQLError as e:
