@@ -11,6 +11,9 @@
     </style>
 </head>
 <body>
+    <?php
+        require "includes/header.php";
+    ?>
     <div class="container">
         <h1 class="text-center">Estado del Equipo - Registros Modbus</h1>
 
