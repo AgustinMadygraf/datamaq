@@ -5,7 +5,6 @@ from logs.config_logger import configurar_logging
 from db_operations import check_db_connection  
 import pymysql
 
-
 logger = configurar_logging()
 
 def MainTransfer():
@@ -45,11 +44,7 @@ def MainTransfer():
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
 
-
-
-            time.sleep(15)
-
-
+            time.sleep(10)
         else:
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
     except Exception as e:
@@ -68,6 +63,7 @@ def transferir_datos(consulta1, consulta2,num_filas):
         with conn.cursor() as cursor:
             logger.info("Iniciando la transferencia de datos.")
             unixtime = int(time.time())
+            unixtime = (round(unixtime/300))*300
             datos_originales = obtener_datos(cursor, consulta1)
             # Convertir los elementos de cada tupla de cadena a entero
             datos = [(unixtime,) + tuple(int(x) for x in fila) for fila in datos_originales]
@@ -88,9 +84,6 @@ def transferir_datos(consulta1, consulta2,num_filas):
             conn.close()
             logger.info("Conexión a la base de datos cerrada.")
 
-
-
-
 def obtener_datos(cursor, consulta):
     """
     Ejecuta una consulta SQL y devuelve los resultados.
@@ -110,7 +103,6 @@ def obtener_datos(cursor, consulta):
     except Exception as e:
         logger.error(f"Error inesperado al ejecutar consulta: {e}")
     return None
-
 
 def insertar_datos(conn, datos, consulta2,num_filas):
     """
@@ -139,9 +131,6 @@ def insertar_datos(conn, datos, consulta2,num_filas):
         logger.error("Error inesperado al insertar datos: %s", e)
         conn.rollback()
 
-
-
-
 def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     """
     Verifica si el tiempo actual está cerca de un múltiplo de 5 minutos.
@@ -156,8 +145,8 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     minuto_actual = ahora.minute
     segundo_actual = ahora.second
 
-    cercano_a_multiplo = minuto_actual % 1 <= tolerancia / 60 and segundo_actual <= tolerancia
+    cercano_a_multiplo = minuto_actual % 5 <= tolerancia / 60 and segundo_actual <= tolerancia
     logger.info(f"Chequeando tiempo: {ahora}, cercano a múltiplo de 5: {'sí' if cercano_a_multiplo else 'no'}")
     return cercano_a_multiplo
 
-es_tiempo_cercano_multiplo_cinco(tolerancia=10)
+es_tiempo_cercano_multiplo_cinco(tolerancia=5)
