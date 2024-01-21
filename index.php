@@ -1,65 +1,51 @@
+<!-- index.php -->
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Estado del Equipo</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="CSS/index.css">
+    <link rel="stylesheet" type="text/css" href="CSS/header.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/imagenes/favicon.ico" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
-        body { padding: 20px; }
-        .table { margin-top: 20px; }
+        /* Estilos para la tabla */
+        table {
+        border-collapse: collapse; /* Combina los bordes de las celdas */
+        width: 100%;
+        }
+
+        /* Estilo para todas las celdas */
+        table, th, td {
+        border: 2px solid black; /* Define el grosor y el color del borde */
+        }
+
+        /* Estilo para las celdas de encabezado (th) */
+        th {
+        background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+        }
     </style>
+
+    
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center">Estado del Equipo - Registros Modbus</h1>
 
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Direccion Modbus</th>
-                    <th>Registro</th>
-                    <th>Descripcion</th>
-                    <th>Valor</th>                    
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los datos se cargarán aquí a través de AJAX -->
-            </tbody>
-        </table>
-    </div>
+    <br>
+    <br>
+    <?php 
+        require "includes/dashboard.php";
+        require "includes/power_info_display.php";
+        //echo "<div id='container' class='graf'></div>";
+        require "includes/chart_viewer.php"; 
+        ?>
+        
 
-    <!-- Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
-    <script>
-        $(document).ready(function(){
-            function actualizarDatos() {
-                $.ajax({
-                    url: 'fetch_data.php', // Asegúrate de que esta ruta es correcta
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        var filas = '';
-                        $.each(data, function(key, registro) {
-                            filas += '<tr>' +
-                                        '<td>' + registro.direccion_modbus + '</td>' +
-                                        '<td>' + registro.registro + '</td>' +
-                                        '<td>' + registro.descripcion + '</td>' +
-                                        '<td>' + registro.valor + '</td>' +
-                                     '</tr>';
-                        });
-                        $('tbody').html(filas);
-                    }
-                });
-            }
-
-            // Actualizar los datos cada 0.5 segundos
-            setInterval(actualizarDatos, 500);
-            actualizarDatos(); // Cargar inicialmente los datos
-        });
-    </script>
 </body>
 </html>

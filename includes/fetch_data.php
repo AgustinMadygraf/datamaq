@@ -1,7 +1,7 @@
 <?php
 // fetch_data.php
 
-require "includes/database_connection.php";
+require "database_connection.php";
 
 // Verificar conexión
 if ($conn->connect_error) {
