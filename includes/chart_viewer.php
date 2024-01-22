@@ -110,7 +110,7 @@
                     animation: false,
                     data: (function () {
                         var data = [];
-                        <?php for ($i = 15; $i < count($rawdata); $i++) { ?>
+                        <?php for ($i = 1; $i < count($rawdata); $i++) { ?>
                             data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER1"] ?>]);
                         <?php } ?>
                         return data;
@@ -121,7 +121,7 @@
                     animation: false,
                     data: (function () {
                         var data = [];
-                        <?php for ($i = 15; $i < count($rawdata); $i++) { ?>
+                        <?php for ($i = 1; $i < count($rawdata); $i++) { ?>
                             data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, 100]);
                         <?php } ?>
                         return data;
