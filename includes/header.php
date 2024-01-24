@@ -15,6 +15,6 @@ echo "<li><a href='PanelControlModbus.php' ".($paginaActual == 'PanelControlModb
 echo "<li><a href='/Bolsas/index.php' ".($paginaActual == 'Bolsas/index.php' ? $claseActiva : "").">Costos Bolsas</a></li>";
 echo "<li><a href='/horas/index.php' ".($paginaActual == '/horas/index.php' ? $claseActiva : "").">Horas</a></li>";
 echo "<li><a href='/DigiRail/index.php' ".($paginaActual == '/DigiRail/index.php' ? $claseActiva : "").">DigiRail</a></li>";
-echo "<li><a href='/Bolsas//phpMyAdmin/' target='_blank'>PHP MyAdmin</a></li>";
+echo "<li><a href='/phpMyAdmin/' target='_blank'>PHP MyAdmin</a></li>";
 
 echo "</ul></div></header>";

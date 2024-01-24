@@ -90,7 +90,7 @@ if ($_GET && array_key_exists("conta", $_GET)) {
 
 $tiempo1 = ($conta/1000) - $ls_periodos[$periodo] - 80*60;
 $tiempo2 = $conta/1000 ;
-$sql = "SELECT `unixtime`, `HR_COUNTER1`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
+$sql = "SELECT `unixtime`, `HR_COUNTER1`, `HR_COUNTER2`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
 $rawdata = getArraySQL($sql);
 
 

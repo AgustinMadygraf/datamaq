@@ -106,7 +106,7 @@
             },
             series: [
                 {
-                    name: 'Bolsas',
+                    name: 'Sensor inductivo',
                     animation: false,
                     data: (function () {
                         var data = [];
@@ -116,6 +116,17 @@
                         return data;
                     })()
                 },
+                {
+                    name: 'Sensor optico',
+                    animation: false,
+                    data: (function () {
+                        var data = [];
+                        <?php for ($i = 1; $i < count($rawdata); $i++) { ?>
+                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER2"] ?>]);
+                        <?php } ?>
+                        return data;
+                    })()
+                },                
                 {
                     name: 'marcha',
                     animation: false,

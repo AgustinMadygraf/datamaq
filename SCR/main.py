@@ -14,6 +14,9 @@ D1 = 70
 D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
+HR_COUNTER2_LO = 24
+HR_COUNTER2_HI = 25
+
 
 def main_loop():
     """
