@@ -43,8 +43,9 @@ def MainTransfer():
             """
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
-
-            time.sleep(10)
+            time.sleep(1)
+            sincronizar_intervalproduction()
+            time.sleep(9)
         else:
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
     except Exception as e:
@@ -150,3 +151,61 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     return cercano_a_multiplo
 
 es_tiempo_cercano_multiplo_cinco(tolerancia=5)
+
+def sincronizar_intervalproduction():
+    """
+    Sincroniza la tabla 'intervalproduction' entre las bases de datos local y remota.
+    """
+    try:
+        logger.info("Iniciando la sincronización de 'intervalproduction'.")
+        
+        # Establecer conexión con la base de datos local
+        conn_local = check_db_connection(remote=False)
+        logger.info("Conexión establecida con la base de datos local.")
+
+        # Establecer conexión con la base de datos remota
+        conn_remota = check_db_connection(remote=True)
+        logger.info("Conexión establecida con la base de datos remota.")
+
+        with conn_local.cursor() as cursor_local, conn_remota.cursor() as cursor_remoto:
+            logger.info("Cursore para ambas bases de datos creados.")
+
+            # Obtener los últimos registros de ambas bases de datos
+            logger.info("Obteniendo el último registro de la base de datos local.")
+            ultimo_registro_local = obtener_ultimo_registro(cursor_local)
+            logger.info(f"Último registro local: {ultimo_registro_local}")
+
+            logger.info("Obteniendo el último registro de la base de datos remota.")
+            ultimo_registro_remoto = obtener_ultimo_registro(cursor_remoto)
+            logger.info(f"Último registro remoto: {ultimo_registro_remoto}")
+
+            # Comparar y sincronizar
+            if ultimo_registro_local != ultimo_registro_remoto:
+                logger.info("Las bases de datos no están sincronizadas. Iniciando sincronización.")
+                # Código para sincronizar los registros...
+                pass
+            else:
+                logger.info("Las bases de datos ya están sincronizadas.")
+
+    except Exception as e:
+        logger.error(f"Error en la sincronización de las bases de datos: {e}")
+
+def obtener_ultimo_registro(cursor):
+    """
+    Obtiene el último registro de la tabla 'intervalproduction'.
+
+    Args:
+        cursor: Cursor de la base de datos.
+
+    Returns:
+        tuple: El último registro de la tabla.
+    """
+    try:
+        consulta = "SELECT * FROM intervalproduction ORDER BY ID DESC LIMIT 1"
+        cursor.execute(consulta)
+        registro = cursor.fetchone()
+        logger.info(f"Consulta ejecutada exitosamente. Registro obtenido: {registro}")
+        return registro
+    except Exception as e:
+        logger.error(f"Error al obtener el último registro: {e}")
+        raise
