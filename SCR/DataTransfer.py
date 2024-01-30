@@ -4,6 +4,8 @@ from datetime import datetime
 from logs.config_logger import configurar_logging
 from db_operations import check_db_connection  
 import pymysql
+import requests
+
 
 logger = configurar_logging()
 
@@ -43,7 +45,7 @@ def MainTransfer():
             """
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
-
+            send_data_PHP()
             time.sleep(10)
         else:
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
@@ -150,3 +152,18 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     return cercano_a_multiplo
 
 es_tiempo_cercano_multiplo_cinco(tolerancia=5)
+
+
+def send_data_PHP():
+    """
+    Envía una solicitud GET a un script PHP.
+    """
+    url = "http://localhost/digirail/includes/SendData.php"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            print("Datos enviados exitosamente. Respuesta:", response.text)
+        else:
+            print(f"Error al enviar datos. Código de estado: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error al realizar la solicitud: {e}")

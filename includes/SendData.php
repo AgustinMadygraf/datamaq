@@ -1,5 +1,5 @@
 <?php
-// includes/compareAndSendData.php
+// includes/SendData.php
 require 'db_functions.php'; // Asegúrate de que la ruta al archivo sea correcta
 
 // Refrescar la página cada 15 segundos
