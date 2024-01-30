@@ -2,6 +2,9 @@
 // includes/compareAndSendData.php
 require 'db_functions.php'; // Asegúrate de que la ruta al archivo sea correcta
 
+// Refrescar la página cada 15 segundos
+header("Refresh: 15");
+
 // Obtener el último registro de la base de datos local
 function obtenerUltimoRegistro() {
     $sql = "SELECT unixtime, HR_COUNTER1, HR_COUNTER2 FROM intervalproduction ORDER BY unixtime DESC LIMIT 1";
