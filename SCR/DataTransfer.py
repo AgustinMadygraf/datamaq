@@ -45,14 +45,10 @@ def MainTransfer():
             """
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
-<<<<<<< HEAD
-            send_data_PHP()
-            time.sleep(10)
-=======
+
             time.sleep(1)
             sincronizar_intervalproduction()
             time.sleep(9)
->>>>>>> dev
         else:
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
     except Exception as e:
@@ -159,22 +155,6 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
 
 es_tiempo_cercano_multiplo_cinco(tolerancia=5)
 
-<<<<<<< HEAD
-
-def send_data_PHP():
-    """
-    Envía una solicitud GET a un script PHP.
-    """
-    url = "http://localhost/digirail/includes/SendData.php"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            print("Datos enviados exitosamente. Respuesta:", response.text)
-        else:
-            print(f"Error al enviar datos. Código de estado: {response.status_code}")
-    except requests.exceptions.RequestException as e:
-        print(f"Error al realizar la solicitud: {e}")
-=======
 def sincronizar_intervalproduction():
     """
     Sincroniza la tabla 'intervalproduction' entre las bases de datos local y remota.
@@ -232,4 +212,4 @@ def obtener_ultimo_registro(cursor):
     except Exception as e:
         logger.error(f"Error al obtener el último registro: {e}")
         raise
->>>>>>> dev
+
