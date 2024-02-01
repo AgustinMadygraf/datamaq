@@ -2,7 +2,7 @@
 from db_operations import check_db_connection, update_database
 from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register, limpiar_pantalla
 from logs.config_logger import configurar_logging
-from DataTransfer import MainTransfer, sincronizar_intervalproduction
+from DataTransfer import MainTransfer
 import minimalmodbus
 import time
 import signal
@@ -39,7 +39,6 @@ def main_loop():
     running = True
     signal.signal(signal.SIGINT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
-    sincronizar_intervalproduction()
 
     while running:
         logger.info("Ejecutando iteración del bucle principal.")

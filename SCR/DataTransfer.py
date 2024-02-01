@@ -47,8 +47,7 @@ def MainTransfer():
             transferir_datos(consulta1,consulta2,num_filas)
 
             time.sleep(1)
-            sincronizar_intervalproduction()
-            time.sleep(9)
+
         else:
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
     except Exception as e:
@@ -212,4 +211,3 @@ def obtener_ultimo_registro(cursor):
     except Exception as e:
         logger.error(f"Error al obtener el último registro: {e}")
         raise
-
