@@ -115,7 +115,7 @@ def reconnect_on_failure(func):
 
 
 @reconnect_on_failure
-def check_db_connection(remote=False):
+def check_db_connection():
     """
     Establece una conexión a la base de datos local o remota.
 
@@ -125,13 +125,13 @@ def check_db_connection(remote=False):
     Returns:
         pymysql.connections.Connection: Un objeto de conexión a la base de datos.
     """
-    db_config = get_db_config(remote)
+    db_config = get_db_config()
     return pymysql.connect(**db_config)
 
 class DatabaseUpdateError(Exception):
     """Excepción para errores en la actualización de la base de datos."""
     pass
-def get_db_config(remote=False):
+def get_db_config():
     """
     Obtiene la configuración de la base de datos desde variables de entorno o parámetros.
 
@@ -141,20 +141,12 @@ def get_db_config(remote=False):
     Returns:
         dict: Un diccionario con la configuración de la base de datos.
     """
-    if remote:
-        return {
-            'host': '10.176.61.55',
-            'user': os.getenv('REMOTE_DB_USER', 'usuario_remoto'),
-            'password': os.getenv('REMOTE_DB_PASSWORD', 'contraseña_remota'),
-            'db': 'novus',
-            'port': 3306
-        }
-    else:
-        return {
-            'host': os.getenv('DB_HOST', 'localhost'),
-            'user': os.getenv('DB_USER', 'root'),
-            'password': os.getenv('DB_PASSWORD', '12345678'),
-            'db': 'novus',
-            'port': 3306  
-        }
+
+    return {
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'user': os.getenv('DB_USER', 'root'),
+        'password': os.getenv('DB_PASSWORD', '12345678'),
+        'db': 'novus',
+        'port': 3306  
+    }
 
