@@ -152,7 +152,6 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     logger.info(f"Chequeando tiempo: {ahora}, cercano a múltiplo de 5: {'sí' if cercano_a_multiplo else 'no'}")
     return cercano_a_multiplo
 
-es_tiempo_cercano_multiplo_cinco(tolerancia=5)
 
 def sincronizar_intervalproduction():
     """
