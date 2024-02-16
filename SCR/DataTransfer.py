@@ -53,7 +53,7 @@ def MainTransfer():
     except Exception as e:
         logger.error(f"Error en MainTransfer: {e}")
 
-def transferir_datos(consulta1, consulta2,num_filas):
+def transferir_datos(consulta1, consulta2, num_filas):
     """
     Función principal para transferir datos.
     """
@@ -71,9 +71,15 @@ def transferir_datos(consulta1, consulta2,num_filas):
             # Convertir los elementos de cada tupla de cadena a entero
             datos = [(unixtime,) + tuple(int(x) for x in fila) for fila in datos_originales]
             if datos:
-                insertar_datos(conn, datos, consulta2,num_filas)
-                conn.commit()
-                logger.info("Transferencia de datos completada exitosamente.")
+                # Verificar si ya existe un registro con el mismo unixtime
+                cursor.execute("SELECT COUNT(*) FROM intervalproduction WHERE unixtime = %s", (unixtime,))
+                if cursor.fetchone()[0] == 0:
+                    # Solo insertar si no hay registros existentes con el mismo unixtime
+                    insertar_datos(conn, datos, consulta2, num_filas)
+                    conn.commit()
+                    logger.info("Transferencia de datos completada exitosamente.")
+                else:
+                    logger.warning("Se evitó la inserción de un registro duplicado para el unixtime %s.", unixtime)
             else:
                 logger.warning("No se obtuvieron datos para transferir.")
     except pymysql.MySQLError as e:
@@ -86,6 +92,7 @@ def transferir_datos(consulta1, consulta2,num_filas):
         if conn:
             conn.close()
             logger.info("Conexión a la base de datos cerrada.")
+
 
 def obtener_datos(cursor, consulta):
     """
