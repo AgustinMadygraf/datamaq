@@ -45,7 +45,7 @@ def MainTransfer():
             """
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
-            SendDataPHP()
+            #SendDataPHP()
 
             time.sleep(1)
 
@@ -55,10 +55,10 @@ def MainTransfer():
         logger.error(f"Error en MainTransfer: {e}")
 
 
-def SendDataPHP():
+def SendDataPHP(): #revisar esta función
         # Define la ruta al intérprete de PHP y al script PHP
-    php_interpreter = "/usr/bin/php"  # Asegúrate de que esta ruta sea correcta para tu entorno
-    php_script = "/ruta/completa/hacia/DigiRail/includes/SendData_python.php"  # Ajusta esta ruta
+    php_interpreter = "/usr/bin/php"  # Ayúda a definir la ruta para mi entorno
+    php_script = "localhost/DigiRail/includes/SendData_python.php"  
 
     # Ejecuta el script PHP usando subprocess.run
     result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True)
