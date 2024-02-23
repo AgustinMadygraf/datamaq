@@ -3,7 +3,8 @@
 
 require 'db_functions.php'; // Asegúrate de que la ruta al archivo sea correcta
 
-// Refrescar la página cada 15 segundos //header("Refresh: 15");
+// Refrescar la página cada 15 segundos
+header("Refresh: 15");
 
 // Obtener el último registro de la base de datos local
 function obtenerUltimoRegistro() {
