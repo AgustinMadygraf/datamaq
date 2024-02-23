@@ -1,5 +1,6 @@
+<!--includes/enviarEstados.php-->
+<!--NO_ANDA-->
 <?php
-// Incluir las funciones de la base de datos
 require 'db_functions.php';
 
 // Función para obtener los últimos 96 registros

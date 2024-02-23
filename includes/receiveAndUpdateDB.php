@@ -1,5 +1,6 @@
+<!--includes/receiveAndUpdateDB.php-->
 <?php
-// Asegúrate de que la ruta al archivo db_functions.php sea correcta
+
 require 'db_functions.php';
 
 // Recuperar datos de la URL
