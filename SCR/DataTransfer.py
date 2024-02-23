@@ -56,8 +56,8 @@ def MainTransfer():
 
 def SendDataPHP():
     # Define la ruta al intérprete de PHP y al script PHP utilizando raw strings
-    php_interpreter = r"C:\AppServ\php7\php.exe"
-    php_script = r"C:\AppServ\www\DigiRail\includes\SendData_python.php"
+    php_interpreter = "C://AppServ//php7//php.exe"
+    php_script = "C://AppServ//www//DigiRail//includes//SendData_python.php"
 
     # Ejecuta el script PHP usando subprocess.run
     result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True, shell=True)
