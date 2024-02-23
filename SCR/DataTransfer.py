@@ -4,7 +4,7 @@ from datetime import datetime
 from logs.config_logger import configurar_logging
 from db_operations import check_db_connection  
 import pymysql
-import requests
+import subprocess
 
 
 logger = configurar_logging()
@@ -45,6 +45,7 @@ def MainTransfer():
             """
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
+            SendDataPHP()
 
             time.sleep(1)
 
@@ -52,6 +53,23 @@ def MainTransfer():
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
     except Exception as e:
         logger.error(f"Error en MainTransfer: {e}")
+
+
+def SendDataPHP():
+        # Define la ruta al intérprete de PHP y al script PHP
+    php_interpreter = "/usr/bin/php"  # Asegúrate de que esta ruta sea correcta para tu entorno
+    php_script = "/ruta/completa/hacia/DigiRail/includes/SendData_python.php"  # Ajusta esta ruta
+
+    # Ejecuta el script PHP usando subprocess.run
+    result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True)
+
+    # Log y manejo del resultado
+    if result.returncode == 0:
+        logger.info("Script PHP ejecutado exitosamente. Salida:")
+        logger.info(result.stdout)
+    else:
+        logger.error(f"Error al ejecutar el script PHP. Código de salida: {result.returncode}")
+        logger.error(result.stderr)
 
 def transferir_datos(consulta1, consulta2, num_filas):
     """
