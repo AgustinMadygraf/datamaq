@@ -54,14 +54,13 @@ def MainTransfer():
     except Exception as e:
         logger.error(f"Error en MainTransfer: {e}")
 
-
-def SendDataPHP(): #revisar esta función
-        # Define la ruta al intérprete de PHP y al script PHP
-    php_interpreter = "C:\AppServ\php7\php.exe"  
-    php_script = "C:\AppServ\www\DigiRail\includes\SendData_python.php"  
+def SendDataPHP():
+    # Define la ruta al intérprete de PHP y al script PHP utilizando raw strings
+    php_interpreter = r"C:\AppServ\php7\php.exe"
+    php_script = r"C:\AppServ\www\DigiRail\includes\SendData_python.php"
 
     # Ejecuta el script PHP usando subprocess.run
-    result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True)
+    result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True, shell=True)
 
     # Log y manejo del resultado
     if result.returncode == 0:
@@ -70,6 +69,7 @@ def SendDataPHP(): #revisar esta función
     else:
         logger.error(f"Error al ejecutar el script PHP. Código de salida: {result.returncode}")
         logger.error(result.stderr)
+
 
 def transferir_datos(consulta1, consulta2, num_filas):
     """
