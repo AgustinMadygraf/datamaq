@@ -1,2 +1,0 @@
-Dividir "includes/SendData.php" en dos. funciona correctamente con Python.
-modificar "includes/enviarDatos.php" para que funcione con el archivo producto del anterior. Esto será esporádicamente para actualizar la base de datos en caso de interrupcion,.
