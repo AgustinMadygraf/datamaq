@@ -95,7 +95,7 @@
                 formatter: function () {
                     return '<b>' + this.series.name + '</b><br/>' +
                         Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 1) + '  Bolsas';
+                        Highcharts.numberFormat(this.y, 1) + '  Unidades por minuto';
                 }
             },
             legend: {
@@ -111,7 +111,7 @@
                     data: (function () {
                         var data = [];
                         <?php for ($i = 1; $i < count($rawdata); $i++) { ?>
-                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER1"] ?>]);
+                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER1"]/5 ?>]);
                         <?php } ?>
                         return data;
                     })()
@@ -122,7 +122,7 @@
                     data: (function () {
                         var data = [];
                         <?php for ($i = 1; $i < count($rawdata); $i++) { ?>
-                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER2"] ?>]);
+                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, <?= $rawdata[$i]["HR_COUNTER2"]/5 ?>]);
                         <?php } ?>
                         return data;
                     })()
@@ -133,7 +133,7 @@
                     data: (function () {
                         var data = [];
                         <?php for ($i = 1; $i < count($rawdata); $i++) { ?>
-                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, 100]);
+                            data.push([<?= 1000*$rawdata[$i]["unixtime"] ?>, 20]);
                         <?php } ?>
                         return data;
                     })()
