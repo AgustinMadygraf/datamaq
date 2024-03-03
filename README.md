@@ -25,7 +25,7 @@ En un mundo donde la optimización de recursos y la eficiencia operativa son cla
 ## 🛠 Instalación
 
 ```bash
-git clone https://github.com/AgustinMadygraf/DigiRail/.git
+git clone https://github.com/AgustinMadygraf/DigiRail.git
 cd DigiRail
 # Instalar dependencias
 pip install -r requirements.txt
@@ -60,7 +60,7 @@ Tu contribución es lo que hace que la comunidad de DigiRail sea increíble. Aqu
 
 **P: ¿DigiRail es compatible con mi hardware?**
 
-R: DigiRail es compatible con una amplia gama de dispositivos Modbus. Consulta la lista de compatibilidad [aquí](link_to_compatibility_list).
+R: DigiRail es compatible con una amplia gama de dispositivos Modbus. Consulta la lista de compatibilidad [aquí](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf).
 
 ## 📞 Contacto
 
