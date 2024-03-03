@@ -2,7 +2,7 @@
 
 _El futuro del monitoreo y control de la producción industrial está aquí. DigiRail, donde la precisión se encuentra con la innovación._
 
-![DigiRail Logo](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/logo.ico) <!-- Reemplaza "link_to_logo.png" con la ruta a tu logotipo -->
+![DigiRail Logo](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/logo.ico) 
 
 ## 🚀 Introducción
 
@@ -16,7 +16,7 @@ En un mundo donde la optimización de recursos y la eficiencia operativa son cla
 
 - **Monitoreo en Tiempo Real**: Sigue cada aspecto de tu producción con datos actualizados al segundo.
   
-  ![Monitoreo en Tiempo Real](link_to_feature_image.png) <!-- Añade una imagen ilustrativa -->
+  ![Monitoreo en Tiempo Real](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/img1.jpg) 
 
 - **Análisis Avanzado**: Obtén insights con análisis profundos y reportes personalizables.
 - **Alertas Configurables**: Mantente al tanto de cualquier anomalía con alertas instantáneas.
@@ -25,7 +25,7 @@ En un mundo donde la optimización de recursos y la eficiencia operativa son cla
 ## 🛠 Instalación
 
 ```bash
-git clone https://github.com/tuusuario/pbpm.git
+git clone https://github.com/AgustinMadygraf/DigiRail/.git
 cd DigiRail
 # Instalar dependencias
 pip install -r requirements.txt
@@ -39,7 +39,7 @@ Para comenzar a monitorear tu producción con DigiRail, sigue estos pasos:
 
 1. Configura tu dispositivo Modbus siguiendo las instrucciones [aquí](link_to_modbus_config).
 2. Ejecuta `main.py` para iniciar el servidor.
-3. Accede a la interfaz web en `http://localhost:8080` para ver tus datos en tiempo real.
+3. Accede a la interfaz web en `http://localhost//DigiRail` para ver tus datos en tiempo real.
 
 ## 💡 Ejemplos de Uso
 
@@ -66,8 +66,8 @@ R: DigiRail es compatible con una amplia gama de dispositivos Modbus. Consulta l
 
 Para soporte o consultas, contáctanos a:
 
-- Email: tu@email.com
-- GitHub: [tuusuario](https://github.com/tuusuario)
+- Email: agustin.mtto.madygraf@gmail.com
+- GitHub: [AgustinMadygraf](https://github.com/AgustinMadygraf)
 
 ## 📄 Licencia
 
