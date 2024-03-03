@@ -4,6 +4,8 @@ from datetime import datetime
 from logs.config_logger import configurar_logging
 from db_operations import check_db_connection  
 import pymysql
+import subprocess
+
 
 logger = configurar_logging()
 
@@ -43,14 +45,33 @@ def MainTransfer():
             """
             num_filas = 3
             transferir_datos(consulta1,consulta2,num_filas)
+            SendDataPHP()
 
-            time.sleep(10)
+            time.sleep(1)
+
         else:
             logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
     except Exception as e:
         logger.error(f"Error en MainTransfer: {e}")
 
-def transferir_datos(consulta1, consulta2,num_filas):
+def SendDataPHP():
+    # Define la ruta al intérprete de PHP y al script PHP utilizando raw strings
+    php_interpreter = "C://AppServ//php7//php.exe"
+    php_script = "C://AppServ//www//DigiRail//includes//SendData_python.php"
+
+    # Ejecuta el script PHP usando subprocess.run
+    result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True, shell=True)
+
+    # Log y manejo del resultado
+    if result.returncode == 0:
+        logger.info("Script PHP ejecutado exitosamente. Salida:")
+        logger.info(result.stdout)
+    else:
+        logger.error(f"Error al ejecutar el script PHP. Código de salida: {result.returncode}")
+        logger.error(result.stderr)
+
+
+def transferir_datos(consulta1, consulta2, num_filas):
     """
     Función principal para transferir datos.
     """
@@ -68,9 +89,15 @@ def transferir_datos(consulta1, consulta2,num_filas):
             # Convertir los elementos de cada tupla de cadena a entero
             datos = [(unixtime,) + tuple(int(x) for x in fila) for fila in datos_originales]
             if datos:
-                insertar_datos(conn, datos, consulta2,num_filas)
-                conn.commit()
-                logger.info("Transferencia de datos completada exitosamente.")
+                # Verificar si ya existe un registro con el mismo unixtime
+                cursor.execute("SELECT COUNT(*) FROM intervalproduction WHERE unixtime = %s", (unixtime,))
+                if cursor.fetchone()[0] == 0:
+                    # Solo insertar si no hay registros existentes con el mismo unixtime
+                    insertar_datos(conn, datos, consulta2, num_filas)
+                    conn.commit()
+                    logger.info("Transferencia de datos completada exitosamente.")
+                else:
+                    logger.warning("Se evitó la inserción de un registro duplicado para el unixtime %s.", unixtime)
             else:
                 logger.warning("No se obtuvieron datos para transferir.")
     except pymysql.MySQLError as e:
@@ -83,6 +110,7 @@ def transferir_datos(consulta1, consulta2,num_filas):
         if conn:
             conn.close()
             logger.info("Conexión a la base de datos cerrada.")
+
 
 def obtener_datos(cursor, consulta):
     """
@@ -149,4 +177,61 @@ def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
     logger.info(f"Chequeando tiempo: {ahora}, cercano a múltiplo de 5: {'sí' if cercano_a_multiplo else 'no'}")
     return cercano_a_multiplo
 
-es_tiempo_cercano_multiplo_cinco(tolerancia=5)
+
+def sincronizar_intervalproduction():
+    """
+    Sincroniza la tabla 'intervalproduction' entre las bases de datos local y remota.
+    """
+    try:
+        logger.info("Iniciando la sincronización de 'intervalproduction'.")
+        
+        # Establecer conexión con la base de datos local
+        conn_local = check_db_connection(remote=False)
+        logger.info("Conexión establecida con la base de datos local.")
+
+        # Establecer conexión con la base de datos remota
+        conn_remota = check_db_connection(remote=True)
+        logger.info("Conexión establecida con la base de datos remota.")
+
+        with conn_local.cursor() as cursor_local, conn_remota.cursor() as cursor_remoto:
+            logger.info("Cursore para ambas bases de datos creados.")
+
+            # Obtener los últimos registros de ambas bases de datos
+            logger.info("Obteniendo el último registro de la base de datos local.")
+            ultimo_registro_local = obtener_ultimo_registro(cursor_local)
+            logger.info(f"Último registro local: {ultimo_registro_local}")
+
+            logger.info("Obteniendo el último registro de la base de datos remota.")
+            ultimo_registro_remoto = obtener_ultimo_registro(cursor_remoto)
+            logger.info(f"Último registro remoto: {ultimo_registro_remoto}")
+
+            # Comparar y sincronizar
+            if ultimo_registro_local != ultimo_registro_remoto:
+                logger.info("Las bases de datos no están sincronizadas. Iniciando sincronización.")
+                # Código para sincronizar los registros...
+                pass
+            else:
+                logger.info("Las bases de datos ya están sincronizadas.")
+
+    except Exception as e:
+        logger.error(f"Error en la sincronización de las bases de datos: {e}")
+
+def obtener_ultimo_registro(cursor):
+    """
+    Obtiene el último registro de la tabla 'intervalproduction'.
+
+    Args:
+        cursor: Cursor de la base de datos.
+
+    Returns:
+        tuple: El último registro de la tabla.
+    """
+    try:
+        consulta = "SELECT * FROM intervalproduction ORDER BY ID DESC LIMIT 1"
+        cursor.execute(consulta)
+        registro = cursor.fetchone()
+        logger.info(f"Consulta ejecutada exitosamente. Registro obtenido: {registro}")
+        return registro
+    except Exception as e:
+        logger.error(f"Error al obtener el último registro: {e}")
+        raise

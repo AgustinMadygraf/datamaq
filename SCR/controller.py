@@ -9,6 +9,8 @@ D1 = 70
 D2 = 71
 HR_COUNTER1_LO = 22
 HR_COUNTER1_HI = 23
+HR_COUNTER2_LO = 24
+HR_COUNTER2_HI = 25
 
 logger = configurar_logging()
 
@@ -82,6 +84,14 @@ def process_high_resolution_register(instrument, connection):
     value_hi = safe_modbus_read(instrument.read_register, HR_COUNTER1_HI, functioncode=3)
     if value_hi is not None:
         update_database(connection, HR_COUNTER1_HI, value_hi, "HR_COUNTER1_HI")
+
+    value_lo = safe_modbus_read(instrument.read_register, HR_COUNTER2_LO, functioncode=3)
+    if value_lo is not None:
+        update_database(connection, HR_COUNTER2_LO, value_lo, "HR_COUNTER2_LO")
+
+    value_hi = safe_modbus_read(instrument.read_register, HR_COUNTER2_HI, functioncode=3)
+    if value_hi is not None:
+        update_database(connection, HR_COUNTER2_HI, value_hi, "HR_COUNTER2_HI")        
 
 def detect_serial_ports(device_description):
     """

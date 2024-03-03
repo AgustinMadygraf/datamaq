@@ -5,7 +5,7 @@
       <div class="c1">
         <p1>
           <?php $vel_ult = $vel_ult/5;
-                echo "Velocidad <br>".round($vel_ult,1)." bolsas por minuto";
+                echo "Velocidad <br>".round($vel_ult,1)." unidades por minuto";
           ?>
            </p1>
       </div>

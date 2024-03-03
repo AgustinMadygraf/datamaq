@@ -113,41 +113,35 @@ def reconnect_on_failure(func):
                 return None
     return wrapper_reconnect
 
+
 @reconnect_on_failure
 def check_db_connection():
     """
-    Establece una conexión a la base de datos utilizando la configuración definida.
+    Establece una conexión a la base de datos local o remota.
 
-    Esta función intenta conectarse a la base de datos utilizando los parámetros especificados
-    en la configuración de la base de datos. Está decorada con 'reconnect_on_failure', lo que
-    asegura que intentará reconectar automáticamente en caso de fallar la conexión inicial.
+    Args:
+        remote (bool): Determina si se debe conectar a la base de datos remota.
 
     Returns:
         pymysql.connections.Connection: Un objeto de conexión a la base de datos.
     """
-    db_config = get_db_config()  # Obtener la configuración de la base de datos
-    connection = pymysql.connect(**db_config)
-    return connection
+    db_config = get_db_config()
+    return pymysql.connect(**db_config)
 
 class DatabaseUpdateError(Exception):
     """Excepción para errores en la actualización de la base de datos."""
     pass
-
 def get_db_config():
     """
-    Obtiene la configuración de la base de datos desde variables de entorno.
+    Obtiene la configuración de la base de datos desde variables de entorno o parámetros.
 
-    Esta función construye un diccionario con la configuración necesaria para conectarse a una base de datos MySQL.
-    Los valores de configuración se obtienen de variables de entorno, proporcionando una forma segura y flexible
-    de manejar la configuración sin hardcodear valores en el código.
-
-    Los valores por defecto son proporcionados para cada parámetro, que se usarán si las variables de entorno
-    correspondientes no están definidas.
+    Args:
+        remote (bool): Determina si se debe obtener la configuración para la base de datos remota.
 
     Returns:
-        dict: Un diccionario que contiene los parámetros de configuración de la base de datos, incluyendo
-              host, usuario, contraseña, nombre de la base de datos y puerto.
+        dict: Un diccionario con la configuración de la base de datos.
     """
+
     return {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
@@ -155,3 +149,4 @@ def get_db_config():
         'db': 'novus',
         'port': 3306  
     }
+

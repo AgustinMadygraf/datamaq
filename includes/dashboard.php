@@ -1,8 +1,9 @@
 <!-- dashboard.php -->
 <?php
+require 'db_functions.php';
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 setlocale(LC_TIME, "spanish");
-$segundos = 60;   // Refrescar cada 60 segundos
+$segundos = 60; // Refrescar cada 60 segundos
 
 
 // Variable que registra qué período de tiempo mostrar por defecto
@@ -19,42 +20,6 @@ if ($_GET && array_key_exists("periodo", $_GET)) {
     }
 }
 $class = $ls_class[$periodo];
-
-// Conectar a la base de datos
-function conectarBD() {
-    require 'conn.php';
-    $BD = "novus";
-    $conexion = mysqli_connect($server, $usuario, $pass, $BD);
-    if (!$conexion) {
-        echo 'Ha sucedido un error inesperado en la conexión de la base de datos<br>';
-    }
-    return $conexion;
-}
-
-// Desconectar la conexión a la base de datos
-function desconectarBD($conexion) {
-    $close = mysqli_close($conexion);
-    if (!$close) {
-        echo 'Ha sucedido un error inesperado en la desconexión de la base de datos<br>';
-    }
-    return $close;
-}
-
-// Obtener un array multidimensional con el resultado de la consulta
-function getArraySQL($sql) {
-    $conexion = conectarBD();
-    if (!$result = mysqli_query($conexion, $sql)) die();
-
-    $rawdata = array();
-    $i = 0;
-    while ($row = mysqli_fetch_array($result)) {
-        $rawdata[$i] = $row;
-        $i++;
-    }
-
-    desconectarBD($conexion);
-    return $rawdata;
-}
 
 function sql_query($campo) {
     return "SELECT `unixtime`, `$campo` FROM `intervalproduction`  ORDER BY `unixtime` DESC LIMIT 1";
@@ -90,7 +55,7 @@ if ($_GET && array_key_exists("conta", $_GET)) {
 
 $tiempo1 = ($conta/1000) - $ls_periodos[$periodo] - 80*60;
 $tiempo2 = $conta/1000 ;
-$sql = "SELECT `unixtime`, `HR_COUNTER1`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
+$sql = "SELECT `unixtime`, `HR_COUNTER1`, `HR_COUNTER2`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
 $rawdata = getArraySQL($sql);
 
 
