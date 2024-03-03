@@ -37,7 +37,7 @@ python main.py
 
 Para comenzar a monitorear tu producción con DigiRail, sigue estos pasos:
 
-1. Configura tu dispositivo Modbus siguiendo las instrucciones [aquí](link_to_modbus_config).
+1. Configura tu dispositivo Modbus siguiendo las instrucciones [aquí](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/quickguide.md).
 2. Ejecuta `main.py` para iniciar el servidor.
 3. Accede a la interfaz web en `http://localhost//DigiRail` para ver tus datos en tiempo real.
 
