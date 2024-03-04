@@ -34,11 +34,11 @@ Para un inicio rápido con DigiRail y comprender todas sus capacidades, consulta
 
 ## 💡 Ejemplos de Uso
 
-Descubre cómo DigiRail puede optimizar diferentes procesos industriales a través de nuestros [Ejemplos de Uso](link_to_examples).
+Descubre cómo DigiRail puede optimizar diferentes procesos industriales a través de nuestros [Ejemplos de Uso](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/example.md).
 
 ## 🤝 Cómo Contribuir
 
-Nos encantaría tu aporte para hacer de DigiRail una herramienta aún más poderosa. Consulta [Cómo Contribuir](link_to_contribution_guide) para más detalles.
+Nos encantaría tu aporte para hacer de DigiRail una herramienta aún más poderosa. Consulta [Cómo Contribuir](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/contribution_guide.md) para más detalles.
 
 ## ❓ Preguntas Generales
 
@@ -55,4 +55,4 @@ Para soluciones a problemas comunes, visita nuestro documento de [Solución de P
 
 ## 📄 Licencia
 
-Distribuido bajo la Licencia MIT. Ver [`LICENSE`](LICENSE) para más información.
+Distribuido bajo la Licencia MIT. Ver [`LICENSE`](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/license.md) para más información.
