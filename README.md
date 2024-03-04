@@ -6,69 +6,53 @@ _El futuro del monitoreo y control de la producción industrial está aquí. Dig
 
 ## 🚀 Introducción
 
-DigiRail es una solución integral diseñada para transformar la manera en que las industrias monitorean y controlan sus líneas de producción. A través de la recopilación de datos en tiempo real y una interfaz intuitiva, DigiRail ofrece una visión sin precedentes sobre la eficiencia y la productividad de tus operaciones.
+DigiRail es una solución integral diseñada para revolucionar la manera en que las industrias monitorean y controlan sus líneas de producción. Con la capacidad de recopilar datos en tiempo real y ofrecer una interfaz intuitiva, proporciona una visión sin precedentes sobre la eficiencia y productividad operacional.
 
 ### Problema que Soluciona
 
-En un mundo donde la optimización de recursos y la eficiencia operativa son clave, DigiRail emerge como la solución a la falta de visibilidad en tiempo real y control preciso sobre los procesos de producción.
+DigiRail responde a la necesidad crítica de visibilidad en tiempo real y control preciso en los procesos de producción, clave para la optimización de recursos y la mejora continua.
 
 ## 📋 Características Principales
 
-- **Monitoreo en Tiempo Real**: Sigue cada aspecto de tu producción con datos actualizados al segundo.
-  
-  ![Monitoreo en Tiempo Real](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/img1.jpg) 
-
-- **Análisis Avanzado**: Obtén insights con análisis profundos y reportes personalizables.
-- **Alertas Configurables**: Mantente al tanto de cualquier anomalía con alertas instantáneas.
-- **Integración Fácil**: Compatible con una amplia gama de dispositivos y plataformas Modbus.
+- **Monitoreo en Tiempo Real**: Visualización al segundo de los parámetros críticos de producción.
+- **Análisis Avanzado**: Generación de insights profundos a través de análisis y reportes personalizados.
+- **Alertas Configurables**: Notificaciones instantáneas ante anomalías para una acción rápida.
+- **Integración Fácil**: Compatibilidad con una amplia gama de dispositivos y plataformas Modbus para una integración sin esfuerzos.
 
 ## 🛠 Instalación
 
 ```bash
 git clone https://github.com/AgustinMadygraf/DigiRail.git
 cd DigiRail
-# Instalar dependencias
 pip install -r requirements.txt
-# Iniciar la aplicación
 python main.py
 ```
 
 ## 📚 Guía de Uso
 
-Para comenzar a monitorear tu producción con DigiRail, sigue estos pasos:
-
-1. Configura tu dispositivo Modbus siguiendo las instrucciones [aquí](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/quickguide.md).
-2. Ejecuta `main.py` para iniciar el servidor.
-3. Accede a la interfaz web en `http://localhost//DigiRail` para ver tus datos en tiempo real.
+Para un inicio rápido con DigiRail y comprender todas sus capacidades, consulta nuestra [Guía de Uso](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/quickguide.md).
 
 ## 💡 Ejemplos de Uso
 
-### Monitoreo de la Producción de Energía
-
-DigiRail permite a las plantas de energía optimizar sus operaciones monitorizando la producción en tiempo real. Aquí un [ejemplo detallado](link_to_example).
+Descubre cómo DigiRail puede optimizar diferentes procesos industriales a través de nuestros [Ejemplos de Uso](link_to_examples).
 
 ## 🤝 Cómo Contribuir
 
-Tu contribución es lo que hace que la comunidad de DigiRail sea increíble. Aquí te explicamos cómo puedes contribuir:
+Nos encantaría tu aporte para hacer de DigiRail una herramienta aún más poderosa. Consulta [Cómo Contribuir](link_to_contribution_guide) para más detalles.
 
-1. Fork el proyecto y clona tu fork.
-2. Crea una rama para tu contribución: `git checkout -b feature/nueva-funcionalidad`.
-3. Haz tus cambios y commit: `git commit -am 'Añadir nueva funcionalidad'`.
-4. Push a tu rama y abre una pull request.
+## ❓ Preguntas Generales
 
-## ❓ FAQ
+Encuentra respuestas rápidas a preguntas frecuentes en nuestro [FAQ](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/faq.md).
 
-**P: ¿DigiRail es compatible con mi hardware?**
+## 🛠 Solución de Problemas
 
-R: DigiRail es compatible con una amplia gama de dispositivos Modbus. Consulta la lista de compatibilidad [aquí](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf).
+Para soluciones a problemas comunes, visita nuestro documento de [Solución de Problemas](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/troubleshooting.md).
 
 ## 📞 Contacto
 
-Para soporte o consultas, contáctanos a:
-
-- Email: agustin.mtto.madygraf@gmail.com
-- GitHub: [AgustinMadygraf](https://github.com/AgustinMadygraf)
+- **Email**: agustin.mtto.madygraf@gmail.com
+- **GitHub**: [AgustinMadygraf](https://github.com/AgustinMadygraf)
 
 ## 📄 Licencia
 
-Distribuido bajo la Licencia MIT. Ver `LICENSE` para más información.
+Distribuido bajo la Licencia MIT. Ver [`LICENSE`](LICENSE) para más información.
