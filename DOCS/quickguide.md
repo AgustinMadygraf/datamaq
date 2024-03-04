@@ -1,64 +1,47 @@
-# Guía de Uso para DigiRail Connect
+# Guía Rápida de Inicio para DigiRail
 
-DigiRail Connect es una solución avanzada de Novus Automation diseñada para la adquisición de datos y control en tiempo real, ideal para aplicaciones industriales. Este dispositivo ofrece una fácil integración con sistemas de monitoreo y control, gracias a su compatibilidad con la comunicación Modbus RTU y su capacidad para manejar una amplia variedad de señales.
+Bienvenido a DigiRail, tu solución integral para el monitoreo y control de la producción industrial. Esta guía rápida te ayudará a configurar y empezar a utilizar DigiRail en poco tiempo.
 
-## Requisitos Previos
+## Paso 1: Preparación
 
 Antes de comenzar, asegúrate de tener:
 
-- Un dispositivo DigiRail Connect.
-- Cable USB o RS485 (según tu configuración).
-- Acceso a una PC o sistema compatible para configuración.
+- Un dispositivo DigiRail.
+- Una conexión a Internet para acceder a la documentación y software necesarios.
+- Cables de conexión adecuados (USB o RS485, según tu modelo específico).
 
-## Instalación y Configuración
+## Paso 2: Instalación del Software
 
-### Paso 1: Conexión del Dispositivo
+1. Descarga el último software de configuración de DigiRail desde nuestro [sitio web oficial](https://www.novusautomation.com/es/producto/modulos-de-e-s/digirail-connect).
+2. Instala el software siguiendo las instrucciones proporcionadas en el instalador.
 
-1. Conecta el DigiRail Connect a tu PC mediante un cable USB o a tu red mediante RS485.
-2. Asegúrate de que el dispositivo esté alimentado correctamente.
+## Paso 3: Conexión del Dispositivo
 
-### Paso 2: Configuración Inicial
+- **Para conexión USB**: Conecta el DigiRail a tu computadora usando el cable USB.
+- **Para conexión RS485**: Conecta el DigiRail a tu red RS485 siguiendo el esquema de cableado recomendado.
 
-Para configurar tu DigiRail Connect, sigue estos pasos:
+## Paso 4: Configuración Básica
 
-1. Descarga e instala el software de configuración desde el sitio web de Novus Automation.
-2. Abre el software y selecciona el puerto COM correspondiente al DigiRail Connect.
-3. Configura los parámetros según tu aplicación específica, incluyendo tipos de señal, rangos y comunicación Modbus.
+1. Abre el software de configuración de DigiRail.
+2. Selecciona el puerto al cual está conectado tu DigiRail (USB o COM específico para RS485).
+3. Configura los parámetros básicos de tu dispositivo, incluyendo la dirección Modbus y la velocidad de transmisión.
+4. Guarda la configuración en el dispositivo.
 
-## Guía Paso a Paso
+## Paso 5: Verificación del Funcionamiento
 
-### Monitoreo de Señales
-
-1. Accede al menú principal del software de configuración.
-2. Selecciona la opción de monitoreo en tiempo real.
-3. Visualiza los valores actuales de las señales conectadas al DigiRail.
-
-### Configuración de Alarmas
-
-1. En el software de configuración, navega a la sección de alarmas.
-2. Establece los umbrales para las señales de entrada.
-3. Configura las acciones correspondientes cuando se activa una alarma.
-
-## Ejemplos de Uso Común
-
-- **Monitoreo de Temperatura**: Configura el DigiRail para monitorear la temperatura de una máquina y activar una alarma si excede un umbral específico.
-- **Control de Nivel**: Utiliza el DigiRail para controlar el nivel de un líquido en un tanque, activando bombas o válvulas según sea necesario.
+1. Utiliza el software de configuración para leer los valores actuales de las entradas/salidas de DigiRail.
+2. Verifica que los datos recibidos coincidan con las expectativas de tu sistema.
 
 ## Solución de Problemas
 
-Si encuentras problemas durante la instalación o el uso del DigiRail Connect, consulta el [manual de usuario](link_al_manual) para obtener soluciones a problemas comunes.
+Si encuentras problemas durante la configuración inicial, consulta nuestra sección de [Solución de Problemas](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/troubleshooting.md) para obtener ayuda rápida.
 
-## Actualizaciones y Mantenimiento
+## Más Información
 
-Para actualizar el firmware de tu DigiRail Connect:
+Para una guía detallada sobre todas las capacidades y configuraciones avanzadas de DigiRail, por favor, consulta el [manual completo del usuario](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf).
 
-1. Descarga la última versión del firmware desde el sitio web de Novus Automation.
-2. Utiliza el software de configuración para cargar el nuevo firmware al dispositivo.
+## Soporte
 
-## Soporte y Recursos Adicionales
+Si necesitas asistencia adicional, no dudes en contactar nuestro equipo de soporte técnico a través de [nuestro formulario de contacto](https://www.novusautomation.com/es/soporte).
 
-Para soporte adicional, visita la [página de soporte de Novus Automation](https://www.novusautomation.com/es/soporte) o consulta el [manual de usuario](link_al_manual).
-
-## Feedback y Contribuciones
-
-Tus comentarios y contribuciones son bienvenidos. Si tienes sugerencias o deseas contribuir al desarrollo de soluciones basadas en DigiRail Connect, contáctanos a través de [nuestro formulario de contacto](link_al_formulario_de_contacto).
+Te agradecemos por elegir DigiRail para tus necesidades de monitoreo y control industrial. Estamos comprometidos en proporcionarte la mejor experiencia posible.
