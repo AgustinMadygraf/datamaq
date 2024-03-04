@@ -1,50 +1,50 @@
 # Ejemplos de Uso de DigiRail para Monitoreo y Mejora de OEE
 
-DigiRail ofrece una solución robusta para la adquisición automática de datos relevantes en entornos industriales. Aquí te mostramos cómo puedes utilizar DigiRail para monitorear vueltas de revolución, así como parámetros críticos como presión y temperatura, para mejorar tus métricas de OEE.
+Exploramos cómo utilizar DigiRail, una herramienta poderosa para la adquisición automática de datos relevantes en entornos industriales. Este documento no oficial muestra el potencial de DigiRail para monitorear vueltas de revolución, así como parámetros críticos como presión y temperatura, contribuyendo así a mejorar las métricas de OEE en tus operaciones.
 
 ## Monitoreo de Vueltas de Revolución (Modo Contador)
 
-DigiRail puede configurarse para capturar vueltas de revolución a través de entradas digitales en modo contador, permitiendo un seguimiento preciso de la actividad de la máquina.
+DigiRail se puede configurar para capturar datos de vueltas de revolución a través de sus entradas digitales en modo contador, ofreciendo un seguimiento preciso de la actividad de la maquinaria.
 
 ### Configuración
 
-1. Conecta tu sensor de revoluciones a la entrada digital de DigiRail designada para el modo contador.
-2. A través del software de configuración de DigiRail, establece la entrada digital en modo "Contador".
-3. Ajusta los parámetros según las especificaciones de tu sensor y las necesidades de monitoreo.
+1. Conecta tu sensor de revoluciones a la entrada digital en DigiRail destinada para el modo contador.
+2. Utiliza el software de configuración para ajustar la entrada digital al modo "Contador".
+3. Define los parámetros de acuerdo a las especificaciones de tu sensor y las necesidades específicas de tu proceso.
 
 ### Ejemplo de Aplicación
 
-Imagina que deseas monitorear un motor que es crítico para tu línea de producción. Al configurar DigiRail para contar las vueltas de revolución, puedes:
+Considera el monitoreo de un motor esencial en tu línea de producción. Al emplear DigiRail para contar las vueltas, podrás:
 
-- Detectar variaciones en la velocidad que podrían indicar mantenimiento preventivo necesario.
-- Calcular el tiempo total de operación comparando los datos de revolución a lo largo del tiempo.
+- Identificar variaciones en la velocidad que señalen necesidad de mantenimiento preventivo.
+- Estimar el tiempo total de operación al comparar los datos de revolución a lo largo del tiempo.
 
 ![Ejemplo de Monitoreo](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/img1.jpg)
 
 ## Medición de Presión y Temperatura
 
-Además de contar revoluciones, DigiRail es capaz de monitorear condiciones ambientales como la presión y la temperatura, fundamentales para el mantenimiento preventivo y la eficiencia operativa.
+DigiRail también permite el monitoreo de parámetros ambientales como la presión y temperatura, esenciales para el mantenimiento preventivo y la eficiencia operativa.
 
 ### Configuración
 
-1. Conecta los sensores de presión y temperatura a las entradas analógicas correspondientes en DigiRail.
-2. Configura cada canal en el software de DigiRail, seleccionando el tipo de señal adecuado (por ejemplo, 4-20 mA para presión, PT100 para temperatura).
+1. Enlaza los sensores de presión y temperatura a las entradas analógicas adecuadas en DigiRail.
+2. En el software de configuración, asigna cada canal al tipo de señal correspondiente (ej., 4-20 mA para presión, PT100 para temperatura).
 
 ### Ejemplo de Aplicación
 
-Monitorear la presión y la temperatura en un sistema hidráulico te permite:
+El seguimiento de la presión y temperatura en un sistema hidráulico te permite:
 
-- Prevenir fallos por sobrecalentamiento o baja presión de operación.
-- Ajustar operaciones en tiempo real para mantener la eficiencia energética.
+- Evitar fallas por sobrecalentamiento o presión de operación inadecuada.
+- Ajustar las operaciones en tiempo real para optimizar la eficiencia energética.
 
 ## Cálculo de OEE
 
-El OEE es un indicador clave de rendimiento que combina la disponibilidad, el rendimiento y la calidad. Con DigiRail, puedes:
+El OEE, o Eficiencia Global del Equipo, es un indicador compuesto por la disponibilidad, rendimiento y calidad. Con DigiRail, es posible:
 
-- **Calcular la Disponibilidad**: Utiliza el tiempo de operación (derivado de las vueltas de revolución) sobre el tiempo planificado de producción.
-- **Evaluar el Rendimiento**: Compara la cantidad teórica de producción con la cantidad real, ajustando por paros y ralentizaciones.
-- **Medir la Calidad**: Relaciona la producción buena con la producción total.
+- **Calcular la Disponibilidad**: Comparando el tiempo de operación (obtenido de las vueltas de revolución) con el tiempo planificado de producción.
+- **Evaluar el Rendimiento**: Midiendo la cantidad real de producción frente a la cantidad teórica, considerando las paradas y ralentizaciones.
+- **Medir la Calidad**: Comparando la producción sin defectos con la producción total.
 
-DigiRail facilita la recopilación de datos necesarios para estas métricas, permitiéndote tomar decisiones basadas en datos para mejorar continuamente tu producción.
+DigiRail simplifica la recopilación de los datos necesarios para estas métricas, permitiendo tomar decisiones informadas para la mejora continua de la producción.
 
-Para más detalles sobre la configuración específica y ejemplos avanzados, te invitamos a consultar el [manual completo de DigiRail](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf).
+Para más información sobre configuraciones específicas y ejemplos avanzados, te animamos a revisar el [manual completo de DigiRail](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf).
