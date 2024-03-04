@@ -1,16 +1,16 @@
 # DigiRail: Monitoreo y Control de Producción Digitalizado
 
-_El futuro del monitoreo y control de la producción industrial está aquí. DigiRail, donde la precisión se encuentra con la innovación._
+_El futuro del monitoreo y control de la producción industrial está aquí. Descubre DigiRail, donde la precisión se encuentra con la innovación._
 
-![DigiRail Logo](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/logo.ico) 
+![DigiRail Logo](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/logo.ico)
 
 ## 🚀 Introducción
 
-DigiRail es una solución integral diseñada para revolucionar la manera en que las industrias monitorean y controlan sus líneas de producción. Con la capacidad de recopilar datos en tiempo real y ofrecer una interfaz intuitiva, proporciona una visión sin precedentes sobre la eficiencia y productividad operacional.
+Esta guía no oficial de DigiRail te acerca a una solución integral diseñada para transformar cómo las industrias monitorean y controlan sus líneas de producción. A través de la recopilación de datos en tiempo real y una interfaz intuitiva, DigiRail ofrece una visión sin precedentes sobre la eficiencia y la productividad operativa.
 
 ### Problema que Soluciona
 
-DigiRail responde a la necesidad crítica de visibilidad en tiempo real y control preciso en los procesos de producción, clave para la optimización de recursos y la mejora continua.
+DigiRail aborda la necesidad crítica de obtener visibilidad en tiempo real y control preciso sobre los procesos de producción, esenciales para la optimización de recursos y la mejora continua.
 
 ## 📋 Características Principales
 
@@ -30,7 +30,7 @@ python main.py
 
 ## 📚 Guía de Uso
 
-Para un inicio rápido con DigiRail y comprender todas sus capacidades, consulta nuestra [Guía de Uso](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/quickguide.md).
+Explora cómo comenzar con DigiRail y descubre todas sus funcionalidades en nuestra [Guía de Uso](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/quickguide.md).
 
 ## 💡 Ejemplos de Uso
 
@@ -38,21 +38,22 @@ Descubre cómo DigiRail puede optimizar diferentes procesos industriales a trav�
 
 ## 🤝 Cómo Contribuir
 
-Nos encantaría tu aporte para hacer de DigiRail una herramienta aún más poderosa. Consulta [Cómo Contribuir](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/contribution_guide.md) para más detalles.
+Si estás interesado en contribuir para hacer de DigiRail una herramienta aún más poderosa, consulta nuestra guía sobre [Cómo Contribuir](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/contribution_guide.md).
 
 ## ❓ Preguntas Generales
 
-Encuentra respuestas rápidas a preguntas frecuentes en nuestro [FAQ](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/faq.md).
+Para respuestas rápidas a preguntas frecuentes, visita nuestro [FAQ](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/faq.md).
 
 ## 🛠 Solución de Problemas
 
-Para soluciones a problemas comunes, visita nuestro documento de [Solución de Problemas](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/troubleshooting.md).
+Si te encuentras con problemas, consulta nuestro documento de [Solución de Problemas](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/troubleshooting.md) para obtener ayuda rápida.
 
 ## 📞 Contacto
 
+Si necesitas más información o asistencia:
 - **Email**: agustin.mtto.madygraf@gmail.com
 - **GitHub**: [AgustinMadygraf](https://github.com/AgustinMadygraf)
 
 ## 📄 Licencia
 
-Distribuido bajo la Licencia MIT. Ver [`LICENSE`](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/license.md) para más información.
+Este proyecto se distribuye bajo la Licencia MIT. Consulta el archivo [`LICENSE`](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/license.md) para más detalles.
