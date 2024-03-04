@@ -1,47 +1,47 @@
 # Guía Rápida de Inicio para DigiRail
 
-Bienvenido a DigiRail, tu solución integral para el monitoreo y control de la producción industrial. Esta guía rápida te ayudará a configurar y empezar a utilizar DigiRail en poco tiempo.
+Bienvenido a esta guía no oficial para comenzar con DigiRail, una solución avanzada para el monitoreo y control de procesos industriales. Este documento te guiará a través de los pasos básicos para configurar y comenzar a usar DigiRail de manera efectiva.
 
-## Paso 1: Preparación
+## Paso 1: Preparativos
 
-Antes de comenzar, asegúrate de tener:
+Antes de sumergirte en el mundo de DigiRail, asegúrate de contar con:
 
 - Un dispositivo DigiRail.
-- Una conexión a Internet para acceder a la documentación y software necesarios.
-- Cables de conexión adecuados (USB o RS485, según tu modelo específico).
+- Acceso a internet para descargar software y acceder a documentación adicional.
+- Los cables necesarios para tu conexión, ya sea USB o RS485, dependiendo del modelo de tu DigiRail.
 
-## Paso 2: Instalación del Software
+## Paso 2: Instalación de Software
 
-1. Descarga el último software de configuración de DigiRail desde nuestro [sitio web oficial](https://www.novusautomation.com/es/producto/modulos-de-e-s/digirail-connect).
-2. Instala el software siguiendo las instrucciones proporcionadas en el instalador.
+1. Visita el sitio web oficial de Novus (o la página de donde adquiriste tu DigiRail) para descargar el software de configuración más reciente.
+2. Instala el software en tu computadora, siguiendo las instrucciones provistas durante el proceso de instalación.
 
 ## Paso 3: Conexión del Dispositivo
 
-- **Para conexión USB**: Conecta el DigiRail a tu computadora usando el cable USB.
-- **Para conexión RS485**: Conecta el DigiRail a tu red RS485 siguiendo el esquema de cableado recomendado.
+- **Conexión USB:** Conecta el DigiRail a tu PC utilizando el cable USB provisto.
+- **Conexión RS485:** Si prefieres una conexión RS485, asegúrate de seguir el diagrama de cableado recomendado para tu configuración específica.
 
-## Paso 4: Configuración Básica
+## Paso 4: Configuración Inicial
 
-1. Abre el software de configuración de DigiRail.
-2. Selecciona el puerto al cual está conectado tu DigiRail (USB o COM específico para RS485).
-3. Configura los parámetros básicos de tu dispositivo, incluyendo la dirección Modbus y la velocidad de transmisión.
-4. Guarda la configuración en el dispositivo.
+1. Inicia el software de configuración de DigiRail.
+2. Elige el puerto correspondiente a tu DigiRail (USB o el número de COM para conexiones RS485).
+3. Ajusta los parámetros básicos como la dirección Modbus y la tasa de baudios.
+4. Aplica y guarda tu configuración en el dispositivo.
 
-## Paso 5: Verificación del Funcionamiento
+## Paso 5: Verificación y Pruebas
 
-1. Utiliza el software de configuración para leer los valores actuales de las entradas/salidas de DigiRail.
-2. Verifica que los datos recibidos coincidan con las expectativas de tu sistema.
+1. A través del software, realiza una lectura de prueba para confirmar que las señales de entrada y salida funcionan como se espera.
+2. Comprueba que los valores recibidos sean consistentes con tu configuración y las condiciones de operación.
 
 ## Solución de Problemas
 
-Si encuentras problemas durante la configuración inicial, consulta nuestra sección de [Solución de Problemas](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/troubleshooting.md) para obtener ayuda rápida.
+Para cualquier inconveniente durante la instalación o configuración, te recomendamos visitar la [sección de solución de problemas](https://github.com/AgustinMadygraf/DigiRail/blob/main/DOCS/troubleshooting.md) donde encontrarás consejos útiles y soluciones.
 
-## Más Información
+## Información Adicional
 
-Para una guía detallada sobre todas las capacidades y configuraciones avanzadas de DigiRail, por favor, consulta el [manual completo del usuario](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf).
+Consulta el [manual del usuario](https://cdn.novusautomation.com/downloads/manual_digirail_connect_v10x_m_es.pdf) para una guía más detallada sobre las funcionalidades avanzadas y configuraciones de DigiRail.
 
 ## Soporte
 
-Si necesitas asistencia adicional, no dudes en contactar nuestro equipo de soporte técnico a través de [nuestro formulario de contacto](https://www.novusautomation.com/es/soporte).
+Si requieres asistencia más allá de esta guía, te animamos a contactar al soporte técnico oficial de Novus o a través del [formulario de contacto](https://www.novusautomation.com/es/soporte) disponible en su sitio web.
 
-Te agradecemos por elegir DigiRail para tus necesidades de monitoreo y control industrial. Estamos comprometidos en proporcionarte la mejor experiencia posible.
+Esta guía ha sido creada por un usuario entusiasta de DigiRail con el propósito de facilitar la puesta en marcha de tu dispositivo. ¡Esperamos que te sea de gran ayuda!
