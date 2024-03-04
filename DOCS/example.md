@@ -19,7 +19,7 @@ Imagina que deseas monitorear un motor que es crítico para tu línea de producc
 - Detectar variaciones en la velocidad que podrían indicar mantenimiento preventivo necesario.
 - Calcular el tiempo total de operación comparando los datos de revolución a lo largo del tiempo.
 
-![Ejemplo de Monitoreo](img1.jpg)
+![Ejemplo de Monitoreo](https://github.com/AgustinMadygraf/DigiRail/blob/main/SCR/config/img1.jpg)
 
 ## Medición de Presión y Temperatura
 
