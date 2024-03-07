@@ -18,7 +18,7 @@
     </form>
 
     <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=hora&conta=' . $conta ?>" method="post" class="periodo">
-        <input type="submit" value="hora" class="<?= $ref_class[$class[2]] ?>">
+        <input type="submit" value="2 horas" class="<?= $ref_class[$class[2]] ?>">
     </form>
 
     <div class='spacer'></div>
