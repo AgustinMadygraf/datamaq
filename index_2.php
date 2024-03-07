@@ -42,7 +42,7 @@
         require "includes/dashboard_2.php";
         require "includes/header.php";
         require "includes/info_display.php";
-        require "includes/chart_viewer.php"; 
+        require "includes/chart_viewer_2.php"; 
         ?>     
 </body>
 </html>
