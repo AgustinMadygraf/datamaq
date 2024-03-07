@@ -7,17 +7,17 @@
 
     <div class='spacer'></div>
 
-    <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=mes&conta=' . $conta ?>" method="post" class="periodo">
+    <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=semana&conta=' . $conta ?>" method="post" class="periodo">
         <input type="submit" value="semana" class="<?= $ref_class[$class[0]] ?>">
     </form>
 
     
 
-    <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=semana&conta=' . $conta ?>" method="post" class="periodo">
+    <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=turno&conta=' . $conta ?>" method="post" class="periodo">
         <input type="submit" value="turno" class="<?= $ref_class[$class[1]] ?>">
     </form>
 
-    <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=turno&conta=' . $conta ?>" method="post" class="periodo">
+    <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=hora&conta=' . $conta ?>" method="post" class="periodo">
         <input type="submit" value="hora" class="<?= $ref_class[$class[2]] ?>">
     </form>
 
