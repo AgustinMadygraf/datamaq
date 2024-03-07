@@ -1,9 +1,10 @@
+#C:\AppServ\www\DigiRail\intervalproduction_d.py
 import csv
 import pymysql
-from SCR.db_operations import check_db_connection, execute_query
+from db_operations import check_db_connection, execute_query
 
 # Ruta al archivo CSV
-csv_file_path = r'C:\AppServ\www\DigiRail\intervalproduction_d.csv'
+csv_file_path = r'C:\AppServ\www\DigiRail\database\intervalproduction_d.csv'
 
 def load_csv_to_mysql(csv_path):
     # Establecer conexión a la base de datos
