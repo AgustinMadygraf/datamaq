@@ -9,7 +9,7 @@ function obtenerUltimoRegistro() {
 
 // Enviar datos a la base de datos remota
 function enviarDatosRemotos($unixtime, $HR_COUNTER1, $HR_COUNTER2) {
-    $url = "http://10.176.61.55/DigiRail/includes/receiveAndUpdateDB.php?unixtime=$unixtime&HR_COUNTER1=$HR_COUNTER1&HR_COUNTER2=$HR_COUNTER2";
+    $url = "http://10.176.61.55/DataMaq/includes/receiveAndUpdateDB.php?unixtime=$unixtime&HR_COUNTER1=$HR_COUNTER1&HR_COUNTER2=$HR_COUNTER2";
     
     // Mostrar los datos y la URL en pantalla
     echo "Unixtime: <br>$unixtime<br><br>";
