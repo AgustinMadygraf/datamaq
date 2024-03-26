@@ -1,4 +1,4 @@
-<!--DataMaq/includes/conn_novus.php -->
+<!--DataMaq/includes/conn_stock.php -->
 <?php
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');

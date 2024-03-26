@@ -1,7 +1,7 @@
 <!-- dashboard.php -->
 <?php
-require 'conn_novus.php';
-require 'db_functions.php';
+require_once 'includes/conn_novus.php';
+require_once 'includes/db_functions.php';
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 setlocale(LC_TIME, "spanish");
 $segundos = 60; // Refrescar cada 60 segundos
