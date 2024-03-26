@@ -1,8 +1,6 @@
+<!--DataMaq\includes\db_functions.php-->
 <?php
-// db_functions.php
-require "conn_novus.php";
 
-// Conectar a la base de datos
 /**
  * Conectar a la base de datos.
  *
