@@ -13,6 +13,7 @@ $claseActiva = "class='active'";
 echo "<li><a href='index.php' ".($paginaActual == 'index.php' ? $claseActiva : "").">DataMaq</a></li>";
 echo "<li><a href='PanelControlModbus.php' ".($paginaActual == 'PanelControlModbus.php' ? $claseActiva : "").">Estado del Equipo</a></li>";
 echo "<li><a href='/Bolsas/index.php' ".($paginaActual == 'Bolsas/index.php' ? $claseActiva : "").">Costos Bolsas</a></li>";
+echo "<li><a href='/DataMaq/formato.php' ".($paginaActual == 'DataMaq/formato.php' ? $claseActiva : "").">Formato</a></li>";
 echo "<li><a href='/horas/index.php' ".($paginaActual == '/horas/index.php' ? $claseActiva : "").">Horas</a></li>";
 echo "<li><a href='/DataMaq/index.php' ".($paginaActual == '/DataMaq/index.php' ? $claseActiva : "").">DataMaq</a></li>";
 echo "<li><a href='/phpMyAdmin/' target='_blank'>PHP MyAdmin</a></li>";
