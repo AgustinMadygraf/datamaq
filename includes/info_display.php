@@ -2,6 +2,9 @@
 // Realizar el cálculo fuera de la estructura HTML para limpiar la presentación.
 $vel_ult_calculada = round($vel_ult / 5, 1);
 $estiloFondo = "background: linear-gradient(195deg, rgb(107,170,34) {$d[3]}%, rgb(255,164,1) {$d[2]}%, rgb(234,53,34) {$d[1]}%, rgb(100,10,5) {$d[0]}%);";
+$formato = "No especificado"; 
+$ancho_bobina = "No especificado"; 
+
 
 $sql = "SELECT * FROM `produccion_bolsas_aux`";
 //conexcion a base de datos "registro_stock"
@@ -11,38 +14,29 @@ if (!$conexion2) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// Ejecutar la consulta
-$result = mysqli_query($conexion2, $sql);
-
-if ($result && mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        // Suponiendo que quieres el último valor (o adapta según tu lógica)
-        $ID_formato = $row['ID_formato']; // Asume que las columnas existen
-        $ancho_bobina = "{$row['ancho_bobina']} mm";
-    }
-} elseif (!$result) {
-    echo "Error al ejecutar la consulta: " . mysqli_error($conexion2);
-} else {
-    echo "No se encontraron resultados.";
-}
-
-if (isset($ID_formato) && $ID_formato > 0) {
-    $sql = "SELECT `formato` FROM `tabla_1` WHERE `ID_formato` = $ID_formato";
+try {
+    // Ejecutar la consulta para obtener el último formato y ancho de bobina
+    $sql = "SELECT * FROM `produccion_bolsas_aux` ORDER BY ID DESC LIMIT 1";
     $result = mysqli_query($conexion2, $sql);
-    
+
     if ($result && mysqli_num_rows($result) > 0) {
-        // Si hay resultados, obtener el primer resultado (debería ser único en este caso)
         $row = mysqli_fetch_assoc($result);
-        $formato = $row['formato']; // Asignar el valor de la columna `formato`
-    } else if (!$result) {
-        echo "Error al ejecutar la consulta: " . mysqli_error($conexion2);
-    } else {
-        echo "No se encontró el formato correspondiente al ID.";
-        $formato = "No especificado"; // O manejar como mejor te parezca
+        $ID_formato = $row['ID_formato'];
+        $ancho_bobina = "{$row['ancho_bobina']} mm";
+
+        // Segunda consulta para obtener el formato basado en el ID_formato
+        $sql = "SELECT `formato` FROM `tabla_1` WHERE `ID_formato` = $ID_formato";
+        $result = mysqli_query($conexion2, $sql);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            $formato = $row['formato'];
+        }
     }
-} else {
-    echo "ID de formato no definido o inválido.";
-    $formato = "No especificado"; // Manejo de error o valor por defecto
+} catch (Exception $e) {
+    // Manejo del error
+    error_log("Error: " . $e->getMessage());
+    // Considera mostrar un mensaje de error o redirigir a una página de error
 }
 ?>
 
@@ -50,9 +44,9 @@ if (isset($ID_formato) && $ID_formato > 0) {
     <div class="info">
         <div class="cabecera">
             <div class="c1">
-                <p1>Velocidad <?php echo $vel_ult_calculada; ?> unidades por minuto</p1>
-                <p1>Formato <?php echo $formato;?></p1>
-                <p1>Ancho Bobina <?php echo $ancho_bobina;?></p1>
+                <p2>Velocidad <?php echo $vel_ult_calculada; ?> unidades por minuto</p2>
+                <p1>Formato <?php echo htmlspecialchars($formato); ?></p1>
+                <p2>Ancho Bobina <?php echo htmlspecialchars($ancho_bobina); ?></p2>
             </div>
         </div>
         <div id="container" class="graf"></div>
