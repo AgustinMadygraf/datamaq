@@ -26,14 +26,21 @@
 
 
     <div class="container">
+<<<<<<< HEAD
         <h1 class="text-center"> Últimos formatos</h1>
+=======
+        <h1 class="text-center">Estado del Equipo - Registros Modbus</h1>
+>>>>>>> b64f7d1c5c59161681bd04374d21cf45668870ec
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
                     <th>Ancho bobina en mm</th>
                     <th>ID_formato</th>
+<<<<<<< HEAD
                     <th>formato</th> <!-- Ayuda acá -->
+=======
+>>>>>>> b64f7d1c5c59161681bd04374d21cf45668870ec
                     <th>Desde</th>                    
                     <th>Hasta</th>                    
                 </tr>
@@ -41,6 +48,7 @@
             <tbody>
 
     <?php
+<<<<<<< HEAD
 foreach ($rawdata as $row) {
     // Conectar a la BD
     $conexion = conectarBD();
@@ -80,12 +88,24 @@ foreach ($rawdata as $row) {
     echo "</tr>";
 }
 
+=======
+        foreach ($rawdata as $row) {
+            echo "<tr>";
+            echo "<td>" . $row['ID'] . "</td>";
+            echo "<td>" . $row['ancho_bobina'] . "</td>";
+            echo "<td>" . $row['ID_formato'] . "</td>";
+            echo "<td>" . $row['Fecha'] . "</td>"; 
+            echo "<td>" . date("Y-m-d H:i:s") . "</td>";
+            echo "</tr>";
+        }
+>>>>>>> b64f7d1c5c59161681bd04374d21cf45668870ec
     ?>
             </tbody>
         </table>
 </div>
 
 <br><br><br>
+<<<<<<< HEAD
 <br><br><br>
 <br><br><br>
 <div class="container">
@@ -100,6 +120,14 @@ foreach ($rawdata as $row) {
                 </tr>
         </thead>
         <tbody>
+=======
+<table>
+    <tr>
+        <th>Ancho de Bobina en mm</th>
+        <th>ID de Formato</th>
+        <th>Fecha</th>
+    </tr>
+>>>>>>> b64f7d1c5c59161681bd04374d21cf45668870ec
     <tr>
         <form action="includes/procesar_1.php" method="post">
             <td><input type="number" name="ancho_bobina" required></td>        
@@ -114,6 +142,7 @@ foreach ($rawdata as $row) {
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
+<<<<<<< HEAD
             </select></td>
             <td><input type="text" name="formato" required></td>
             <td><input type="text" name="Fecha" value="<?php echo date("d-m-Y H:i:s"); ?>" readonly></td>            
@@ -123,6 +152,13 @@ foreach ($rawdata as $row) {
     </tbody>
     </table>
 </div>
+=======
+            <td><input type="text" name="Fecha" required></td>
+            <td><input type="submit" value="Agregar"></td>
+        </form>
+    </tr>
+</table>
+>>>>>>> b64f7d1c5c59161681bd04374d21cf45668870ec
 
 
 </body>
