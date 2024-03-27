@@ -1,6 +1,12 @@
 <?php
 // Realizar el cálculo fuera de la estructura HTML para limpiar la presentación.
-$vel_ult_calculada = round($vel_ult / 5, 1);
+if ($vel_ult == null) {
+    $vel_ult_calculada = 0;
+} elseif ($condition) { // Nota el cambio aquí de else if a elseif y el uso correcto de llaves
+    $vel_ult_calculada = round($vel_ult / 5, 1);
+}
+
+require_once 'conn.php';
 $estiloFondo = "background: linear-gradient(195deg, rgb(107,170,34) {$d[3]}%, rgb(255,164,1) {$d[2]}%, rgb(234,53,34) {$d[1]}%, rgb(100,10,5) {$d[0]}%);";
 $formato = "No especificado"; 
 $ancho_bobina = "No especificado"; 
