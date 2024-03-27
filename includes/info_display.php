@@ -17,13 +17,32 @@ $result = mysqli_query($conexion2, $sql);
 if ($result && mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Suponiendo que quieres el último valor (o adapta según tu lógica)
-        $formato = $row['ID_formato']; // Asume que las columnas existen
+        $ID_formato = $row['ID_formato']; // Asume que las columnas existen
         $ancho_bobina = "{$row['ancho_bobina']} mm";
     }
 } elseif (!$result) {
     echo "Error al ejecutar la consulta: " . mysqli_error($conexion2);
 } else {
     echo "No se encontraron resultados.";
+}
+
+if (isset($ID_formato) && $ID_formato > 0) {
+    $sql = "SELECT `formato` FROM `tabla_1` WHERE `ID_formato` = $ID_formato";
+    $result = mysqli_query($conexion2, $sql);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        // Si hay resultados, obtener el primer resultado (debería ser único en este caso)
+        $row = mysqli_fetch_assoc($result);
+        $formato = $row['formato']; // Asignar el valor de la columna `formato`
+    } else if (!$result) {
+        echo "Error al ejecutar la consulta: " . mysqli_error($conexion2);
+    } else {
+        echo "No se encontró el formato correspondiente al ID.";
+        $formato = "No especificado"; // O manejar como mejor te parezca
+    }
+} else {
+    echo "ID de formato no definido o inválido.";
+    $formato = "No especificado"; // Manejo de error o valor por defecto
 }
 ?>
 
@@ -32,7 +51,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="cabecera">
             <div class="c1">
                 <p1>Velocidad <?php echo $vel_ult_calculada; ?> unidades por minuto</p1>
-                <p1>ID_Formato <?php echo $formato;?></p1>
+                <p1>Formato <?php echo $formato;?></p1>
                 <p1>Ancho Bobina <?php echo $ancho_bobina;?></p1>
             </div>
         </div>
