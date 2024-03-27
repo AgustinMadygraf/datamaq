@@ -3,19 +3,28 @@
 $vel_ult_calculada = round($vel_ult / 5, 1);
 $estiloFondo = "background: linear-gradient(195deg, rgb(107,170,34) {$d[3]}%, rgb(255,164,1) {$d[2]}%, rgb(234,53,34) {$d[1]}%, rgb(100,10,5) {$d[0]}%);";
 
-//$sql = "SELECT * FROM `produccion_bolsas_aux`";
+$sql = "SELECT * FROM `produccion_bolsas_aux`";
 //conexcion a base de datos "registro_stock"
-//require_once 'includes/conn_stock.php';
-//$conexion = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-//$result = mysqli_query($conexion, $sql);
-//$datos = mysqli_fetch_assoc($result);
-//$datos = json_encode($datos);
-//mysqli_close($conexion);
+$conexion2 = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME2);
 
-//print_r($datos);
+if (!$conexion2) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
-$formato = "260 x 120 x  360";
-$ancho_bobina = "790 mm";
+// Ejecutar la consulta
+$result = mysqli_query($conexion2, $sql);
+
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        // Suponiendo que quieres el último valor (o adapta según tu lógica)
+        $formato = $row['ID_formato']; // Asume que las columnas existen
+        $ancho_bobina = "{$row['ancho_bobina']} mm";
+    }
+} elseif (!$result) {
+    echo "Error al ejecutar la consulta: " . mysqli_error($conexion2);
+} else {
+    echo "No se encontraron resultados.";
+}
 ?>
 
 <div id="zero" class="hoja" style="<?php echo $estiloFondo; ?>">
@@ -23,7 +32,7 @@ $ancho_bobina = "790 mm";
         <div class="cabecera">
             <div class="c1">
                 <p1>Velocidad <?php echo $vel_ult_calculada; ?> unidades por minuto</p1>
-                <p1>Formato <?php echo $formato;?></p1>
+                <p1>ID_Formato <?php echo $formato;?></p1>
                 <p1>Ancho Bobina <?php echo $ancho_bobina;?></p1>
             </div>
         </div>
