@@ -103,19 +103,22 @@ foreach ($rawdata as $row) {
     <tr>
         <form action="includes/procesar_1.php" method="post">
             <td><input type="number" name="ancho_bobina" required></td>        
-            <td><select name="ID_formato" required>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
+            <td><input type="number" name="ID_formato" required value="<?php echo $ID_formato;?>"></td>
+<!--     select con option        <td><input type="text" name="formato" required ></td>
+-->            
+            <td><select>
+                <option value="1">Formato 1</option>
+                <option value="2">Formato 2</option>
+                <option value="3">Formato 3</option>
+                <option value="4">Formato 4</option>
+                <option value="5">Formato 5</option>
+                <option value="6">Formato 6</option>
+                <option value="7">Formato 7</option>
+                <option value="8">Formato 8</option>
+                <option value="9">Formato 9</option>
+                <option value="10">Formato 10</option>
             </select></td>
-            <td><input type="text" name="formato" required></td>
+            
             <td><input type="text" name="Fecha" value="<?php echo date("d-m-Y H:i:s"); ?>" readonly></td>            
             <td><input type="submit" value="Agregar"></td>
         </form>
