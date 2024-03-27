@@ -1,6 +1,6 @@
 <!-- dashboard.php -->
 <?php
-require_once 'includes/conn_novus.php';
+require_once 'includes/conn.php';
 require_once 'includes/db_functions.php';
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 setlocale(LC_TIME, "spanish");

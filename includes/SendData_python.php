@@ -1,5 +1,6 @@
 <!--includes/SendData_python.php-->
 <?php
+require 'conn.php'; 
 require 'db_functions.php'; 
 // Obtener el último registro de la base de datos local
 function obtenerUltimoRegistro() {
