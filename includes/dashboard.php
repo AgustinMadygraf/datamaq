@@ -1,10 +1,10 @@
 <!-- dashboard.php -->
 <?php
-require 'db_functions.php';
+require_once 'includes/conn.php';
+require_once 'includes/db_functions.php';
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 setlocale(LC_TIME, "spanish");
 $segundos = 60; // Refrescar cada 60 segundos
-
 
 // Variable que registra qué período de tiempo mostrar por defecto
 $periodo = 'semana';
@@ -29,9 +29,6 @@ $res = getArraySQL(sql_query("HR_COUNTER1"));
 $vel_ult = $res[0]['HR_COUNTER1'] ;
 $unixtime = $res[0]['unixtime'] ;
 
-
-
-
 // Si la variable 'test' aparece en $_GET, el refresco se hace cada segundo en vez de cada 20 segundos.
 header("Refresh:" . $segundos);
 
@@ -43,7 +40,6 @@ for ($i = 0; $i < 4; $i++) {
 
 $date = date(DATE_RFC2822);
 $newDate = date("D, d M Y" . (" 00:00:00") . " O");
-
 $valorInicial = $unixtime * 1000;
 $conta = $valorInicial;
 if ($_GET && array_key_exists("conta", $_GET)) {
@@ -57,7 +53,4 @@ $tiempo1 = ($conta/1000) - $ls_periodos[$periodo] - 80*60;
 $tiempo2 = $conta/1000 ;
 $sql = "SELECT `unixtime`, `HR_COUNTER1`, `HR_COUNTER2`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
 $rawdata = getArraySQL($sql);
-
-
-
 ?>
