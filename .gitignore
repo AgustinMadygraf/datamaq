@@ -9,3 +9,4 @@ src/__pycache__/
 src/config/__pycache__/
 src/logs/sistema.log
 src/logs/__pycache__/
+DataMaq.bat
