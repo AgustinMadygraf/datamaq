@@ -1,19 +1,25 @@
-#src/db_operations.py
+"""
+Path: src/db_operations.py
+Este script se ocupa de realizar operaciones de base de datos, como actualizaciones y consultas.
+"""
+
 import pymysql
 from src.logs.config_logger import configurar_logging
 import functools
 import os
-from sqlalchemy import create_engine, text  # Nuevo
+from sqlalchemy import create_engine, text
 
 logger = configurar_logging()
 
 def get_db_engine():
+    " Obtiene un objeto de engine de SQLAlchemy para la base de datos."
     config = get_db_config()
     conn_str = f"mysql+pymysql://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['db']}"
     engine = create_engine(conn_str, pool_pre_ping=True)
     return engine
 
 def perform_update(connection, address, value):
+    " Realiza una actualización en la base de datos."
     query, params = build_update_query(address, value)
     return execute_query(connection, query, params)
 
@@ -138,6 +144,7 @@ def check_db_connection():
 class DatabaseUpdateError(Exception):
     """Excepción para errores en la actualización de la base de datos."""
     pass
+
 def get_db_config():
     """
     Obtiene la configuración de la base de datos desde variables de entorno o parámetros.

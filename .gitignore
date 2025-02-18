@@ -12,3 +12,5 @@ src/logs/__pycache__/
 DataMaq.bat
 todo.md
 __pycache__/data_transfer.cpython-311.pyc
+src/core/__pycache__/
+src/controllers/__pycache__/

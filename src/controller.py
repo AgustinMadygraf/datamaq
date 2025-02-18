@@ -1,4 +1,9 @@
-#src/controller.py
+"""
+Path: src/controller.py
+Este script se ocupa de manejar la conexión con el dispositivo Modbus
+y procesar las operaciones Modbus.
+"""
+
 from src.logs.config_logger import configurar_logging
 from src.db_operations import update_database
 import serial.tools.list_ports

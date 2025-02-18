@@ -1,14 +1,23 @@
+"""
+Path: src/data_transfer.py
+Este script se ocupa de transferir datos de la base de datos local 
+a la base de datos remota.
+"""
+
 import time
 from datetime import datetime
 import subprocess
 import pymysql
 from src.logs.config_logger import configurar_logging
-from src.db_operations import check_db_connection  
+from src.db_operations import check_db_connection
 
 logger = configurar_logging()
 
 def transfer_production_log():
+    " Transfiere los datos de ProductionLog a la base de datos remota."
     conn = check_db_connection()
+    if not hasattr(conn, "cursor"):
+        conn = conn.raw_connection()  # Obtener conexión DBAPI
     if not conn:
         logger.error("No se pudo establecer una conexión con la base de datos.")
         return
@@ -16,8 +25,8 @@ def transfer_production_log():
         logger.info("Iniciando transferencia de ProductionLog.")
         unixtime = int(time.time())
         unixtime = (round(unixtime / 300)) * 300
-        consulta1 = """ 
-            SELECT 
+        consulta1 = """
+            SELECT
                 (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER1_LO') AS HR_COUNTER1_LO, 
                 (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER1_HI') AS HR_COUNTER1_HI, 
                 (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER2_LO') AS HR_COUNTER2_LO, 
@@ -43,7 +52,10 @@ def transfer_production_log():
     conn.close()
 
 def transfer_interval_production():
+    " Transfiere los datos de intervalproduction a la base de datos remota."
     conn = check_db_connection()
+    if not hasattr(conn, "cursor"):
+        conn = conn.raw_connection()  # Obtener conexión DBAPI
     if not conn:
         logger.error("No se pudo establecer conexión para intervalproduction.")
         return
@@ -80,6 +92,7 @@ def transfer_interval_production():
     conn.close()
 
 def MainTransfer():
+    "Función principal para transferir datos."
     if es_tiempo_cercano_multiplo_cinco():
         logger.info("Iniciando transferencia de datos.")
         transfer_production_log()
@@ -90,20 +103,24 @@ def MainTransfer():
         logger.info("No es momento de transferir datos. Esperando para la próxima verificación.")
 
 def SendDataPHP():
+    "Envía los datos a través de un script PHP."
     php_interpreter = "C://AppServ//php7//php.exe"
     php_script = "C://AppServ//www//DataMaq//includes//SendData_python.php"
-    result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True, shell=True)
+    result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True, shell=True, check=True)
     if result.returncode == 0:
         logger.info("Script PHP ejecutado exitosamente. Salida:")
         logger.info(result.stdout)
     else:
-        logger.error(f"Error al ejecutar el script PHP. Código de salida: {result.returncode}")
+        logger.error("Error al ejecutar el script PHP. Código de salida: %s", result.returncode)
         logger.error(result.stderr)
 
 def transferir_datos(consulta1, consulta2, num_filas):
+    "Transfiere datos de una consulta a otra."
     print("")
     try:
         conn = check_db_connection()
+        if not hasattr(conn, "cursor"):
+            conn = conn.raw_connection()  # Obtener conexión DBAPI
         if not conn:
             logger.error("No se pudo establecer una conexión con la base de datos.")
             return
@@ -124,10 +141,10 @@ def transferir_datos(consulta1, consulta2, num_filas):
             else:
                 logger.warning("No se obtuvieron datos para transferir.")
     except pymysql.MySQLError as e:
-        logger.error(f"Error de MySQL durante la transferencia de datos: {e}")
+        logger.error("Error de MySQL durante la transferencia de datos: %s", e)
         conn.rollback()
-    except Exception as e:
-        logger.error(f"Error inesperado durante la transferencia de datos: {e}")
+    except (TypeError, ValueError) as e:
+        logger.error("Error durante la transferencia de datos: %s", e)
         conn.rollback()
     finally:
         if conn:
@@ -135,16 +152,18 @@ def transferir_datos(consulta1, consulta2, num_filas):
             logger.info("Conexión a la base de datos cerrada.")
 
 def obtener_datos(cursor, consulta):
+    "Obtiene los datos de una consulta."
     try:
         cursor.execute(consulta)
         return cursor.fetchall()
     except pymysql.MySQLError as e:
-        logger.error(f"Error de MySQL al ejecutar consulta: {e}")
-    except Exception as e:
-        logger.error(f"Error inesperado al ejecutar consulta: {e}")
+        logger.error("Error de MySQL al ejecutar consulta: %s", e)
+    except (TypeError, ValueError) as e:
+        logger.error("Error al ejecutar consulta: %s", e)
     return None
 
 def insertar_datos(conn, datos, consulta2, num_filas):
+    "Inserta los datos en la base de datos."
     try:
         with conn.cursor() as cursor:
             for fila in datos:
@@ -157,14 +176,15 @@ def insertar_datos(conn, datos, consulta2, num_filas):
     except pymysql.MySQLError as e:
         logger.error("Error de MySQL al insertar datos: %s", e)
         conn.rollback()
-    except Exception as e:
-        logger.error("Error inesperado al insertar datos: %s", e)
+    except (TypeError, ValueError) as e:
+        logger.error("Error al insertar datos: %s", e)
         conn.rollback()
 
 def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
+    "Verifica si el tiempo actual está cerca de un múltiplo de cinco minutos."
     ahora = datetime.now()
     minuto_actual = ahora.minute
     segundo_actual = ahora.second
     cercano_a_multiplo = minuto_actual % 5 <= tolerancia / 60 and segundo_actual <= tolerancia
-    logger.info(f"Chequeando tiempo: {ahora}, cercano a múltiplo de 5: {'sí' if cercano_a_multiplo else 'no'}")
+    logger.info("Chequeando tiempo: %s, cercano a múltiplo de 5: %s", ahora, 'sí' if cercano_a_multiplo else 'no')
     return cercano_a_multiplo
