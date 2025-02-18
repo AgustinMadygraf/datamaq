@@ -1,7 +1,7 @@
 # utils.py
 import functools
 import pymysql
-from config.db_config import get_db_config  
+from src.db_operations import get_db_config  
 
 
 

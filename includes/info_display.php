@@ -1,4 +1,10 @@
 <?php
+/*
+Path: includes/info_display.php
+Este archivo contiene la lógica para mostrar la información en la aplicación.
+*/
+
+
 // Realizar el cálculo fuera de la estructura HTML para limpiar la presentación.
 if ($vel_ult == null) {
     $vel_ult_calculada = 0;

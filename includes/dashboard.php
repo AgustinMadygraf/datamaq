@@ -1,5 +1,9 @@
-<!-- dashboard.php -->
 <?php
+/*
+Path: includes/dashboard.php
+Este archivo contiene la lógica para mostrar el dashboard de la aplicación.
+*/
+
 require_once 'includes/conn.php';
 require_once 'includes/db_functions.php';
 date_default_timezone_set('America/Argentina/Buenos_Aires');
