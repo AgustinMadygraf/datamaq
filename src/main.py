@@ -1,8 +1,8 @@
-#SCR/main.py
-from db_operations import check_db_connection, update_database
-from controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register, limpiar_pantalla
-from logs.config_logger import configurar_logging
-from DataTransfer import MainTransfer
+#src/main.py
+from src.db_operations import check_db_connection, update_database
+from src.controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register, limpiar_pantalla
+from src.logs.config_logger import configurar_logging
+from src.DataTransfer import MainTransfer
 import minimalmodbus
 import time
 import signal
