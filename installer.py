@@ -2,7 +2,7 @@
 import subprocess
 import os
 import sys
-from SCR.logs.config_logger import configurar_logging
+from src.logs.config_logger import configurar_logging
 import winshell
 from win32com.client import Dispatch
 

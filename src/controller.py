@@ -53,12 +53,12 @@ def inicializar_conexion_modbus():
     device_address = 1
     device_description = "DigiRail Connect"  
     com_port = detect_serial_ports(device_description)
-    if com_port:
+    if (com_port):
         logger.info(f"Puerto {device_description} detectado: {com_port}")
     else:
         device_description = "USB-SERIAL CH340"  
         com_port = detect_serial_ports(device_description)
-        if com_port:
+        if (com_port):
             logger.info(f"Puerto detectado: {com_port}\n")
         else:
             logger.error("No se detectaron puertos COM para tudispositivo.")
@@ -66,32 +66,18 @@ def inicializar_conexion_modbus():
             exit()
     return com_port, device_address
 
-def process_high_resolution_register(instrument, connection):
-    """
-    Procesa y actualiza los registros de alta resolución de un dispositivo Modbus.
+def update_register_value(instrument, register, description):
+    # Se elimina "connection" y se utiliza update_database directamente
+    value = safe_modbus_read(instrument.read_register, register, functioncode=3)
+    if value is not None:
+        update_database(register, value, descripcion=description)
 
-    Lee los valores de los registros HR_COUNTER1_LO y HR_COUNTER1_HI del dispositivo Modbus
-    y actualiza la base de datos con estos valores individualmente.
-
-    Args:
-        instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        connection (pymysql.connections.Connection): Conexión a la base de datos para actualizar los valores.
-    """
-    value_lo = safe_modbus_read(instrument.read_register, HR_COUNTER1_LO, functioncode=3)
-    if value_lo is not None:
-        update_database(connection, HR_COUNTER1_LO, value_lo, "HR_COUNTER1_LO")
-
-    value_hi = safe_modbus_read(instrument.read_register, HR_COUNTER1_HI, functioncode=3)
-    if value_hi is not None:
-        update_database(connection, HR_COUNTER1_HI, value_hi, "HR_COUNTER1_HI")
-
-    value_lo = safe_modbus_read(instrument.read_register, HR_COUNTER2_LO, functioncode=3)
-    if value_lo is not None:
-        update_database(connection, HR_COUNTER2_LO, value_lo, "HR_COUNTER2_LO")
-
-    value_hi = safe_modbus_read(instrument.read_register, HR_COUNTER2_HI, functioncode=3)
-    if value_hi is not None:
-        update_database(connection, HR_COUNTER2_HI, value_hi, "HR_COUNTER2_HI")        
+def process_high_resolution_register(instrument):
+    # Se elimina el parámetro "connection"
+    update_register_value(instrument, HR_COUNTER1_LO, "HR_COUNTER1_LO")
+    update_register_value(instrument, HR_COUNTER1_HI, "HR_COUNTER1_HI")
+    update_register_value(instrument, HR_COUNTER2_LO, "HR_COUNTER2_LO")
+    update_register_value(instrument, HR_COUNTER2_HI, "HR_COUNTER2_HI")
 
 def detect_serial_ports(device_description):
     """

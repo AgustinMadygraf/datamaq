@@ -2,7 +2,7 @@
 from src.db_operations import check_db_connection, update_database
 from src.controller import read_digital_input, inicializar_conexion_modbus, ModbusConnectionError, process_high_resolution_register, limpiar_pantalla
 from src.logs.config_logger import configurar_logging
-from src.DataTransfer import MainTransfer
+from src.data_transfer import MainTransfer  # Actualizado para usar el nuevo módulo
 import minimalmodbus
 import time
 import signal
@@ -74,16 +74,12 @@ def process_modbus_operations():
         logger.error(f"Error de conexión Modbus: {e}")
         return
 
-    try:
-        connection = establish_db_connection()
-    except DatabaseConnectionError as e:
-        logger.error(f"Error de conexión a la base de datos: {e}")
-        return
-
+    # Se obtiene el engine de SQLAlchemy
+    establish_db_connection()
     instrument = establish_modbus_connection(com_port, device_address)
    
-    process_digital_input(instrument, connection)
-    process_high_resolution_register(instrument, connection)
+    process_digital_input(instrument)        # Se elimina 'connection'
+    process_high_resolution_register(instrument)  # Se elimina 'connection'
 
 def establish_db_connection():
     """
@@ -100,11 +96,10 @@ def establish_db_connection():
         - Intenta establecer una conexión con la base de datos utilizando `check_db_connection`.
         - Si falla la conexión, se levanta `DatabaseConnectionError` con un mensaje de error.
     """
-    return establish_connection(
-        check_db_connection, 
-        "Error de conexión a la base de datos", 
-        DatabaseConnectionError
-    )
+    engine = check_db_connection()
+    if engine is None:
+        raise DatabaseConnectionError("Error de conexión a la base de datos")
+    return engine
 
 def establish_modbus_connection(com_port, device_address):
     """
@@ -160,7 +155,8 @@ def establish_connection(connect_func, error_message, error_exception):
         logger.error(f"{error_message}: {e}")
         raise error_exception(f"{error_message}. Detalles: {e}") from e
 
-def process_digital_input(instrument, connection):
+# Se actualiza para no recibir el parámetro connection
+def process_digital_input(instrument):
     """
     Procesa las entradas digitales de un dispositivo Modbus y actualiza la base de datos.
 
@@ -170,16 +166,15 @@ def process_digital_input(instrument, connection):
 
     Args:
         instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        connection (pymysql.connections.Connection): La conexión a la base de datos para la actualización.
 
     Procedimiento:
         - Lee el estado de la entrada digital 1 (D1) y actualiza su estado en la base de datos con la etiqueta "HR_INPUT1_STATE".
         - Repite el proceso para la entrada digital 2 (D2) con la etiqueta "HR_INPUT2_STATE".
     """
-    process_input_and_update(instrument, connection, read_digital_input, D1, "HR_INPUT1_STATE")
-    process_input_and_update(instrument, connection, read_digital_input, D2, "HR_INPUT2_STATE")
+    process_input_and_update(instrument, read_digital_input, D1, "HR_INPUT1_STATE")
+    process_input_and_update(instrument, read_digital_input, D2, "HR_INPUT2_STATE")
     
-def process_input_and_update(instrument, connection, read_function, address, description):
+def process_input_and_update(instrument, read_function, address, description):
     """
     Lee un valor de un dispositivo Modbus y actualiza la base de datos.
 
@@ -189,7 +184,6 @@ def process_input_and_update(instrument, connection, read_function, address, des
 
     Args:
         instrument (minimalmodbus.Instrument): El instrumento Modbus utilizado para la lectura.
-        connection (pymysql.connections.Connection): Conexión a la base de datos para actualizar el valor.
         read_function (function): Función específica de lectura de Modbus que se utilizará.
         address (int): Dirección en el dispositivo Modbus desde la que leer.
         description (str): Descripción del valor leído, utilizada para la actualización en la base de datos.
@@ -201,7 +195,7 @@ def process_input_and_update(instrument, connection, read_function, address, des
     try:
         state = read_function(instrument, address)
         if state is not None:
-            update_database(connection, address, state, descripcion=description)
+            update_database(address, state, descripcion=description)
     except minimalmodbus.ModbusException as e:
         raise ModbusReadError(f"Error al leer la dirección {address} del dispositivo Modbus: {e}") from e
 

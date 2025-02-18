@@ -10,3 +10,5 @@ src/config/__pycache__/
 src/logs/sistema.log
 src/logs/__pycache__/
 DataMaq.bat
+todo.md
+__pycache__/data_transfer.cpython-311.pyc

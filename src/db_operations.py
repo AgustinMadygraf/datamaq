@@ -3,10 +3,21 @@ import pymysql
 from src.logs.config_logger import configurar_logging
 import functools
 import os
+from sqlalchemy import create_engine, text  # Nuevo
 
 logger = configurar_logging()
 
-def update_database(connection, address, value, descripcion):
+def get_db_engine():
+    config = get_db_config()
+    conn_str = f"mysql+pymysql://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['db']}"
+    engine = create_engine(conn_str, pool_pre_ping=True)
+    return engine
+
+def perform_update(connection, address, value):
+    query, params = build_update_query(address, value)
+    return execute_query(connection, query, params)
+
+def update_database(address, value, descripcion):
     """
     Actualiza un registro en la base de datos con un valor específico.
 
@@ -15,7 +26,6 @@ def update_database(connection, address, value, descripcion):
     de la consulta, lanza una excepción personalizada `DatabaseUpdateError`.
 
     Args:
-        connection (pymysql.connections.Connection): La conexión activa a la base de datos.
         address (int): La dirección del registro en la base de datos a actualizar.
         value: El valor a asignar en el registro especificado.
         descripcion (str): Descripción del registro para mostrar en mensajes de log.
@@ -26,14 +36,15 @@ def update_database(connection, address, value, descripcion):
     Returns:
         None
     """
+    engine = get_db_engine()
+    query, params = build_update_query(address, value)
     try:
-        query, params = build_update_query(address, value)
-        if execute_query(connection, query, params):
-            logger.info(f"Registro actualizado: dirección {address}, descripción: {descripcion} valor {value}")
-        else:
-            logger.error(f"No se pudo actualizar el registro: dirección {address}, {descripcion}")
-    except pymysql.MySQLError as e:
-        raise DatabaseUpdateError(f"Error al actualizar la base de datos en la dirección {address} con el valor {value}: {e}") from e
+        with engine.begin() as conn:
+            conn.execute(text(query), params)
+        logger.info(f"Registro actualizado: dirección {address}, descripción: {descripcion} valor {value}")
+    except Exception as e:
+        logger.error(f"Error al actualizar el registro: dirección {address}, {descripcion}: {e}")
+        raise DatabaseUpdateError(f"Error al actualizar la base de datos: {e}") from e
 
 def build_update_query(address, value):
     """
@@ -48,10 +59,10 @@ def build_update_query(address, value):
         value: El nuevo valor a asignar en el registro especificado.
 
     Returns:
-        tuple: Una tupla conteniendo la consulta SQL como string y los parámetros como una tupla.
+        tuple: Una tupla conteniendo la consulta SQL como string y los parámetros como un diccionario.
     """
-    query = "UPDATE registros_modbus SET valor = %s WHERE direccion_modbus = %s"
-    params = (value, address)
+    query = "UPDATE registros_modbus SET valor = :valor WHERE direccion_modbus = :direccion"
+    params = {'valor': value, 'direccion': address}
     return query, params
 
 def execute_query(connection, query, params):
@@ -119,14 +130,10 @@ def check_db_connection():
     """
     Establece una conexión a la base de datos local o remota.
 
-    Args:
-        remote (bool): Determina si se debe conectar a la base de datos remota.
-
     Returns:
-        pymysql.connections.Connection: Un objeto de conexión a la base de datos.
+        sqlalchemy.engine.Engine: Un objeto de engine de SQLAlchemy.
     """
-    db_config = get_db_config()
-    return pymysql.connect(**db_config)
+    return get_db_engine()
 
 class DatabaseUpdateError(Exception):
     """Excepción para errores en la actualización de la base de datos."""
@@ -134,9 +141,6 @@ class DatabaseUpdateError(Exception):
 def get_db_config():
     """
     Obtiene la configuración de la base de datos desde variables de entorno o parámetros.
-
-    Args:
-        remote (bool): Determina si se debe obtener la configuración para la base de datos remota.
 
     Returns:
         dict: Un diccionario con la configuración de la base de datos.
