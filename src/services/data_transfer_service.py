@@ -1,27 +1,20 @@
-"""
-Path: src/data_transfer.py
-Este script se ocupa de transferir datos de la base de datos local 
-a la base de datos remota.
-"""
-
-import time
 from datetime import datetime
+import time
 import subprocess
 import pymysql
 from src.logs.config_logger import configurar_logging
 from src.db_operations import check_db_connection
-from src.models.data_model import obtener_datos, insertar_datos  # Se importa el modelo
-from src.controllers.data_transfer_controller import main_transfer_controller
+from src.models.data_model import obtener_datos, insertar_datos
 
 logger = configurar_logging()
 
-def transfer_production_log():
-    "Transfiere los datos de ProductionLog a la base de datos remota."
+def transfer_production_log_service():
+    # ...existing code...
     conn = check_db_connection()
     if not hasattr(conn, "cursor"):
-        conn = conn.raw_connection()  # Obtener conexión DBAPI
+        conn = conn.raw_connection()
     if not conn:
-        logger.error("No se pudo establecer una conexión con la base de datos.")
+        logger.error("No se pudo establecer conexión con la base de datos.")
         return
     with conn.cursor() as cursor:
         logger.info("Iniciando transferencia de ProductionLog.")
@@ -53,11 +46,11 @@ def transfer_production_log():
             logger.warning("No se obtuvieron datos para ProductionLog.")
     conn.close()
 
-def transfer_interval_production():
-    "Transfiere los datos de intervalproduction a la base de datos remota."
+def transfer_interval_production_service():
+    # ...existing code...
     conn = check_db_connection()
     if not hasattr(conn, "cursor"):
-        conn = conn.raw_connection()  # Obtener conexión DBAPI
+        conn = conn.raw_connection()
     if not conn:
         logger.error("No se pudo establecer conexión para intervalproduction.")
         return
@@ -93,11 +86,7 @@ def transfer_interval_production():
             logger.warning("No se obtuvieron datos para intervalproduction.")
     conn.close()
 
-def MainTransfer():
-    main_transfer_controller()
-
-def SendDataPHP():
-    "Envía los datos a través de un script PHP."
+def send_data_php_service():
     php_interpreter = "C://AppServ//php7//php.exe"
     php_script = "C://AppServ//www//DataMaq//includes//SendData_python.php"
     result = subprocess.run([php_interpreter, php_script], capture_output=True, text=True, shell=True, check=True)
@@ -108,14 +97,13 @@ def SendDataPHP():
         logger.error("Error al ejecutar el script PHP. Código de salida: %s", result.returncode)
         logger.error(result.stderr)
 
-def transferir_datos(consulta1, consulta2, num_filas):
-    "Transfiere datos de una consulta a otra."
+def transferir_datos_service(consulta1, consulta2, num_filas):
     try:
         conn = check_db_connection()
         if not hasattr(conn, "cursor"):
-            conn = conn.raw_connection()  # Obtener conexión DBAPI
+            conn = conn.raw_connection()
         if not conn:
-            logger.error("No se pudo establecer una conexión con la base de datos.")
+            logger.error("No se pudo establecer conexión con la base de datos.")
             return
         with conn.cursor() as cursor:
             logger.info("Iniciando la transferencia de datos.")
@@ -144,8 +132,7 @@ def transferir_datos(consulta1, consulta2, num_filas):
             conn.close()
             logger.info("Conexión a la base de datos cerrada.")
 
-def es_tiempo_cercano_multiplo_cinco(tolerancia=5):
-    "Verifica si el tiempo actual está cerca de un múltiplo de cinco minutos."
+def es_tiempo_cercano_multiplo_cinco_service(tolerancia=5):
     ahora = datetime.now()
     minuto_actual = ahora.minute
     segundo_actual = ahora.second

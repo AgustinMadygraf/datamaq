@@ -6,9 +6,7 @@ Este módulo se encarga de procesar las operaciones Modbus,
 import minimalmodbus
 from src.logs.config_logger import configurar_logging
 from src.db_operations import check_db_connection, update_database
-from src.controller import read_digital_input
-from src.controller import ModbusConnectionError
-from src.controller import detect_serial_ports
+from src.controller import read_digital_input, ModbusConnectionError, detect_serial_ports
 
 logger = configurar_logging()
 
