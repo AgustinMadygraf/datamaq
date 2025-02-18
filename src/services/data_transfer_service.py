@@ -1,3 +1,8 @@
+"""
+Path: src/services/data_transfer_service.py
+Este módulo se encarga de realizar la transferencia de datos entre la base de datos y el servidor PHP.
+"""
+
 from datetime import datetime
 import time
 import subprocess
@@ -5,11 +10,11 @@ import pymysql
 from src.logs.config_logger import configurar_logging
 from src.db_operations import check_db_connection
 from src.models.data_model import obtener_datos, insertar_datos
+from src.models.data_transfer_model import get_production_log_data, get_interval_production_data
 
 logger = configurar_logging()
 
 def transfer_production_log_service():
-    # ...existing code...
     conn = check_db_connection()
     if not hasattr(conn, "cursor"):
         conn = conn.raw_connection()
@@ -20,18 +25,7 @@ def transfer_production_log_service():
         logger.info("Iniciando transferencia de ProductionLog.")
         unixtime = int(time.time())
         unixtime = (round(unixtime / 300)) * 300
-        consulta1 = """
-            SELECT
-                (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER1_LO') AS HR_COUNTER1_LO, 
-                (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER1_HI') AS HR_COUNTER1_HI, 
-                (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER2_LO') AS HR_COUNTER2_LO, 
-                (SELECT valor FROM registros_modbus WHERE registro = 'HR_COUNTER2_HI') AS HR_COUNTER2_HI;
-        """
-        consulta2 = """
-            INSERT INTO ProductionLog (unixtime, HR_COUNTER1_LO, HR_COUNTER1_HI, HR_COUNTER2_LO, HR_COUNTER2_HI)
-            VALUES (%s, %s, %s, %s, %s)
-        """
-        num_filas = 5
+        consulta1, consulta2, num_filas = get_production_log_data()
         datos_originales = obtener_datos(cursor, consulta1)
         datos = [(unixtime,) + tuple(int(x) for x in fila) for fila in datos_originales] if datos_originales else []
         if datos:
@@ -47,7 +41,6 @@ def transfer_production_log_service():
     conn.close()
 
 def transfer_interval_production_service():
-    # ...existing code...
     conn = check_db_connection()
     if not hasattr(conn, "cursor"):
         conn = conn.raw_connection()
@@ -58,20 +51,7 @@ def transfer_interval_production_service():
         logger.info("Iniciando transferencia de intervalproduction.")
         unixtime = int(time.time())
         unixtime = (round(unixtime / 300)) * 300
-        consulta1 = """
-            SELECT 
-                ((SELECT HR_COUNTER1_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER1_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog))) AS HR_COUNTER1,
-                ((SELECT HR_COUNTER2_LO FROM ProductionLog ORDER BY ID DESC LIMIT 1) - 
-                (SELECT HR_COUNTER2_LO FROM ProductionLog WHERE ID = (SELECT MAX(ID) - 1 FROM ProductionLog))) AS HR_COUNTER2
-            FROM ProductionLog
-            LIMIT 1;
-        """
-        consulta2 = """
-            INSERT INTO intervalproduction (unixtime, HR_COUNTER1, HR_COUNTER2)
-            VALUES (%s, %s, %s)
-        """
-        num_filas = 3
+        consulta1, consulta2, num_filas = get_interval_production_data()
         datos_originales = obtener_datos(cursor, consulta1)
         datos = [(unixtime,) + tuple(int(x) for x in fila) for fila in datos_originales] if datos_originales else []
         if datos:

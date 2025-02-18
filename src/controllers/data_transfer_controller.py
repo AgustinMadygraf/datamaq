@@ -1,3 +1,8 @@
+"""
+Path: src/controllers/data_transfer_controller.py
+Este script se encarga de controlar la transferencia de datos entre la base de datos y el servidor PHP.
+"""
+
 from src.services.data_transfer_service import (
     transfer_production_log_service,
     transfer_interval_production_service,
