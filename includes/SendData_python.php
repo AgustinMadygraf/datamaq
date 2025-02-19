@@ -1,11 +1,22 @@
 <!--includes/SendData_python.php-->
 <?php
-require 'conn.php'; 
-require 'db_functions.php'; 
+require 'conn.php';
+require_once __DIR__ . '/../app/core/Database.php';
+
 // Obtener el último registro de la base de datos local
 function obtenerUltimoRegistro() {
+    $database = Database::getInstance();
+    $conexion = $database->getConnection();
+    
     $sql = "SELECT unixtime, HR_COUNTER1, HR_COUNTER2 FROM intervalproduction ORDER BY unixtime DESC LIMIT 1";
-    return getArraySQL($sql);
+    $result = $conexion->query($sql);
+    $data = array();
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()){
+            $data[] = $row;
+        }
+    }
+    return $data;
 }
 
 // Enviar datos a la base de datos remota
@@ -41,5 +52,4 @@ if ($ultimoRegistro) {
 } else {
     echo "No se encontraron registros para enviar.<br>";
 }
-
 ?>

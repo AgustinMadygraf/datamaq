@@ -5,7 +5,6 @@ Este archivo contiene la lógica para mostrar el dashboard de la aplicación.
 */
 
 require_once 'includes/conn.php';
-require_once 'includes/db_functions.php';
 require_once __DIR__ . '/../app/models/DashboardModel.php';
 require_once __DIR__ . '/../app/services/DashboardService.php';
 
@@ -19,7 +18,7 @@ $ls_periodos = ['semana' => 604800, 'turno' => 28800, 'hora' => 7200];
 $ls_class = ['semana' => [1, 0, 0], 'turno' => [0, 1, 0], 'hora' => [0, 0, 1]];
 $ref_class = ['presione', 'presado'];
 $menos_periodo = ['semana' => 'turno', 'turno' => 'hora', 'hora' => 'hora'];
-$pot = 0; // Define $pot with a default value
+$pot = 0; // Define $pot con un valor por defecto
 
 // Comprobar si se cambió el período a través de GET
 if ($_GET && array_key_exists("periodo", $_GET)) {
@@ -29,18 +28,15 @@ if ($_GET && array_key_exists("periodo", $_GET)) {
 }
 $class = $ls_class[$periodo];
 
-// Mover la instanciación del servicio antes de usar $unixtime
+// Instanciación del modelo y del servicio, que usa la clase Database vía DashboardModel
 $dashboardModel = new DashboardModel();
-$service = new DashboardService($dashboardModel);$dashboardData = $service->getDashboardData($periodo);
-$vel_ult   = $dashboardData['vel_ult'];
-$unixtime  = $dashboardData['unixtime'];
-$rawdata   = $dashboardData['rawdata'];
+$service = new DashboardService($dashboardModel);
+$dashboardData = $service->getDashboardData($periodo);
+$vel_ult  = $dashboardData['vel_ult'];
+$unixtime = $dashboardData['unixtime'];
+$rawdata  = $dashboardData['rawdata'];
 
-function sql_query($campo) {
-    return "SELECT `unixtime`, `$campo` FROM `intervalproduction`  ORDER BY `unixtime` DESC LIMIT 1";
-}
 
-// Si la variable 'test' aparece en $_GET, el refresco se hace cada segundo en vez de cada 20 segundos.
 header("Refresh:" . $segundos);
 
 // Valores para la ubicación del degradado de advertencia
@@ -60,8 +56,4 @@ if ($_GET && array_key_exists("conta", $_GET)) {
     }
 }
 
-$tiempo1 = ($conta/1000) - $ls_periodos[$periodo] - 80*60;
-$tiempo2 = $conta/1000 ;
-$sql = "SELECT `unixtime`, `HR_COUNTER1`, `HR_COUNTER2`  from `intervalproduction` WHERE  unixtime > " . $tiempo1 . " AND unixtime <= " . $tiempo2 . " ORDER BY `unixtime` ASC ;";
-$rawdata = getArraySQL($sql);
 ?>

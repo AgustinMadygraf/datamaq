@@ -16,16 +16,28 @@
     <br>
 <?php
     require "includes/header.php";
+
+    // Definir constantes de conexión
     define('DB_SERVER', 'localhost');
     define('DB_USERNAME', 'root');
     define('DB_PASSWORD', '12345678');
     define('DB_NAME', 'registro_stock');
-    require_once 'includes/db_functions.php';
-    $sql = "SELECT * FROM `produccion_bolsas_aux`";
-    $rawdata = getArraySQL($sql);
-    //print_r($rawdata); //Array ( [0] => Array ( [ID] => 1 [ancho_bobina] => 790.00 [ID_formato] => 5 [Fecha] => 2024-02-06 10:00:00 ) )
-?>
 
+    // Incluir la clase Database para gestionar la conexión
+    require_once 'app/core/Database.php';
+    $database = Database::getInstance();
+    $conexion = $database->getConnection();
+
+    // Obtener los datos de produccion_bolsas_aux
+    $sql = "SELECT * FROM `produccion_bolsas_aux`";
+    $result = $conexion->query($sql);
+    $rawdata = [];
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $rawdata[] = $row;
+        }
+    }
+?>
 
     <div class="container">
         <h1 class="text-center"> Últimos formatos</h1>
@@ -43,54 +55,37 @@
             <tbody>
 
     <?php
-foreach ($rawdata as $row) {
-    // Conectar a la BD
-    $conexion = conectarBD();
-    
-    // Preparar la consulta SQL para obtener el formato basado en ID_formato
-    $sqlFormato = "SELECT formato FROM tabla_1 WHERE ID_formato = ?";
-    
-    // Preparar la sentencia
-    if ($stmt = mysqli_prepare($conexion, $sqlFormato)) {
-        // Vincular el parámetro
-        mysqli_stmt_bind_param($stmt, "i", $row['ID_formato']);
+    foreach ($rawdata as $row) {
+        // Preparar la consulta para obtener el formato basado en ID_formato
+        $sqlFormato = "SELECT formato FROM tabla_1 WHERE ID_formato = ?";
+        $formato = '';
+        if ($stmt = $conexion->prepare($sqlFormato)) {
+            $stmt->bind_param("i", $row['ID_formato']);
+            $stmt->execute();
+            $stmt->bind_result($formato);
+            $stmt->fetch();
+            $stmt->close();
+        }
         
-        // Ejecutar la consulta
-        mysqli_stmt_execute($stmt);
-        
-        // Vincular el resultado
-        mysqli_stmt_bind_result($stmt, $formato);
-        
-        // Obtener el valor
-        mysqli_stmt_fetch($stmt);
-        
-        // Cerrar la sentencia
-        mysqli_stmt_close($stmt);
+        // Imprimir la fila con el formato obtenido
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['ancho_bobina']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['ID_formato']) . "</td>";
+        echo "<td>" . htmlspecialchars($formato) . "</td>";
+        echo "<td>" . htmlspecialchars($row['Fecha']) . "</td>"; 
+        echo "<td>" . date("Y-m-d H:i:s") . "</td>";
+        echo "</tr>";
     }
-    
-    // Desconectar de la BD
-    desconectarBD($conexion);
-    
-    // Imprimir la fila con el formato obtenido
-    echo "<tr>";
-    echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['ancho_bobina']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['ID_formato']) . "</td>";
-    echo "<td>" . htmlspecialchars($formato) . "</td>"; // Formato obtenido de la segunda consulta
-    echo "<td>" . htmlspecialchars($row['Fecha']) . "</td>"; 
-    echo "<td>" . date("Y-m-d H:i:s") . "</td>";
-    echo "</tr>";
-}
-
     ?>
             </tbody>
         </table>
-</div>
+    </div>
 
-<br><br><br>
-<br><br><br>
-<br><br><br>
-<div class="container">
+    <br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <div class="container">
         <h1 class="text-center"> Agregar cambio de formato</h1>
         <table class="table table-striped">
             <thead class="thead-dark">
@@ -106,20 +101,20 @@ foreach ($rawdata as $row) {
         <form action="includes/procesar_1.php" method="post">
             <td><input type="number" name="ancho_bobina" required></td>        
             <td><input type="number" name="ID_formato" required value="<?php echo $ID_formato;?>"></td>
-<!--     select con option        <td><input type="text" name="formato" required ></td>
--->            
-            <td><select>
-                <option value="1">Formato 1</option>
-                <option value="2">Formato 2</option>
-                <option value="3">Formato 3</option>
-                <option value="4">Formato 4</option>
-                <option value="5">Formato 5</option>
-                <option value="6">Formato 6</option>
-                <option value="7">Formato 7</option>
-                <option value="8">Formato 8</option>
-                <option value="9">Formato 9</option>
-                <option value="10">Formato 10</option>
-            </select></td>
+            <td>
+                <select name="formato">
+                    <option value="1">Formato 1</option>
+                    <option value="2">Formato 2</option>
+                    <option value="3">Formato 3</option>
+                    <option value="4">Formato 4</option>
+                    <option value="5">Formato 5</option>
+                    <option value="6">Formato 6</option>
+                    <option value="7">Formato 7</option>
+                    <option value="8">Formato 8</option>
+                    <option value="9">Formato 9</option>
+                    <option value="10">Formato 10</option>
+                </select>
+            </td>
             
             <td><input type="text" name="Fecha" value="<?php echo date("d-m-Y H:i:s"); ?>" readonly></td>            
             <td><input type="submit" value="Agregar"></td>
@@ -128,7 +123,6 @@ foreach ($rawdata as $row) {
     </tbody>
     </table>
 </div>
-
 
 </body>
 </html>
