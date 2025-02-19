@@ -1,14 +1,19 @@
-<!--DataMaq\includes\db_functions.php-->
 <?php
+/*
+Path: includes/db_functions.php
+este archivo contiene funciones para interactuar con la base de datos.
+*/
+
+
 /**
  * Conectar a la base de datos.
- *
- * @return mysqli $conexion Objeto de conexión a la base de datos.
+ * @deprecated Use Database::getInstance()->getConnection() en su lugar.
+ * @return mysqli $conexion Objeto de conexión.
  */
 function conectarBD() {
     $conexion = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
     if (!$conexion) {
-        die("Error en la conexión de la base de datos: " . mysqli_connect_error());
+        die("Error en la conexión: " . mysqli_connect_error());
     }
     return $conexion;
 }

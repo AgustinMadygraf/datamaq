@@ -6,6 +6,8 @@ Este archivo contiene la lógica para mostrar el dashboard de la aplicación.
 
 require_once 'includes/conn.php';
 require_once 'includes/db_functions.php';
+require_once __DIR__ . '/../app/services/DashboardService.php';
+
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 setlocale(LC_TIME, "spanish");
 $segundos = 60; // Refrescar cada 60 segundos
@@ -26,13 +28,16 @@ if ($_GET && array_key_exists("periodo", $_GET)) {
 }
 $class = $ls_class[$periodo];
 
+// Mover la instanciación del servicio antes de usar $unixtime
+$service = new DashboardService();
+$dashboardData = $service->getDashboardData($periodo);
+$vel_ult   = $dashboardData['vel_ult'];
+$unixtime  = $dashboardData['unixtime'];
+$rawdata   = $dashboardData['rawdata'];
+
 function sql_query($campo) {
     return "SELECT `unixtime`, `$campo` FROM `intervalproduction`  ORDER BY `unixtime` DESC LIMIT 1";
 }
-
-$res = getArraySQL(sql_query("HR_COUNTER1"));
-$vel_ult = $res[0]['HR_COUNTER1'] ;
-$unixtime = $res[0]['unixtime'] ;
 
 // Si la variable 'test' aparece en $_GET, el refresco se hace cada segundo en vez de cada 20 segundos.
 header("Refresh:" . $segundos);

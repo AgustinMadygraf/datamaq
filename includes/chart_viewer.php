@@ -1,4 +1,12 @@
-<!-- chart_viewer.php -->
+<?php
+/*
+Path: includes/chart_viewer.php
+Este archivo contiene la lógica para mostrar el gráfico de producción.
+*/
+
+$medidor = isset($_GET['medidor']) ? $_GET['medidor'] : 'default_value';
+?>
+
 <script type='text/javascript'>
     var doubleClicker = {
         clickedOnce: false,
