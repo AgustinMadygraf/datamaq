@@ -311,3 +311,20 @@ div.content {
   .topnav li a {padding: 6px 8px;}
   div.content {padding: 1px 1px;}
 }
+
+
+/* Estilos para la tabla */
+table {
+  border-collapse: collapse; /* Combina los bordes de las celdas */
+  width: 100%;
+  }
+
+  /* Estilo para todas las celdas */
+  table, th, td {
+  border: 2px solid black; /* Define el grosor y el color del borde */
+  }
+
+  /* Estilo para las celdas de encabezado (th) */
+  th {
+  background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+  }

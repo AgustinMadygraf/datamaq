@@ -15,26 +15,9 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <style>
-        /* Estilos para la tabla */
-        table {
-        border-collapse: collapse; /* Combina los bordes de las celdas */
-        width: 100%;
-        }
-
-        /* Estilo para todas las celdas */
-        table, th, td {
-        border: 2px solid black; /* Define el grosor y el color del borde */
-        }
-
-        /* Estilo para las celdas de encabezado (th) */
-        th {
-        background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
-        }
-    </style>
+    <script src="JS/chart_viewer.js"></script>
 </head>
 <body>
-
     <br>
     <br>
     <?php 
@@ -42,7 +25,16 @@
         require "includes/dashboard.php";
         require "includes/header.php";
         require "includes/info_display.php";
-        require "includes/chart_viewer.php"; 
     ?>     
+    <script>
+        // Inyectar variables desde PHP a JavaScript de forma segura
+        window.chartData = {
+            conta: <?= json_encode($conta) ?>,
+            rawdata: <?= json_encode($rawdata) ?>,
+            ls_periodos: <?= json_encode($ls_periodos) ?>,
+            menos_periodo: <?= json_encode($menos_periodo) ?>,
+            periodo: <?= json_encode($periodo) ?>
+        };
+    </script>
 </body>
 </html>
