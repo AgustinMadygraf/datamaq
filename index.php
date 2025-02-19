@@ -27,7 +27,6 @@
         require "includes/info_display.php";
     ?>     
     <script>
-        // Inyectar variables desde PHP a JavaScript de forma segura
         window.chartData = {
             conta: <?= json_encode($conta) ?>,
             rawdata: <?= json_encode($rawdata) ?>,
