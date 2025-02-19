@@ -39,10 +39,11 @@
     <br>
     <br>
     <?php 
+        //require_once __DIR__ . '/includes/error_config.php';
         require "includes/dashboard.php";
         require "includes/header.php";
         require "includes/info_display.php";
         require "includes/chart_viewer.php"; 
-        ?>     
+    ?>     
 </body>
 </html>

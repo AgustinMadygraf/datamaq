@@ -16,6 +16,7 @@ $ls_periodos = ['semana' => 604800, 'turno' => 28800, 'hora' => 7200];
 $ls_class = ['semana' => [1, 0, 0], 'turno' => [0, 1, 0], 'hora' => [0, 0, 1]];
 $ref_class = ['presione', 'presado'];
 $menos_periodo = ['semana' => 'turno', 'turno' => 'hora', 'hora' => 'hora'];
+$pot = 0; // Define $pot with a default value
 
 // Comprobar si se cambió el período a través de GET
 if ($_GET && array_key_exists("periodo", $_GET)) {

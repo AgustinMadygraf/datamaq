@@ -4,6 +4,8 @@ Path: includes/info_display.php
 Este archivo contiene la lógica para mostrar la información en la aplicación.
 */
 
+$condition = true;
+//$condition = false;
 
 // Realizar el cálculo fuera de la estructura HTML para limpiar la presentación.
 if ($vel_ult == null) {
