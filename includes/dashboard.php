@@ -6,6 +6,7 @@ Este archivo contiene la lógica para mostrar el dashboard de la aplicación.
 
 require_once 'includes/conn.php';
 require_once 'includes/db_functions.php';
+require_once __DIR__ . '/../app/models/DashboardModel.php';
 require_once __DIR__ . '/../app/services/DashboardService.php';
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
@@ -29,8 +30,8 @@ if ($_GET && array_key_exists("periodo", $_GET)) {
 $class = $ls_class[$periodo];
 
 // Mover la instanciación del servicio antes de usar $unixtime
-$service = new DashboardService();
-$dashboardData = $service->getDashboardData($periodo);
+$dashboardModel = new DashboardModel();
+$service = new DashboardService($dashboardModel);$dashboardData = $service->getDashboardData($periodo);
 $vel_ult   = $dashboardData['vel_ult'];
 $unixtime  = $dashboardData['unixtime'];
 $rawdata   = $dashboardData['rawdata'];

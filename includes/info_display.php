@@ -5,6 +5,8 @@ Este archivo contiene la lógica para mostrar la información en la aplicación.
 */
 
 // Se asume que $vel_ult y $condition se definen previamente
+if (!isset($condition)) { $condition = false; }
+
 $vel_ult_calculada = 0;
 if (empty($vel_ult)) {
     $vel_ult_calculada = 0;
