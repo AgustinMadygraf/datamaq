@@ -4,17 +4,20 @@ Path: app/core/Database.php
 Este archivo contiene la clase Database, que se encarga de manejar la conexión a la base de datos.
 */
 
+// Incluir las constantes definidas en conn.php
+require_once __DIR__ . '/../../includes/conn.php';
+
 class Database {
     private static $instance = null;
     private $connection;
 
-    // Ajusta estas variables según tus constantes de configuración reales
+    // Usar las constantes definidas en conn.php para los datos de conexión
     private $host = DB_SERVER;
     private $username = DB_USERNAME;
     private $password = DB_PASSWORD;
     private $dbname = DB_NAME;
 
-    // Constructor privado para implementar el patrón Singleton
+    // Constructor privado para aplicar el patrón Singleton
     private function __construct() {
         $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbname);
         if ($this->connection->connect_error) {
@@ -22,7 +25,7 @@ class Database {
         }
     }
 
-    // Método estático para obtener la instancia única de la base de datos
+    // Retorna la instancia única de Database
     public static function getInstance() {
         if (!self::$instance) {
             self::$instance = new Database();
@@ -30,7 +33,7 @@ class Database {
         return self::$instance;
     }
 
-    // Método para obtener la conexión activa
+    // Retorna la conexión activa
     public function getConnection() {
         return $this->connection;
     }

@@ -5,7 +5,9 @@ Este archivo contiene la lógica para mostrar la información en la aplicación.
 */
 
 // Se asume que $vel_ult y $condition se definen previamente
-if (!isset($condition)) { $condition = false; }
+if (!isset($condition)) { 
+    $condition = false; 
+}
 
 $vel_ult_calculada = 0;
 if (empty($vel_ult)) {
@@ -18,12 +20,13 @@ if (empty($vel_ult)) {
 require_once 'conn.php';
 
 // Definir estilos y valores predeterminados
+// Aquí se usa $gradient que viene del controlador, en lugar de $d
 $estiloFondo = sprintf(
     "background: linear-gradient(195deg, rgb(107,170,34) %d%%, rgb(255,164,1) %d%%, rgb(234,53,34) %d%%, rgb(100,10,5) %d%%);",
-    $d[3],
-    $d[2],
-    $d[1],
-    $d[0]
+    $gradient[3],
+    $gradient[2],
+    $gradient[1],
+    $gradient[0]
 );
 $formato       = "No especificado"; 
 $ancho_bobina  = "No especificado"; 

@@ -22,9 +22,35 @@
     <br>
     <?php 
         require_once __DIR__ . '/includes/error_config.php';
-        require "includes/dashboard.php";
-        require "includes/header.php";
-        require "includes/info_display.php";
+        $periodo = 'semana';
+        $ls_periodos = ['semana' => 604800, 'turno' => 28800, 'hora' => 7200];
+        $ls_class = ['semana' => [1, 0, 0], 'turno' => [0, 1, 0], 'hora' => [0, 0, 1]];
+        $ref_class = ['presione', 'presado'];
+        $menos_periodo = ['semana' => 'turno', 'turno' => 'hora', 'hora' => 'hora'];
+        $pot = 0; // Define $pot con un valor por defecto
+        
+        // Comprobar si se cambió el período a través de GET
+        if ($_GET && array_key_exists("periodo", $_GET)) {
+            if (array_key_exists($_GET["periodo"], $ls_periodos)) {
+                $periodo = $_GET["periodo"];
+            }
+        }
+        $class = $ls_class[$periodo];
+        
+        require_once __DIR__ . '/includes/header.php';
+        
+        // Incluir el controlador usando la etiqueta de apertura completa y la ruta correcta
+        require_once __DIR__ . '/app/controllers/DashboardController.php';
+        
+        // Instanciar el controlador y obtener los datos
+        $controller = new DashboardController();
+        $data = $controller->index();
+
+        // Extraer las variables que la vista utilizará
+        extract($data);
+
+        // Incluir la vista para mostrar la información
+        require_once __DIR__ . '/includes/info_display.php';
     ?>     
     <script>
         window.chartData = {
