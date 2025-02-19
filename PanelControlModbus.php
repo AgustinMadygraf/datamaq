@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Estado del Equipo</title>
-    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="CSS/index.css">
+    <link rel="stylesheet" type="text/css" href="CSS/header.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding: 20px; }
