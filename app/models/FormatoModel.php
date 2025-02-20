@@ -1,11 +1,11 @@
 <?php
-// filepath: /c:/AppServ/www/DataMaq/app/models/FormatoModel.php
+// filepath: app/models/FormatoModel.php
 class FormatoModel {
     private $conexion;
 
     public function __construct() {
         // Reutiliza la conexión mediante la configuración de conn.php
-        require_once __DIR__ . '/../../includes/conn.php';
+        require_once __DIR__ . '/../config/conn.php';
         $this->conexion = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME2);
         if (!$this->conexion) {
             die("Conexión fallida: " . mysqli_connect_error());

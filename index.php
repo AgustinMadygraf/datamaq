@@ -14,7 +14,7 @@
     <br>
     <br>
     <?php 
-        require_once __DIR__ . '/includes/error_config.php';
+        require_once __DIR__ . '/app/config/error_config.php';
         $periodo = 'semana';
         $ls_periodos = ['semana' => 604800, 'turno' => 28800, 'hora' => 7200];
         $ls_class = ['semana' => [1, 0, 0], 'turno' => [0, 1, 0], 'hora' => [0, 0, 1]];
@@ -29,7 +29,7 @@
         }
         $class = $ls_class[$periodo];
         
-        require_once __DIR__ . '/includes/header.php';
+        require_once __DIR__ . '/app/views/partials/header.php';
         
         require_once __DIR__ . '/app/controllers/DashboardController.php';
         

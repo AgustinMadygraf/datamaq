@@ -5,7 +5,7 @@ Este archivo contiene la clase Database, que se encarga de manejar la conexión 
 */
 
 // Incluir las constantes definidas en conn.php
-require_once __DIR__ . '/../../includes/conn.php';
+require_once __DIR__ . '/../config/conn.php';
 
 class Database {
     private static $instance = null;
