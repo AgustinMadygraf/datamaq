@@ -24,7 +24,7 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
         var menos_periodo = window.chartData.menos_periodo;
         var tiempo = Highcharts.numberFormat(event.xAxis[0].value + (ls_periodos[menos_periodo[periodo]] / 2));
         // Generar URL con el nuevo periodo (a ajustar según la lógica de la aplicación)
-        window.open(window.location.pathname+'?periodo='+menos_periodo[periodo]+'&conta='+tiempo, "_self");
+        window.open(window.location.pathname + '?periodo=' + menos_periodo[periodo] + '&conta=' + tiempo, "_self");
     }
 
     function ondbclick (event) {
@@ -36,8 +36,8 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
             doubleClicker.timer = setTimeout(resetDoubleClick, doubleClicker.timeBetweenClicks);
         }
     }
-
-    $(function () {
+    
+    document.addEventListener('DOMContentLoaded', function() {
         Highcharts.setOptions({
             global: { useUTC: false },
             lang: {
@@ -47,9 +47,9 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
             }
         });
 
-        var chartData = window.chartData;   // Datos inyectados desde index.php
-        var chart;
-        $('#container').highcharts({
+        var chartData = window.chartData; // Datos inyectados desde index.php
+
+        Highcharts.chart('container', {
             chart: {
                 type: 'spline',
                 animation: false,
@@ -60,11 +60,8 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                 }
             },
             title: {
-                text: (function () {
-                    return Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", chartData.conta);
-                })(),
+                text: Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", chartData.conta),
                 events: {
-                    load: function () { /* ...existing code... */ },
                     click: function (event) { ondbclick(event); }
                 }
             },

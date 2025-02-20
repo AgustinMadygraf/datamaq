@@ -9,70 +9,40 @@
 
     // Definir los elementos del menú
     $menuItems = [
-        'index.php'              => 'DataMaq',
+        'index.php'              => 'Gráfico',
         'PanelControlModbus.php' => 'Estado del Equipo',
         '/DataMaq/formato.php'   => 'Formato'
     ];
 ?>
 <style>
-    
-
-    /*---------------------------TOPNAV--------------------------*/
-
-    .topnav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333;
-            position: fixed;
-            top: 0;
-            width: 100%;                     }
-
-    .topnav li {  float: left;
-                font-size: 16px;
-                    }
-
-    .topnav li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 12px 8px;
-    text-decoration: none;
+    .navbar-nav .nav-link.active {
+        background-color: #4CAF50 !important;
+        color: white;
     }
-
-    .topnav li a:hover:not(.active) {
-    background-color: #111;
-    }
-
-    .topnav .active {
-    background-color: #4CAF50;
-    }
-
-    @media screen and (max-width: 1275px) { .topnav li {font-size: 15px;         }}
-    @media screen and (max-width: 1200px) { .topnav li {font-size: 14px;         }}
-    @media screen and (max-width: 1150px) { .topnav li {font-size: 13px;         }}
-    @media screen and (max-width: 1100px) { .topnav li {font-size: 12px;         }}
-    @media screen and (max-width: 1075px) { .topnav li {font-size: 11px;         }}
-    @media screen and (max-width: 1010px) { .topnav li {font-size: 10px;         }}
-    @media screen and (max-width: 995px) { .topnav li {font-size: 9px;         }}
-
 </style>
 
 <header>
-    <br><br><br>
-    <div class="topnav">
-        <ul>
-            <?php foreach ($menuItems as $url => $titulo): ?>
-                <li>
-                    <a href="<?php echo $url; ?>" <?php echo ($paginaActual == basename($url)) ? "class='active'" : ""; ?>>
-                        <?php echo $titulo; ?>
-                    </a>
-                </li>
-            <?php endforeach; ?>
-            <li>
-                <a href="/phpMyAdmin/" target="_blank">PHP MyAdmin</a>
-            </li>
-        </ul>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="navigation" aria-label="Main Navigation">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DataMaq</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <?php foreach ($menuItems as $url => $titulo): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo ($paginaActual == basename($url)) ? "active" : ""; ?>" href="<?php echo $url; ?>">
+                                <?php echo $titulo; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/phpMyAdmin/" target="_blank" rel="noopener">PHP MyAdmin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 </header>

@@ -9,6 +9,7 @@ require_once __DIR__ . '/../services/DashboardService.php';
 require_once __DIR__ . '/../models/FormatoModel.php';
 require_once __DIR__ . '/../core/NavigationInterface.php';
 require_once __DIR__ . '/../core/Navigation.php';
+require_once __DIR__ . '/../helpers/GradientHelper.php';
 
 class DashboardController {
     protected $service;
@@ -40,24 +41,19 @@ class DashboardController {
     }
 
     public function index() {
-        // Usar la clase Navigation para determinar el período
+        // Obtiene el período y datos del dashboard
         $periodo = $this->navigation->getPeriod();
-
-        // Obtener los datos del dashboard usando el servicio
         $dashboardData = $this->service->getDashboardData($periodo);
         $vel_ult  = $dashboardData['vel_ult'];
         $unixtime = $dashboardData['unixtime'];
         $rawdata  = $dashboardData['rawdata'];
 
-        // Procesar el parámetro "conta" usando Navigation
+        // Procesar el parámetro "conta"
         $valorInicial = $unixtime * 1000;
         $conta        = $this->navigation->getConta($valorInicial);
 
-        // Calcular la ubicación para el degradado de advertencia
-        $d = [];
-        for ($i = 0; $i < 4; $i++) {
-            $d[$i] = 350 - $this->pot - 10 * $i;
-        }
+        // Calcular el degradado usando el helper
+        $d = GradientHelper::calculateGradient($this->pot);
 
         // Obtener la información de formato desde el modelo
         $formatoModel = new FormatoModel();

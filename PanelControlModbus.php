@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Estado del Equipo</title>
     <link rel="stylesheet" type="text/css" href="CSS/index.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding: 20px; }
         .table { margin-top: 20px; }
@@ -64,5 +64,6 @@
             actualizarDatos(); // Cargar inicialmente los datos
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

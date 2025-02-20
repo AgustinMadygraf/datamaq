@@ -1,5 +1,4 @@
 <?php
-// filepath: /c:/AppServ/www/DataMaq/includes/info_display.php
 /*
 Path: includes/info_display.php
 Se ha refactorizado para separar la lógica de acceso a datos de la presentación.
