@@ -33,6 +33,37 @@ $estiloFondo = sprintf(
 );
 ?>
 
+<style>
+    .hoja{      box-sizing: border-box;
+                border-radius: 25px;
+                height: 100%;
+                z-index: -1;}
+
+    .info{      z-index: 2;
+                position: relative;}
+
+    .cabecera { background-color: rgba(240,240,240,.5);
+                margin-bottom: 0.3em;
+                /* z-index: 2; */
+                position: relative;}
+
+    .c1 {       text-align: center;
+                font-family: verdana;
+                padding-top: 5px;}
+
+    .graf{      margin: 0 auto;
+                width: 95%;}
+
+    p2{         font-size:28pt;
+                margin: 0;
+                display: block;}
+
+    p1 {        font-size:34pt;
+                padding-bottom: 5px;
+                display: block;}
+
+</style>
+
 <div id="zero" class="hoja" style="<?php echo $estiloFondo; ?>">
     <div class="info">
         <div class="cabecera">

@@ -1,4 +1,23 @@
 <!-- botonera.php -->
+
+<style>
+    .botonera { width: 100%;
+                margin: 0;
+                background-color: white;}
+    .periodo, .botonI, .botonD, .spacer, .fin{
+                display: inline-block;
+                height:55px;
+                margin: 0;                      }
+    .periodo {  width:18%;                      }
+    .botonI {   width:20%;                      }
+    .botonD {   width:15%;                      }
+    .fin {      width:5%;                       }
+    .spacer{    width:1%;                       }
+    .presione, .presado{    font-size: 14pt;
+                            width: 100%;
+                            height: inherit;    }
+
+</style>
 <div class="botonera">
     
     <form action="<?= $_SERVER["PHP_SELF"] . '?periodo=' . $periodo . '&conta=' . ($conta - 1000*$ls_periodos[$periodo]) ?>" method="post" class="botonI">
