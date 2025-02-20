@@ -6,9 +6,14 @@ Este archivo contiene la lógica de control para la vista del panel de control.
 
 require_once __DIR__ . '/../models/DashboardModel.php';
 require_once __DIR__ . '/../services/DashboardService.php';
+require_once __DIR__ . '/../models/FormatoModel.php';
+require_once __DIR__ . '/../core/NavigationInterface.php';
+require_once __DIR__ . '/../core/Navigation.php';
 
 class DashboardController {
     protected $service;
+    protected $navigation;
+    
     protected $ls_periodos = [
         'semana' => 604800,
         'turno'  => 28800,
@@ -24,19 +29,19 @@ class DashboardController {
         'turno'  => 'hora',
         'hora'   => 'hora'
     ];
-    protected $pot = 0; // Valor por defecto para el cálculo del degradado
+    protected $pot = 0;
 
-    public function __construct() {
+    // Ahora inyectamos la dependencia de navegación.
+    public function __construct(NavigationInterface $navigation = null) {
         $dashboardModel = new DashboardModel();
         $this->service = new DashboardService($dashboardModel);
+        // Si no se provee una implementación, usamos la concreta por defecto.
+        $this->navigation = $navigation ?: new Navigation();
     }
 
     public function index() {
-        // Determinar el período a mostrar (valor predeterminado: "semana")
-        $periodo = 'semana';
-        if ($_GET && array_key_exists("periodo", $_GET) && array_key_exists($_GET["periodo"], $this->ls_periodos)) {
-            $periodo = $_GET["periodo"];
-        }
+        // Usar la clase Navigation para determinar el período
+        $periodo = $this->navigation->getPeriod();
 
         // Obtener los datos del dashboard usando el servicio
         $dashboardData = $this->service->getDashboardData($periodo);
@@ -44,15 +49,9 @@ class DashboardController {
         $unixtime = $dashboardData['unixtime'];
         $rawdata  = $dashboardData['rawdata'];
 
-        // Procesar el parámetro "conta"
+        // Procesar el parámetro "conta" usando Navigation
         $valorInicial = $unixtime * 1000;
-        $conta = $valorInicial;
-        if ($_GET && array_key_exists("conta", $_GET)) {
-            $conta = $_GET["conta"];
-            if ($conta > $valorInicial) {
-                $conta = $valorInicial;
-            }
-        }
+        $conta        = $this->navigation->getConta($valorInicial);
 
         // Calcular la ubicación para el degradado de advertencia
         $d = [];
@@ -60,7 +59,11 @@ class DashboardController {
             $d[$i] = 350 - $this->pot - 10 * $i;
         }
 
-        // Preparar los datos que la vista utilizará
+        // Obtener la información de formato desde el modelo
+        $formatoModel = new FormatoModel();
+        $formatoData  = $formatoModel->getUltimoFormato();
+
+        // Preparar los datos para la vista
         $data = [
             'periodo'       => $periodo,
             'ls_periodos'   => $this->ls_periodos,
@@ -71,10 +74,10 @@ class DashboardController {
             'unixtime'      => $unixtime,
             'gradient'      => $d,
             'ls_class'      => $this->ls_class,
-            'ref_class'     => ['presione', 'presado']
+            'ref_class'     => ['presione', 'presado'],
+            'formatoData'   => $formatoData
         ];
 
-        // Retornar el arreglo de datos para que la vista lo utilice
         return $data;
     }
 }

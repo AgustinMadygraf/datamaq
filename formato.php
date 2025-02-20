@@ -9,7 +9,6 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="CSS/index.css">
-    <link rel="stylesheet" type="text/css" href="CSS/header.css">
 </head>
 <body>
     <br>
