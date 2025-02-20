@@ -61,17 +61,18 @@ class DashboardController {
 
         // Preparar los datos para la vista
         $data = [
-            'periodo'       => $periodo,
-            'ls_periodos'   => $this->ls_periodos,
-            'menos_periodo' => $this->menos_periodo,
-            'rawdata'       => $rawdata,
-            'conta'         => $conta,
-            'vel_ult'       => $vel_ult,
-            'unixtime'      => $unixtime,
-            'gradient'      => $d,
-            'ls_class'      => $this->ls_class,
-            'ref_class'     => ['presione', 'presado'],
-            'formatoData'   => $formatoData
+            'periodo'             => $periodo,
+            'ls_periodos'         => $this->ls_periodos,
+            'menos_periodo'       => $this->menos_periodo,
+            'rawdata'             => $rawdata,
+            'conta'               => $conta,
+            'vel_ult'             => $vel_ult, // Variable original.
+            'vel_ult_calculada'   => $vel_ult, // Agregado para la vista.
+            'unixtime'            => $unixtime,
+            'gradient'            => $d,
+            'ls_class'            => $this->ls_class,
+            'ref_class'           => ['presione', 'presado'],
+            'formatoData'         => $formatoData
         ];
 
         return $data;

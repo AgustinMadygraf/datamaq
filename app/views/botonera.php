@@ -1,5 +1,9 @@
 <?php
-require_once __DIR__ . '/../app/helpers/CsrfHelper.php';
+/*
+Path: includes/botonera.php
+*/
+
+require_once __DIR__ . '/../helpers/CsrfHelper.php';
 $csrfToken = CsrfHelper::generateToken();
 ?>
 <style>

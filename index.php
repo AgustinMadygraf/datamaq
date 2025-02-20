@@ -38,7 +38,7 @@
 
         extract($data);
 
-        require_once __DIR__ . '/includes/info_display.php';
+        require_once __DIR__ . '/app/views/info_display.php';
     ?>     
     <script>
         window.chartData = {
