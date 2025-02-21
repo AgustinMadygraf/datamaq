@@ -11,8 +11,12 @@
 </head>
 <body>
     <?php
-        require "includes/header.php";
+        require_once __DIR__ . '/app/views/partials/header.php';
+        require_once __DIR__ . '/app/config/error_config.php';
     ?>
+    <br>
+    <br>
+    <br>
     <div class="container">
         <h1 class="text-center">Estado del Equipo - Registros Modbus</h1>
 
