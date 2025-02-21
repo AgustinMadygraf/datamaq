@@ -1,5 +1,5 @@
 /*
-Path: JS/chart_viewer.js
+Path: assetes/assets/js/chart_viewer.js
 Este script se encarga de generar el gráfico de Highcharts y de manejar el evento de doble click sobre el gráfico.
 El gráfico se genera con los datos inyectados desde index.php, y el evento de doble click se encarga de hacer zoom en el gráfico.
 */

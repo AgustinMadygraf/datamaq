@@ -1,6 +1,6 @@
 <?php 
     /*
-    Path: includes/header.php
+    Path: app/views/header.php
     Este archivo contiene el código para el encabezado de la aplicación.
     */
 

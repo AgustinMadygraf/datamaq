@@ -1,6 +1,6 @@
 <?php
 /*
-Path: includes/error_config.php
+Path: app/config/error_config.php
 */
 
 error_reporting(E_ALL);
