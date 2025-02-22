@@ -1,6 +1,6 @@
 <?php
 /*
-Path: app/controllers/DashboardController.php
+Path: backend/controllers/DashboardController.php
 Este archivo contiene la lógica de control para la vista del panel de control.
 */
 

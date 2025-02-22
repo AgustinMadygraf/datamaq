@@ -1,6 +1,6 @@
 <?php
 /*
-Path: app/helpers/CsrfHelper.php
+Path: backend/helpers/CsrfHelper.php
 Clase para manejar los tokens CSRF
 */
 

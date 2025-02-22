@@ -11,8 +11,8 @@
 </head>
 <body>
     <?php
-        require_once __DIR__ . '/app/views/partials/header.php';
-        require_once __DIR__ . '/app/config/error_config.php';
+        require_once __DIR__ . '/backend/views/partials/header.php';
+        require_once __DIR__ . '/backend/config/error_config.php';
     ?>
     <br>
     <br>

@@ -1,6 +1,6 @@
 <?php
 /* 
-Path: app/core/NavigationInterface.php
+Path: backend/core/NavigationInterface.php
 Interface para a navegação entre as páginas
 */
 

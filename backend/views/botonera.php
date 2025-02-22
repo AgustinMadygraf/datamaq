@@ -1,6 +1,6 @@
 <?php
 /*
-Path: app/views/botonera.php
+Path: backend/views/botonera.php
 */
 
 require_once __DIR__ . '/../helpers/CsrfHelper.php';

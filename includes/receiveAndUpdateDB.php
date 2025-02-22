@@ -1,7 +1,7 @@
 <!--includes/receiveAndUpdateDB.php-->
 <?php
 
-require_once __DIR__ . '/../app/core/Database.php';
+require_once __DIR__ . '/../backend/core/Database.php';
 
 // Recuperar datos de la URL
 $unixtime   = isset($_GET['unixtime']) ? $_GET['unixtime'] : null;

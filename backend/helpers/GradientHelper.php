@@ -1,6 +1,6 @@
 <?php
 /*
-Path: app/helpers/GradientHelper.php
+Path: backend/helpers/GradientHelper.php
 Este archivo contiene la clase GradientHelper, que se encarga de calcular el degradado de advertencia.
 */
 

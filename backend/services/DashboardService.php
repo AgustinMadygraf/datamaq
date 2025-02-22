@@ -1,6 +1,6 @@
 <?php
 /*
-Path: app/services/DashboardService.php
+Path: backend/services/DashboardService.php
 Este archivo contiene la lógica de negocio para la vista del panel de control.
 La clase ahora recibe la dependencia de DashboardModel mediante inyección de dependencias,
 lo que evita la instanciación directa y permite mayor flexibilidad y testabilidad.

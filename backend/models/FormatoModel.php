@@ -1,5 +1,5 @@
 <?php
-// filepath: app/models/FormatoModel.php
+// filepath: backend/models/FormatoModel.php
 class FormatoModel {
     private $conexion;
 

@@ -1,8 +1,8 @@
 <?php
 /*
-Path: app/models/DashboardModel.php
+Path: backend/models/DashboardModel.php
 Este archivo contiene la lógica de acceso a la base de datos para la vista del panel de control.
-Utiliza la clase Database implementada en /app/core/Database.php para gestionar la conexión.
+Utiliza la clase Database implementada en /backend/core/Database.php para gestionar la conexión.
 */
 
 require_once __DIR__ . '/../core/Database.php';

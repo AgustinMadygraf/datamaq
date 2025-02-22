@@ -1,6 +1,6 @@
 <?php
 /*
-Path: app/core/Navigation.php
+Path: backend/core/Navigation.php
 Clase para navegar entre las páginas
 */
 
