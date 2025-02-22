@@ -36,10 +36,13 @@
         
         $controller = new DashboardController();
         $data = $controller->index();
-
+        // Extraer las variables de $data para poder usarlas en el script
         extract($data);
 
         require_once __DIR__ . '/backend/views/info_display.php';
+
+        // Delegar la renderización a la plantilla HTML
+        include __DIR__ . '/frontend/templates/index.html';
     ?>     
     <script>
         window.chartData = {

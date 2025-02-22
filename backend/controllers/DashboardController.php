@@ -75,6 +75,7 @@ class DashboardController {
             'formatoData'         => $formatoData
         ];
 
+        // La presentación se delega a la capa de vistas.
         return $data;
     }
 }
