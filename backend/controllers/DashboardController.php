@@ -40,7 +40,7 @@ class DashboardController {
         $this->navigation = $navigation ?: new Navigation();
     }
 
-    public function index() {
+    public function index($asApiResponse = false) {
         // Obtiene el período y datos del dashboard
         $periodo = $this->navigation->getPeriod();
         $dashboardData = $this->service->getDashboardData($periodo);
@@ -74,6 +74,12 @@ class DashboardController {
             'ref_class'           => ['presione', 'presado'],
             'formatoData'         => $formatoData
         ];
+
+        if ($asApiResponse) {
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            exit;
+        }
 
         // La presentación se delega a la capa de vistas.
         return $data;

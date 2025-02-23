@@ -34,16 +34,6 @@ Tu análisis debe estar estructurado en **tres fases**, con **enfoque prioritari
 - Evaluar la posibilidad de crear una **capa intermedia** (APIs o templates estáticos) para separar backend y frontend.  
 - Sugerir una estructura adecuada para organizar archivos de frontend desacoplado.  
 
-### 2️⃣ **Migración de Peticiones GET a JavaScript**
-- Listar todas las instancias donde se usan `$_GET` para modificar la UI o acceder a datos.  
-- Proponer alternativas con **Fetch API/AJAX/WebSockets** para reducir recargas de página.  
-- Evaluar si el backend debe ser refactorizado para responder en JSON en lugar de HTML embebido.  
-
-### 3️⃣ **Evaluación para una futura migración a Vue.js**
-- Determinar si la eliminación de `GET` facilita la adopción de Vue.js.  
-- Identificar patrones reutilizables en PHP que puedan convertirse en componentes Vue.  
-- Proponer una estrategia progresiva de migración a Vue.js, sin alterar la funcionalidad actual.  
-
 ---
 
 ## 🔍 **Áreas de Evaluación**  
@@ -52,16 +42,6 @@ Tu análisis debe estar estructurado en **tres fases**, con **enfoque prioritari
 - Evaluar el nivel de separación entre Model, View y Controller.  
 - Identificar problemas estructurales que dificulten el desacoplamiento.  
 - Proponer una reestructuración para mejorar la modularidad y escalabilidad.  
-
-### 📌 **Migración de Peticiones GET a JavaScript**  
-- Identificar archivos donde el código PHP depende de `$_GET` para renderizar vistas.  
-- Evaluar la mejor forma de reemplazar estas llamadas sin afectar la funcionalidad actual.  
-- Proponer una estrategia de transición clara hacia una API REST o similar.  
-
-### 📌 **Preparación para Vue.js**  
-- Analizar si las vistas actuales pueden transformarse en componentes reutilizables.  
-- Identificar partes del código PHP que pueden convertirse en servicios o endpoints consumibles desde Vue.  
-- Proponer una estructura de frontend escalable para futuras implementaciones en Vue.  
 
 ---
 

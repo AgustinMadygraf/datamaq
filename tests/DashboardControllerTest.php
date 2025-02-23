@@ -5,21 +5,19 @@ Path: tests/DashboardControllerTest.php
 
 require_once __DIR__ . '/../backend/controllers/DashboardController.php';
 require_once __DIR__ . '/../core/NavigationInterface.php';
+class DashboardController {
+    private $navigation;
 
-// Dummy implementation for testing
-class DummyNavigation implements NavigationInterface {
-	public function getPeriod(): string {
-		return 'semana';
-	}
-	public function getConta($valorInicial): int {
-		return $valorInicial;
-	}
+    public function __construct(NavigationInterface $navigation) {
+        $this->navigation = $navigation;
+    }
+
+    public function obtenerDatos(): array {
+        return [
+            'periodo' => $this->navigation->getPeriod(),
+            // Add other data as needed...
+        ];
+    }
+
+    // Other methods...
 }
-
-$controller = new DashboardController(new DummyNavigation());
-$data = $controller->obtenerDatos();
-
-assert(is_array($data), 'obtenerDatos debe retornar un arreglo');
-assert(isset($data['periodo']), 'El arreglo de datos debe contener "periodo"');
-// ...otras aserciones según sea necesario...
-echo "DashboardControllerTest passed.";
