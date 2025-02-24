@@ -8,3 +8,4 @@ src/docs/00-Prompt-for-ProjectAnalysis.md
 php_error.log
 vendor/
 .env
+todo.md

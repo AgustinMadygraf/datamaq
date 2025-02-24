@@ -49,6 +49,14 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
     document.addEventListener('DOMContentLoaded', function() {
         try {
             console.log("Initializing chart_viewer...");
+            // Validate that the container element exists
+            var container = document.getElementById('container');
+            if (!container) {
+                console.error("Error: The container element with id 'container' was not found.");
+                return;
+            }
+            console.log("Container validated. Proceeding with Highcharts initialization.");
+            
             Highcharts.setOptions({
                 global: { useUTC: false },
                 lang: {
@@ -73,9 +81,10 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                         },
                         click: function (event) { 
                             try {
+                                console.log("Chart click event triggered");
                                 ondbclick(event);
                             } catch (err) {
-                                console.log("Error handling chart click:", err);
+                                console.error("Error handling chart click:", err);
                             }
                         }
                     }
@@ -85,9 +94,10 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                     events: {
                         click: function (event) { 
                             try {
+                                console.log("Title click event triggered");
                                 ondbclick(event);
                             } catch (err) {
-                                console.log("Error handling title click:", err);
+                                console.error("Error handling title click:", err);
                             }
                         }
                     }
@@ -149,12 +159,13 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                 ]
             });
         } catch (e) {
-            console.log("Error initializing chart:", e);
+            console.error("Error during chart initialization:", e);
         }
     });
 
     document.addEventListener('DOMContentLoaded', async () => {
         try {
+            console.log("Fetching chart data from dashboard_test API...");
             const response = await fetch('/DataMaq/backend/api/dashboard_test.php?periodo=semana');
             if (!response.ok) {
                 throw new Error('Error en la respuesta de la API');
@@ -163,6 +174,7 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
             if (json.status !== 'success') {
                 throw new Error('Error en los datos de la API');
             }
+            console.log("Chart data fetched successfully from API.");
             const chartData = json.data.chartData;
         
             // Ejemplo de inicialización del gráfico usando Chart.js
@@ -185,7 +197,7 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                 }
             });
         } catch (error) {
-            console.error('Error fetching chart data:', error);
+            console.error('Error fetching or initializing Chart.js chart:', error);
         }
     });
 })();
