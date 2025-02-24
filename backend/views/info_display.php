@@ -21,7 +21,7 @@ $csrfToken = CsrfHelper::generateToken();
     );
 
     // Renderizar la plantilla de la botonera
-    $botoneraTemplate = __DIR__ . '/../../templates/botonera.html';
+    $botoneraTemplate = __DIR__ . '/../../frontend/templates/botonera.html';
     $botoneraHtml = ViewRenderer::render($botoneraTemplate, [
         // Asumiendo que estas variables ya fueron definidas en un contexto global o previo:
         'csrfToken' => $csrfToken, 
@@ -35,7 +35,7 @@ $csrfToken = CsrfHelper::generateToken();
     ]);
 
     // Renderizar la plantilla externa
-    $template = __DIR__ . '/../../templates/info_display.html';
+    $template = __DIR__ . '/../../frontend/templates/info_display.html';
     echo ViewRenderer::render($template, [
         'estiloFondo'       => $estiloFondo,
         'vel_ult_calculada' => htmlspecialchars($vel_ult_calculada),

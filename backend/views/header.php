@@ -13,7 +13,7 @@ $menuItems   = [
 ];
 
 // Renderizar la plantilla para el header
-$template = __DIR__ . '/../../templates/header.html';
+$template = __DIR__ . '/../../frontend/templates/header.html';
 echo ViewRenderer::render($template, [
     'paginaActual' => $paginaActual,
     'menuItems'    => json_encode($menuItems) // la plantilla deberá iterar sobre este JSON en JS o conversión PHP

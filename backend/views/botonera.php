@@ -13,7 +13,7 @@ $preConta  = $conta - 1000 * $ls_periodos[$periodo];
 $postConta = $conta + 1000 * $ls_periodos[$periodo];
 
 // Renderizar la plantilla externa
-$template = __DIR__ . '/../../templates/botonera.html';
+$template = __DIR__ . '/../../frontend/templates/botonera.html';
 echo ViewRenderer::render($template, [
     'csrfToken' => $csrfToken,
     'periodo'   => $periodo,
@@ -25,3 +25,4 @@ echo ViewRenderer::render($template, [
     'preConta'  => $preConta,
     'postConta' => $postConta,
 ]);
+?>
