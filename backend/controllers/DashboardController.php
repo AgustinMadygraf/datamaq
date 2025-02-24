@@ -66,6 +66,7 @@ class DashboardController {
                 'ls_periodos'         => $this->ls_periodos,
                 'menos_periodo'       => $this->menos_periodo,
                 'rawdata'             => $rawdata,
+                'chartData'           => $rawdata, // <-- Se agrega la información para el gráfico.
                 'conta'               => $conta,
                 'vel_ult'             => $vel_ult, // Variable original.
                 'vel_ult_calculada'   => $vel_ult, // Agregado para la vista.

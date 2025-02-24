@@ -152,4 +152,40 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
             console.log("Error initializing chart:", e);
         }
     });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/DataMaq/backend/api/dashboard_test.php?periodo=semana');
+            if (!response.ok) {
+                throw new Error('Error en la respuesta de la API');
+            }
+            const json = await response.json();
+            if (json.status !== 'success') {
+                throw new Error('Error en los datos de la API');
+            }
+            const chartData = json.data.chartData;
+        
+            // Ejemplo de inicialización del gráfico usando Chart.js
+            const ctx = document.getElementById('myChart').getContext('2d');
+            // ...existing code o configuración de chart, por ejemplo:
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.map(item => new Date(item.unixtime * 1000).toLocaleTimeString()),
+                    datasets: [{
+                        label: 'Valor',
+                        data: chartData.map(item => item.HR_COUNTER1),
+                        borderColor: 'rgba(75,192,192,1)',
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // ...existing options...
+                }
+            });
+        } catch (error) {
+            console.error('Error fetching chart data:', error);
+        }
+    });
 })();
