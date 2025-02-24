@@ -7,16 +7,18 @@ Path: backend/api/dashboard.php
 require_once __DIR__ . '/../config/error_config.php';
 require_once __DIR__ . '/../controllers/DashboardController.php';
 
-// Sanitizar parámetros GET 'periodo' y 'conta'
-$periodo = filter_input(INPUT_GET, 'periodo', FILTER_SANITIZE_STRING) ?: null;
-$conta   = filter_input(INPUT_GET, 'conta', FILTER_SANITIZE_NUMBER_INT) ?: null;
+// Centralizar la extracción y saneamiento de parámetros
+$params = filter_input_array(INPUT_GET, [
+    'periodo' => FILTER_SANITIZE_STRING,
+    'conta'   => FILTER_SANITIZE_NUMBER_INT,
+]);
 
-// Opcional: Sobre-escribir $_GET para que Navigation use parámetros sanitizados
-if ($periodo !== null) {
-    $_GET['periodo'] = $periodo;
+// Reinyectar parámetros saneados para que Navigation los use
+if (isset($params['periodo'])) {
+    $_GET['periodo'] = $params['periodo'];
 }
-if ($conta !== null) {
-    $_GET['conta'] = $conta;
+if (isset($params['conta'])) {
+    $_GET['conta'] = $params['conta'];
 }
 
 // Instanciar el controlador y llamar a index con respuesta API

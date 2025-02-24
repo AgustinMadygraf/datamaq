@@ -76,8 +76,8 @@ class DashboardController {
         ];
 
         if ($asApiResponse) {
-            header('Content-Type: application/json');
-            echo json_encode($data);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['status' => 'success', 'data' => $data]);
             exit;
         }
 
