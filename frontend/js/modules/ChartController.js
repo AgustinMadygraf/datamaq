@@ -4,48 +4,9 @@ Este script se encarga de generar el gráfico de Highcharts y de manejar el even
 El gráfico se genera con los datos inyectados desde index.php, y el evento de doble click se encarga de hacer zoom en el gráfico.
 */
 
+import { onDbClick } from './DoubleClickHandler.js';
+
 (function() {
-    var doubleClicker = {
-        clickedOnce: false,
-        timer: null,
-        timeBetweenClicks: 400
-    };
-
-    function resetDoubleClick () {
-        clearTimeout(doubleClicker.timer);
-        doubleClicker.timer = null;
-        doubleClicker.clickedOnce = false;
-    }
-
-    function zoomIn (event) {
-        try {
-            console.log("Executing zoomIn with event:", event);
-            // Obtener valores de window.chartData
-            var periodo = window.chartData.periodo;
-            var ls_periodos = window.chartData.ls_periodos;
-            var menos_periodo = window.chartData.menos_periodo;
-            var tiempo = Highcharts.numberFormat(event.xAxis[0].value + (ls_periodos[menos_periodo[periodo]] / 2));
-            // Generar URL con el nuevo periodo
-            window.open(window.location.pathname + '?periodo=' + menos_periodo[periodo] + '&conta=' + tiempo, "_self");
-        } catch (err) {
-            console.log("Error in zoomIn:", err);
-        }
-    }
-
-    function ondbclick (event) {
-        try {
-            if (doubleClicker.clickedOnce && doubleClicker.timer) {
-                resetDoubleClick();
-                zoomIn(event);
-            } else {
-                doubleClicker.clickedOnce = true;
-                doubleClicker.timer = setTimeout(resetDoubleClick, doubleClicker.timeBetweenClicks);
-            }
-        } catch (e) {
-            console.log("Error in ondbclick:", e);
-        }
-    }
-    
     document.addEventListener('DOMContentLoaded', function() {
         try {
             console.log("Initializing chart_viewer...");
@@ -82,7 +43,7 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                         click: function (event) { 
                             try {
                                 console.log("Chart click event triggered");
-                                ondbclick(event);
+                                onDbClick(event);
                             } catch (err) {
                                 console.error("Error handling chart click:", err);
                             }
@@ -95,7 +56,7 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
                         click: function (event) { 
                             try {
                                 console.log("Title click event triggered");
-                                ondbclick(event);
+                                onDbClick(event);
                             } catch (err) {
                                 console.error("Error handling title click:", err);
                             }
@@ -163,6 +124,8 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
         }
     });
 
+    // Comentar o eliminar la siguiente sección si no deseas el gráfico de Chart.js
+    /*
     document.addEventListener('DOMContentLoaded', async () => {
         try {
             console.log("Fetching chart data from dashboard_test API...");
@@ -177,9 +140,15 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
             console.log("Chart data fetched successfully from API.");
             const chartData = json.data.chartData;
         
-            // Ejemplo de inicialización del gráfico usando Chart.js
-            const ctx = document.getElementById('myChart').getContext('2d');
-            // ...existing code o configuración de chart, por ejemplo:
+            console.log("Initializing Chart.js chart...");
+            const myChartElement = document.getElementById('myChart');
+            if (!myChartElement) {
+                throw new Error("Element with id 'myChart' not found");
+            }
+            console.log("Found 'myChart' element:", myChartElement);
+            const ctx = myChartElement.getContext('2d');
+            console.log("Successfully obtained context from 'myChart' element.");
+            
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -200,4 +169,5 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
             console.error('Error fetching or initializing Chart.js chart:', error);
         }
     });
+    */
 })();
