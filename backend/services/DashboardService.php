@@ -17,7 +17,11 @@ class DashboardService {
     }
     
     public function getDashboardData($periodo = 'semana') {
-        return $this->model->getDashboardData($periodo);
+        try {
+            return $this->model->getDashboardData($periodo);
+        } catch (Exception $e) {
+            throw new Exception("DashboardService error: " . $e->getMessage());
+        }
     }
 }
 ?>
