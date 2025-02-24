@@ -9,7 +9,7 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="frontend/js/chart_viewer.js"></script>
+    <script src="frontend/js/modules/ChartController.js"></script>
 </head>
 <body>
     <br>
