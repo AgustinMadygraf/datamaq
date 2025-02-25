@@ -76,7 +76,6 @@ require_once __DIR__ . '/backend/views/header.php';
 
 // Renderizar la plantilla principal
 echo ViewRenderer::render(__DIR__ . '/frontend/templates/main.html', [
-    'header' => $headerHtml,
     'infoDisplay' => $infoDisplayHtml,
     'chartData' => json_encode([
         'conta' => $conta,
