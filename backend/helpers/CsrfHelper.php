@@ -10,6 +10,7 @@ class CsrfHelper {
      * @return string El token generado
      */
     public static function generateToken(): string {
+        error_log("DEBUG - Generando nuevo token CSRF");
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -27,6 +28,7 @@ class CsrfHelper {
      * @return bool true si el token es válido, false en caso contrario
      */
     public static function validateToken(?string $token): bool {
+        error_log("DEBUG - Validando token CSRF");
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -35,7 +37,9 @@ class CsrfHelper {
             return false;
         }
 
-        return hash_equals($_SESSION['csrf_token'], $token ?? '');
+        $isValid = hash_equals($_SESSION['csrf_token'], $token ?? '');
+        error_log("DEBUG - Token CSRF " . ($isValid ? "válido" : "inválido"));
+        return $isValid;
     }
 }
 ?>

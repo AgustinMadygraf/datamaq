@@ -40,6 +40,9 @@ if (!isset($vel_ult_calculada)) {
     $vel_ult_calculada = '0';
 }
 
+// Agregar logs de monitoreo
+error_log("INFO - Inicio de renderizado - Periodo: $periodo");
+
 // Renderizar la botonera
 $botoneraHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/botonera.html', [
     'csrfToken' => CsrfHelper::generateToken(),
@@ -51,6 +54,7 @@ $botoneraHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/botonera.htm
     'preConta' => $conta - 1000 * $ls_periodos[$periodo],
     'postConta' => $conta + 1000 * $ls_periodos[$periodo]
 ]);
+error_log("INFO - Botonera renderizada - Length: " . strlen($botoneraHtml));
 
 $infoDisplayHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/info_display.html', [
     'vel_ult_calculada' => $vel_ult_calculada,
@@ -62,6 +66,7 @@ $infoDisplayHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/info_disp
         $gradient[3], $gradient[2], $gradient[1], $gradient[0]
     )
 ]);
+error_log("INFO - InfoDisplay renderizado - Length: " . strlen($infoDisplayHtml));
 
 // Renderizar las diferentes partes de la página
 $headerHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/header.html', [
@@ -82,4 +87,7 @@ echo ViewRenderer::render(__DIR__ . '/frontend/templates/main.html', [
         'periodo' => $periodo
     ])
 ]);
+
+// Log final
+error_log("INFO - Renderizado completado - Memory usage: " . memory_get_peak_usage(true));
 ?>
