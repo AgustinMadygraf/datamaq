@@ -1,0 +1,26 @@
+/*
+Path: frontend/js/services/ApiService.js
+*/
+
+class ApiService {
+    static API_BASE_URL = '/DataMaq/backend/api/endpoints';
+
+    /**
+     * Obtiene datos del estado actual del equipo
+     * @returns {Promise<Object>} Datos del estado
+     */
+    static async getStatusData() {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/TestEndpoint.php`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error en ApiService.getStatusData:', error);
+            throw error;
+        }
+    }
+}
+
+export default ApiService;
