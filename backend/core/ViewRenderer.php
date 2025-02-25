@@ -3,19 +3,31 @@
 Path: backend/core/ViewRenderer.php
 */
 class ViewRenderer {
-    public static function render(string $templatePath, array $data = []): string {
+    /**
+     * Renderiza una plantilla HTML reemplazando los marcadores
+     * @param string $templatePath Ruta al archivo de plantilla
+     * @param array $data Variables para inyectar en la plantilla
+     * @return string HTML renderizado
+     */
+    public static function render($templatePath, array $data = []): string {
+        // Verificar que el archivo existe
         if (!file_exists($templatePath)) {
-            return ''; // Archivo no encontrado
+            error_log("Template no encontrado: $templatePath");
+            return '';
         }
-        $template = file_get_contents($templatePath);
-        // Reemplazar marcadores del tipo {{clave}} por su valor
+
+        // Cargar el contenido de la plantilla
+        $content = file_get_contents($templatePath);
+        if ($content === false) {
+            error_log("No se pudo leer el template: $templatePath");
+            return '';
+        }
+
+        // Reemplazar los marcadores {{variable}} con los valores
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                // Asumir que valores complejos se pasan como JSON y serán gestionados por la plantilla si es necesario
-                $value = json_encode($value);
-            }
-            $template = str_replace('{{' . $key . '}}', $value, $template);
+            $content = str_replace('{{'.$key.'}}', $value, $content);
         }
-        return $template;
+
+        return $content;
     }
 }

@@ -1,61 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Control y Registro de la Producción</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="frontend/img/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="frontend/img/favicon.ico" type="image/x-icon">
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Se agrega la librería Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Se carga el ChartController como módulo -->
-    <script type="module" src="frontend/js/modules/ChartController.js"></script>
-</head>
-<body>
-    <br>
-    <br>
-    <?php 
-        require_once __DIR__ . '/backend/config/error_config.php';
-        $periodo = 'semana';
-        $ls_periodos = ['semana' => 604800, 'turno' => 28800, 'hora' => 7200];
-        $ls_class = ['semana' => [1, 0, 0], 'turno' => [0, 1, 0], 'hora' => [0, 0, 1]];
-        $ref_class = ['presione', 'presado'];
-        $menos_periodo = ['semana' => 'turno', 'turno' => 'hora', 'hora' => 'hora'];
-        $pot = 0; // Define $pot con un valor por defecto
-        
-        if ($_GET && array_key_exists("periodo", $_GET)) {
-            if (array_key_exists($_GET["periodo"], $ls_periodos)) {
-                $periodo = $_GET["periodo"];
-            }
-        }
-        $class = $ls_class[$periodo];
-        
-        require_once __DIR__ . '/backend/views/partials/header.php';
-        
-        require_once __DIR__ . '/backend/controllers/DashboardController.php';
-        
-        $controller = new DashboardController();
-        $data = $controller->index();
-        // Extraer las variables de $data para poder usarlas en el script
-        extract($data);
+<?php
+require_once __DIR__ . '/backend/config/error_config.php';
+require_once __DIR__ . '/backend/core/ViewRenderer.php';
+require_once __DIR__ . '/backend/helpers/CsrfHelper.php';
 
-        require_once __DIR__ . '/backend/views/info_display.php';
+// Inicializar variables
+$periodo = 'semana';
+$ls_periodos = ['semana' => 604800, 'turno' => 28800, 'hora' => 7200];
+$ls_class = ['semana' => [1, 0, 0], 'turno' => [0, 1, 0], 'hora' => [0, 0, 1]];
+$ref_class = ['presione', 'presado'];
+$menos_periodo = ['semana' => 'turno', 'turno' => 'hora', 'hora' => 'hora'];
 
-        // Delegar la renderización a la plantilla HTML
-        include __DIR__ . '/frontend/templates/index.html';
-    ?>     
-    <script>
-        window.chartData = {
-            conta: <?= json_encode($conta) ?>,
-            rawdata: <?= json_encode($rawdata) ?>,
-            ls_periodos: <?= json_encode($ls_periodos) ?>,
-            menos_periodo: <?= json_encode($menos_periodo) ?>,
-            periodo: <?= json_encode($periodo) ?>
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+// Validar y procesar parámetros GET
+if ($_GET && array_key_exists("periodo", $_GET)) {
+    if (array_key_exists($_GET["periodo"], $ls_periodos)) {
+        $periodo = $_GET["periodo"];
+    }
+}
+$class = $ls_class[$periodo];
+
+// Obtener datos del controlador
+require_once __DIR__ . '/backend/controllers/DashboardController.php';
+$controller = new DashboardController();
+$data = $controller->index();
+extract($data);
+
+// Asegurarse de que todas las variables necesarias estén definidas
+if (!isset($gradient)) {
+    $gradient = [25, 50, 75, 100]; // valores por defecto
+}
+
+if (!isset($formatoData)) {
+    $formatoData = [
+        'formato' => 'No disponible',
+        'ancho_bobina' => 'No disponible'
+    ];
+}
+
+if (!isset($vel_ult_calculada)) {
+    $vel_ult_calculada = '0';
+}
+
+// Renderizar la botonera
+$botoneraHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/botonera.html', [
+    'csrfToken' => CsrfHelper::generateToken(),
+    'periodo' => $periodo,
+    'conta' => $conta,
+    'refClass0' => $ref_class[$class[0]],
+    'refClass1' => $ref_class[$class[1]],
+    'refClass2' => $ref_class[$class[2]],
+    'preConta' => $conta - 1000 * $ls_periodos[$periodo],
+    'postConta' => $conta + 1000 * $ls_periodos[$periodo]
+]);
+
+$infoDisplayHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/info_display.html', [
+    'vel_ult_calculada' => $vel_ult_calculada,
+    'formato' => $formatoData['formato'],
+    'ancho_bobina' => $formatoData['ancho_bobina'],
+    'botonera' => $botoneraHtml,  // Añadimos la botonera aquí
+    'estiloFondo' => sprintf(
+        "background: linear-gradient(195deg, rgba(107,170,34,0.9) %d%%, rgba(255,164,1,0.9) %d%%, rgba(234,53,34,0.9) %d%%, rgba(100,10,5,0.9) %d%%);",
+        $gradient[3], $gradient[2], $gradient[1], $gradient[0]
+    )
+]);
+
+// Renderizar las diferentes partes de la página
+$headerHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/header.html', [
+    'menuItems' => ViewRenderer::render(__DIR__ . '/frontend/templates/menu_items.html', [
+        'paginaActual' => basename($_SERVER['PHP_SELF'])
+    ])
+]);
+
+// Renderizar la plantilla principal
+echo ViewRenderer::render(__DIR__ . '/frontend/templates/main.html', [
+    'header' => $headerHtml,
+    'infoDisplay' => $infoDisplayHtml,
+    'chartData' => json_encode([
+        'conta' => $conta,
+        'rawdata' => $rawdata,
+        'ls_periodos' => $ls_periodos,
+        'menos_periodo' => $menos_periodo,
+        'periodo' => $periodo
+    ])
+]);
+?>

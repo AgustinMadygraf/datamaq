@@ -9,9 +9,16 @@
             border-radius: 25px;
             height: 100%;
             z-index: -1;
+            padding: 20px;
         }
         .info { z-index: 2; position: relative; }
-        .cabecera { background-color: rgba(240,240,240,.5); margin-bottom: 0.3em; position: relative; }
+        .cabecera { 
+            background-color: rgba(240,240,240,.5); 
+            margin-bottom: 0.3em; 
+            position: relative;
+            padding: 15px;
+            border-radius: 10px;
+        }
         .c1 { text-align: center; font-family: verdana; padding-top: 5px; }
         .graf { margin: 0 auto; width: 95%; }
         p2 { font-size:28pt; margin: 0; display: block; }
@@ -19,7 +26,7 @@
     </style>
 </head>
 <body>
-    <div id="zero" class="hoja" style="{{estiloFondo}}">
+    <div class="hoja" style="{{estiloFondo}}">
         <div class="info">
             <div class="cabecera">
                 <div class="c1">
@@ -29,7 +36,9 @@
                 </div>
             </div>
             <div id="container" class="graf"></div>
-            {{botonera}}
+            <div class="botonera-container">
+                {{botonera}}
+            </div>
         </div>
     </div>
 </body>
