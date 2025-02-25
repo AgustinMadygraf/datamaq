@@ -1,7 +1,7 @@
 /*
 Path: frontend/js/main.js
 */
-
+console.log("main.js cargado correctamente.");
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         console.log("Iniciando solicitud de datos a la API...");
