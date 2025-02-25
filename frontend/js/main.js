@@ -5,7 +5,7 @@ console.log("main.js cargado correctamente.");
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         console.log("Iniciando solicitud de datos a la API...");
-        const response = await fetch('/DataMaq/backend/api/getDataTest.php');
+        const response = await fetch('/DataMaq/backend/api/endpoints/TestEndpoint.php');
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

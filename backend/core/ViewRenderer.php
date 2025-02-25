@@ -2,7 +2,13 @@
 /*
 Path: backend/core/ViewRenderer.php
 */
+
+require_once __DIR__ . '/ComponentRenderer.php';
+
 class ViewRenderer {
+    private const TEMPLATES_DIR = __DIR__ . '/../../frontend/templates/';
+    private static $cache = []; // Removed array type declaration
+
     /**
      * Renderiza una plantilla HTML reemplazando los marcadores
      * @param string $templatePath Ruta al archivo de plantilla
@@ -12,26 +18,50 @@ class ViewRenderer {
     public static function render($templatePath, array $data = []): string {
         error_log("DEBUG - Renderizando template: $templatePath");
         
-        // Verificar que el archivo existe
-        if (!file_exists($templatePath)) {
-            error_log("ERROR - Template no encontrado: $templatePath");
+        try {
+            // Verificar que el archivo existe
+            if (!file_exists($templatePath)) {
+                throw new \Exception("Template no encontrado: $templatePath");
+            }
+
+            // Usar caché si está disponible
+            $cacheKey = md5($templatePath);
+            if (!isset(self::$cache[$cacheKey])) {
+                self::$cache[$cacheKey] = file_get_contents($templatePath);
+            }
+            
+            $content = self::$cache[$cacheKey];
+            if ($content === false) {
+                throw new \Exception("No se pudo leer el template: $templatePath");
+            }
+
+            error_log("DEBUG - Variables disponibles: " . implode(', ', array_keys($data)));
+            
+            // Procesar includes de componentes
+            $content = preg_replace_callback(
+                '/@include\(\'([^\']+)\'\)/',
+                function($matches) use ($data) {
+                    return ComponentRenderer::render($matches[1], $data);
+                },
+                $content
+            );
+            
+            // Reemplazar los marcadores {{variable}} con los valores
+            foreach ($data as $key => $value) {
+                $content = str_replace('{{'.$key.'}}', $value, $content);
+            }
+
+            return $content;
+        } catch (\Exception $e) {
+            error_log("Error en ViewRenderer: " . $e->getMessage());
             return '';
         }
+    }
 
-        // Cargar el contenido de la plantilla
-        $content = file_get_contents($templatePath);
-        if ($content === false) {
-            error_log("ERROR - No se pudo leer el template: $templatePath");
-            return '';
-        }
-
-        error_log("DEBUG - Variables disponibles: " . implode(', ', array_keys($data)));
-        
-        // Reemplazar los marcadores {{variable}} con los valores
-        foreach ($data as $key => $value) {
-            $content = str_replace('{{'.$key.'}}', $value, $content);
-        }
-
-        return $content;
+    /**
+     * Limpia la caché de templates
+     */
+    public static function clearCache(): void {
+        self::$cache = [];
     }
 }

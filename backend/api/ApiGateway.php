@@ -13,18 +13,22 @@ class ApiGateway {
     private const CONTENT_TYPE = 'Content-Type: application/json';
     
     /**
-     * Registra los endpoints disponibles y sus controladores
+     * @var array Registra los endpoints disponibles y sus controladores
      */
-    private array $routes = [
-        'dashboard' => [
-            'controller' => 'DashboardEndpoint',
-            'methods' => ['GET']
-        ],
-        'test' => [
-            'controller' => 'TestEndpoint',
-            'methods' => ['GET']
-        ]
-    ];
+    private $routes;
+
+    public function __construct() {
+        $this->routes = [
+            'dashboard' => [
+                'controller' => 'DashboardEndpoint',
+                'methods' => ['GET']
+            ],
+            'test' => [
+                'controller' => 'TestEndpoint',
+                'methods' => ['GET']
+            ]
+        ];
+    }
 
     /**
      * Procesa la solicitud entrante
@@ -69,6 +73,7 @@ class ApiGateway {
 
     /**
      * Extrae el nombre del endpoint de la URL
+     * @return string
      */
     private function getEndpointFromUrl(): string {
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -78,6 +83,7 @@ class ApiGateway {
 
     /**
      * Maneja errores de forma consistente
+     * @param \Exception $e
      */
     private function handleError(\Exception $e): void {
         $statusCode = $e->getCode() ?: 500;
