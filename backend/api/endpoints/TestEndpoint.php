@@ -1,6 +1,6 @@
 <?php
 /*
-Path: backend/api/getData.php
+Path: backend/api/endpoints/TestEndpoint.php
 */
 
 header('Content-Type: application/json');
