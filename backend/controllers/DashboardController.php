@@ -41,6 +41,10 @@ class DashboardController {
     }
 
     public function index($asApiResponse = false) {
+        // Auto-detect API requests via Accept header.
+        if (!$asApiResponse && isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            $asApiResponse = true;
+        }
         try {
             // Obtiene el período y datos del dashboard
             $periodo = $this->navigation->getPeriod();

@@ -11,7 +11,7 @@ class ApiService {
      */
     static async getStatusData() {
         try {
-            const response = await fetch(`${this.API_BASE_URL}/TestEndpoint.php`);
+            const response = await fetch(`${this.API_BASE_URL}/DashboardEndpoint.php`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

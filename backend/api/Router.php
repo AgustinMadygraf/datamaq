@@ -10,11 +10,20 @@ $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath = '/DataMaq/backend/api';
 $endpoint = '/' . ltrim(substr($requestUri, strlen($basePath)), '/');
 
+// Route API calls if endpoint starts with "/endpoints"
+if (strpos($endpoint, '/endpoints') === 0) {
+    // Construir ruta dinámica al archivo del endpoint.
+    $apiFile = __DIR__ . $endpoint . '.php';
+    if (file_exists($apiFile)) {
+        require_once $apiFile;
+    } else {
+        header("HTTP/1.0 404 Not Found");
+        echo json_encode(['status' => 'error', 'message' => 'Endpoint not found']);
+    }
+    exit;
+}
+
 switch ($endpoint) {
-    case '/dashboard':
-        require_once __DIR__ . '/dashboard.php';
-        break;
-    // Add more routes as needed.
     default:
         header("HTTP/1.0 404 Not Found");
         echo json_encode(['status' => 'error', 'message' => 'Endpoint not found']);
