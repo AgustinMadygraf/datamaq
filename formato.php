@@ -12,13 +12,8 @@
 </head>
 <body>
 <?php
-    require_once __DIR__ . '/backend/views/partials/header.php';
+    require_once __DIR__ . '/backend/views/header.php';
     require_once __DIR__ . '/backend/config/error_config.php';
-    // Definir constantes de conexión
-    define('DB_SERVER', 'localhost');
-    define('DB_USERNAME', 'root');
-    define('DB_PASSWORD', '12345678');
-    define('DB_NAME', 'registro_stock');
 
     // Incluir la clase Database para gestionar la conexión
     require_once 'backend/core/Database.php';

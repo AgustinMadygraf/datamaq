@@ -1,4 +1,8 @@
 <?php
+/*
+Path: index.php
+*/
+
 require_once __DIR__ . '/backend/config/error_config.php';
 require_once __DIR__ . '/backend/core/ViewRenderer.php';
 require_once __DIR__ . '/backend/helpers/CsrfHelper.php';
@@ -68,12 +72,7 @@ $infoDisplayHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/info_disp
 ]);
 error_log("INFO - InfoDisplay renderizado - Length: " . strlen($infoDisplayHtml));
 
-// Renderizar las diferentes partes de la página
-$headerHtml = ViewRenderer::render(__DIR__ . '/frontend/templates/header.html', [
-    'menuItems' => ViewRenderer::render(__DIR__ . '/frontend/templates/menu_items.html', [
-        'paginaActual' => basename($_SERVER['PHP_SELF'])
-    ])
-]);
+require_once __DIR__ . '/backend/views/header.php';
 
 // Renderizar la plantilla principal
 echo ViewRenderer::render(__DIR__ . '/frontend/templates/main.html', [
