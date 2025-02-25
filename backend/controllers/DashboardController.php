@@ -79,7 +79,7 @@ class DashboardController {
 
             if ($asApiResponse) {
                 header('Content-Type: application/json; charset=utf-8');
-                echo json_encode(['status' => 'success', 'data' => $data]);
+                echo json_encode(['status' => 'success', 'data' => $data], JSON_UNESCAPED_UNICODE);
                 exit;
             }
 
@@ -89,7 +89,7 @@ class DashboardController {
             error_log("DashboardController error: " . $e->getMessage());
             if ($asApiResponse) {
                 header('Content-Type: application/json; charset=utf-8', true, 500);
-                echo json_encode(['status' => 'error', 'message' => "Ocurrió un error. Consulte los logs."]);
+                echo json_encode(['status' => 'error', 'message' => "Ocurrió un error. Consulte los logs."], JSON_UNESCAPED_UNICODE);
                 exit;
             }
             // Optionally, handle non API errors

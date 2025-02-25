@@ -1,7 +1,7 @@
 <?php
 /*
 Path: backend/api/dashboard_test.php
-Versión experimental del endpoint de dashboard para pruebas.
+API endpoint experimental del dashboard para pruebas, que devuelve datos en formato JSON.
 */
 
 // Configuración básica y carga de dependencias
@@ -14,6 +14,12 @@ try {
         'periodo' => FILTER_SANITIZE_STRING,
         'conta'   => FILTER_SANITIZE_NUMBER_INT,
     ]);
+
+    // Validar que 'periodo' se encuentre en los valores permitidos.
+    $allowedPeriods = ['semana', 'turno', 'hora'];
+    if (!in_array($params['periodo'] ?? 'semana', $allowedPeriods)) {
+        $params['periodo'] = 'semana';
+    }
 
     if (isset($params['periodo'])) {
         $_GET['periodo'] = $params['periodo'];

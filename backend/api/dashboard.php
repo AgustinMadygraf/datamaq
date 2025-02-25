@@ -1,6 +1,7 @@
 <?php
 /*
 Path: backend/api/dashboard.php
+API endpoint que devuelve datos del dashboard en formato JSON.
 */
 
 // Configuración básica y carga de dependencias (agregar más require_once si es necesario)
@@ -13,6 +14,12 @@ try {
         'periodo' => FILTER_SANITIZE_STRING,
         'conta'   => FILTER_SANITIZE_NUMBER_INT,
     ]);
+
+    // Validar que 'periodo' sea uno de los valores permitidos.
+    $allowedPeriods = ['semana', 'turno', 'hora'];
+    if (!in_array($params['periodo'] ?? 'semana', $allowedPeriods)) {
+        $params['periodo'] = 'semana';
+    }
 
     // Reinyectar parámetros saneados para que Navigation los use
     if (isset($params['periodo'])) {
