@@ -8,6 +8,8 @@ namespace Backend\Api;
 require_once __DIR__ . '/../core/ViewRenderer.php';
 require_once __DIR__ . '/responses/ApiResponse.php';
 
+use Backend\Api\Responses\ErrorResponse;
+
 class ApiGateway {
     private const ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
     private const CONTENT_TYPE = 'Content-Type: application/json';
@@ -87,13 +89,8 @@ class ApiGateway {
      */
     private function handleError(\Exception $e): void {
         $statusCode = $e->getCode() ?: 500;
-        http_response_code($statusCode);
-        
-        echo json_encode([
-            'error' => true,
-            'message' => $e->getMessage(),
-            'code' => $statusCode
-        ]);
+        $errorResponse = ErrorResponse::error($e->getMessage(), $statusCode);
+        echo json_encode($errorResponse);
     }
 }
 
