@@ -3,8 +3,10 @@ Path: frontend/js/inject.js
 */
 
 document.addEventListener('mouseup', function(e) {
-    // Ensure className is a string.
-    let targetClass = typeof e.target.className === 'string' ? e.target.className : String(e.target.className || '');
+    // Asegurar que className se trate como cadena, incluso si es un objeto u otro tipo.
+    let targetClass = (typeof e.target.className === 'string') 
+        ? e.target.className 
+        : (e.target.className ? e.target.className.toString() : '');
     if (targetClass.indexOf("your-class-name") !== -1) {
         // ...existing mouseup logic...
     }

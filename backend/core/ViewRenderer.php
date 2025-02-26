@@ -13,10 +13,11 @@ class ViewRenderer {
      * Renderiza una plantilla HTML reemplazando los marcadores
      * @param string $templatePath Ruta al archivo de plantilla
      * @param array $data Variables para inyectar en la plantilla
+     * @param string $mode Modo de renderizado (web o api)
      * @return string HTML renderizado
      */
-    public static function render($templatePath, array $data = []): string {
-        error_log("DEBUG - Renderizando template: $templatePath");
+    public static function render($templatePath, array $data = [], string $mode = 'web'): string {
+        error_log("DEBUG - Renderizando template: $templatePath en modo $mode");
         
         try {
             // Verificar que el archivo existe
@@ -37,14 +38,16 @@ class ViewRenderer {
 
             error_log("DEBUG - Variables disponibles: " . implode(', ', array_keys($data)));
             
-            // Procesar includes de componentes
-            $content = preg_replace_callback(
-                '/@include\(\'([^\']+)\'\)/',
-                function($matches) use ($data) {
-                    return ComponentRenderer::render($matches[1], $data);
-                },
-                $content
-            );
+            // Procesar includes solo si no es ambiente API
+            if ($mode !== 'api') {
+                $content = preg_replace_callback(
+                    '/@include\(\'([^\']+)\'\)/',
+                    function($matches) use ($data) {
+                        return ComponentRenderer::render($matches[1], $data);
+                    },
+                    $content
+                );
+            }
             
             // Reemplazar los marcadores {{variable}} con los valores
             foreach ($data as $key => $value) {

@@ -11,9 +11,10 @@ class ComponentRenderer {
      * Renderiza un componente con sus datos
      * @param string $componentName Nombre del componente (sin extensión)
      * @param array $props Propiedades para el componente
+     * @param string $mode Modo de renderizado (predeterminado "web")
      * @return string HTML renderizado
      */
-    public static function render(string $componentName, array $props = []): string {
+    public static function render(string $componentName, array $props = [], string $mode = 'web'): string {
         $componentPath = self::COMPONENTS_DIR . $componentName . '.html';
         
         try {
@@ -29,7 +30,9 @@ class ComponentRenderer {
             
             // Reemplazar props
             foreach ($props as $key => $value) {
-                $content = str_replace('{{'.$key.'}}', htmlspecialchars((string)$value), $content);
+                // En entorno web se escapan los valores; en API se inyecta tal cual.
+                $replacement = $mode === 'api' ? $value : htmlspecialchars((string)$value);
+                $content = str_replace('{{'.$key.'}}', $replacement, $content);
             }
             
             // Limpiar props no utilizados
