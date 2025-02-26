@@ -3,6 +3,8 @@ Path: frontend/js/services/UiService.js
 Este servicio se encarga de actualizar la interfaz de usuario con los datos recibidos de la API.
 */
 
+import { sanitizeHTML } from '../utils/DomUtils.js';
+
 class UiService {
     /**
      * Actualiza el dashboard completo con los datos recibidos
@@ -73,31 +75,30 @@ class UiService {
             // Retornar el HTML completo del info-display
             // Asegurarnos de que el div#container se crea correctamente
             const html = `
-                <div class="hoja" style="${estiloFondo}">
-                    <div class="info">
-                        <div class="cabecera">
-                            <div class="c1">
-                                <p2>Velocidad ${vel_ult_calculada} unidades por minuto</p2>
-                                <p1>Formato ${formato}</p1>
-                                <p2>Ancho Bobina ${ancho_bobina}</p2>
-                            </div>
-                        </div>
-                        <div id="${containerId}" class="graf" style="min-height: 400px;"></div>
-                        <div class="botonera-container">
-                            ${botoneraHtml}
+            <div class="hoja" style="${sanitizeHTML(estiloFondo)}">
+                <div class="info">
+                    <div class="cabecera">
+                        <div class="c1">
+                            <p2>Velocidad ${sanitizeHTML(vel_ult_calculada.toString())} unidades por minuto</p2>
+                            <p1>Formato ${sanitizeHTML(formato)}</p1>
+                            <p2>Ancho Bobina ${sanitizeHTML(ancho_bobina.toString())}</p2>
                         </div>
                     </div>
+                    <div id="${sanitizeHTML(containerId)}" class="graf" style="min-height: 400px;"></div>
+                    <div class="botonera-container">
+                        ${botoneraHtml} <!-- Considerar sanitizar o validar este contenido si es dinámico -->
+                    </div>
                 </div>
-            `;
-            
-            console.log("UiService - HTML para info-display generado correctamente");
-            return html;
-        } catch (error) {
-            console.error("UiService - Error en generateInfoDisplayHtml:", error);
-            return `<div class="alert alert-danger">Error al generar la visualización: ${error.message}</div>`;
-        }
+            </div>
+        `;
+        
+        return html;
+    } catch (error) {
+        console.error("UiService - Error en generateInfoDisplayHtml:", error);
+        return `<div class="alert alert-danger">Error al generar la visualización: ${error.message}</div>`;
     }
-    
+    }
+
     /**
      * Genera el HTML para la botonera
      * @param {Object} data - Datos recibidos de la API
