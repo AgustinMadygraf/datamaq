@@ -5,6 +5,11 @@ Path: backend/core/ViewRenderer.php
 
 require_once __DIR__ . '/ComponentRenderer.php';
 
+/*
+ * Nota: El método render ahora se utiliza para cargar plantillas estáticas desde /frontend/templates,
+ * permitiendo así desacoplar la lógica del backend del frontend.
+ */
+
 class ViewRenderer {
     private const TEMPLATES_DIR = __DIR__ . '/../../frontend/templates/';
     private static $cache = []; // Removed array type declaration
