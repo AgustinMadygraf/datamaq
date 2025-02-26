@@ -29,15 +29,13 @@ if (strpos($endpoint, '/endpoints') === 0) {
     if (file_exists($apiFile)) {
         require_once $apiFile;
     } else {
-        header("HTTP/1.0 404 Not Found");
-        echo json_encode(['status' => 'error', 'message' => 'Endpoint not found']);
+        echo json_encode(\Backend\Api\Responses\ErrorResponse::error('Endpoint not found', 404));
     }
     exit;
 }
 
 switch ($endpoint) {
     default:
-        header("HTTP/1.0 404 Not Found");
-        echo json_encode(['status' => 'error', 'message' => 'Endpoint not found']);
+        echo json_encode(\Backend\Api\Responses\ErrorResponse::error('Endpoint not found', 404));
         break;
 }

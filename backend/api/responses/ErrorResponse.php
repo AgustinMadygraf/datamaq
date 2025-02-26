@@ -1,4 +1,8 @@
 <?php
+/*
+Path: backend/api/responses/ErrorResponse.php
+*/
+
 namespace Backend\Api\Responses;
 
 class ErrorResponse {

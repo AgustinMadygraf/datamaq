@@ -7,6 +7,7 @@ namespace Backend\Api;
 
 require_once __DIR__ . '/../core/ViewRenderer.php';
 require_once __DIR__ . '/responses/ApiResponse.php';
+require_once __DIR__ . '/../middleware/ApiSecurityMiddleware.php';
 
 use Backend\Api\Responses\ErrorResponse;
 
@@ -36,38 +37,35 @@ class ApiGateway {
      * Procesa la solicitud entrante
      */
     public function handleRequest(): void {
+        // Configurar headers
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        
+        // Apply API security checks using global namespace
+        if (!\ApiSecurityMiddleware::apply()) {
+            exit;
+        }
+        
         try {
-            // Configurar headers
-            header(self::CONTENT_TYPE);
-            header('Access-Control-Allow-Origin: *');
-            
-            // Validar método HTTP
             $method = $_SERVER['REQUEST_METHOD'];
             if (!in_array($method, self::ALLOWED_METHODS)) {
                 throw new \Exception("Método HTTP no permitido", 405);
             }
-
-            // Obtener endpoint de la URL
+            // Extraer endpoint utilizando el base path
             $endpoint = $this->getEndpointFromUrl();
             
-            // Validar endpoint
             if (!isset($this->routes[$endpoint])) {
                 throw new \Exception("Endpoint no encontrado", 404);
             }
-
-            // Validar método para el endpoint
+            
             if (!in_array($method, $this->routes[$endpoint]['methods'])) {
                 throw new \Exception("Método no permitido para este endpoint", 405);
             }
-
-            // Cargar y ejecutar controlador
+            
             $controllerClass = "Backend\\Api\\Endpoints\\" . $this->routes[$endpoint]['controller'];
             $controller = new $controllerClass();
             $response = $controller->handle($method);
-
-            // Enviar respuesta
             echo json_encode($response);
-
         } catch (\Exception $e) {
             $this->handleError($e);
         }
@@ -77,10 +75,13 @@ class ApiGateway {
      * Extrae el nombre del endpoint de la URL
      * @return string
      */
+    // Updated to remove base path and return first segment post-base.
     private function getEndpointFromUrl(): string {
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $segments = explode('/', trim($path, '/'));
-        return end($segments);
+        $basePath = '/DataMaq/backend/api';
+        $trimmed = substr($path, strlen($basePath));
+        $segments = explode('/', trim($trimmed, '/'));
+        return $segments[0] ?? '';
     }
 
     /**

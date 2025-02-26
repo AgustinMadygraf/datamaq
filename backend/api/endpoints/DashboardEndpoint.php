@@ -11,11 +11,15 @@ ini_set('display_errors', 1);
 // Updated require_once path to fix file not found error
 require_once __DIR__ . '/../../config/error_config.php';
 require_once __DIR__ . '/../../controllers/DashboardController.php';
+// Added requires for API responses
+require_once __DIR__ . '/../responses/ApiResponse.php';
+require_once __DIR__ . '/../responses/ErrorResponse.php';
 
 try {
     // Extraer parámetros y loguearlos para debugging
     $params = filter_input_array(INPUT_GET, [
-        'periodo' => FILTER_SANITIZE_STRING,
+        // Reemplazar FILTER_SANITIZE_STRING por FILTER_SANITIZE_SPECIAL_CHARS (alternativa recomendada)
+        'periodo' => FILTER_SANITIZE_SPECIAL_CHARS,
         'conta'   => FILTER_SANITIZE_NUMBER_INT,
     ]);
     error_log("DashboardEndpoint input params: " . json_encode($params));
@@ -34,12 +38,13 @@ try {
         $_GET['conta'] = $params['conta'];
     }
 
-    // Instanciar el controlador y llamar a index con respuesta API
+    // Instanciar el controlador y capturar datos (se asume que index() retorna un arreglo)
     $controller = new DashboardController();
-    $controller->index(true);
+    $data = $controller->index(); // se elimina el parámetro "true"
+    echo json_encode(\Backend\Api\Responses\ApiResponse::success($data));
+    exit;
 } catch (Exception $e) {
     error_log("DashboardEndpoint error: " . $e->getMessage());
-    header('Content-Type: application/json; charset=utf-8', true, 500);
-    echo json_encode(['status' => 'error', 'message' => "Ocurrió un error. Consulte los logs."]);
+    echo json_encode(\Backend\Api\Responses\ErrorResponse::error("Ocurrió un error. Consulte los logs.", 500));
     exit;
 }

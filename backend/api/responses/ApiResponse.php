@@ -1,4 +1,8 @@
 <?php
+/*
+Path: backend/api/responses/ApiResponse.php
+*/
+
 namespace Backend\Api\Responses;
 
 class ApiResponse {
