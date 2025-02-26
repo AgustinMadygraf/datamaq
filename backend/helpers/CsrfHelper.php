@@ -41,5 +41,36 @@ class CsrfHelper {
         error_log("DEBUG - Token CSRF " . ($isValid ? "válido" : "inválido"));
         return $isValid;
     }
+    
+    /**
+     * Genera el HTML para incluir el token CSRF en un formulario
+     * @return string HTML con input hidden que contiene el token CSRF
+     */
+    public static function getTokenField(): string {
+        $token = self::generateToken();
+        return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
+    }
+    
+    /**
+     * Genera el JavaScript para incluir el token CSRF en headers de fetch
+     * @return string Script JS para incluir el token en fetch requests
+     */
+    public static function getJsTokenCode(): string {
+        $token = self::generateToken();
+        return "
+        <script>
+            // Función para agregar el token CSRF a las peticiones fetch
+            function fetchWithCsrf(url, options = {}) {
+                // Asegurar que options.headers existe
+                options.headers = options.headers || {};
+                
+                // Añadir el token CSRF al header
+                options.headers['X-CSRF-TOKEN'] = '" . $token . "';
+                
+                // Realizar la petición fetch con el token
+                return fetch(url, options);
+            }
+        </script>";
+    }
 }
 ?>
