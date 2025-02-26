@@ -40,6 +40,11 @@ class DashboardController {
         $this->navigation = $navigation ?: new Navigation();
     }
 
+    /**
+     * Método principal del controlador, puede devolver datos para la vista o como API
+     * @param bool $asApiResponse Si es true, devuelve JSON
+     * @return array|void
+     */
     public function index($asApiResponse = false) {
         // Auto-detect API requests via Accept header.
         if (!$asApiResponse && isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
@@ -64,40 +69,66 @@ class DashboardController {
             $formatoModel = new FormatoModel();
             $formatoData  = $formatoModel->getUltimoFormato();
 
-            // Preparar los datos para la vista
+            // Preparar los datos para la vista o API
             $data = [
                 'periodo'             => $periodo,
                 'ls_periodos'         => $this->ls_periodos,
                 'menos_periodo'       => $this->menos_periodo,
                 'rawdata'             => $rawdata,
-                'chartData'           => $rawdata, // <-- Se agrega la información para el gráfico.
                 'conta'               => $conta,
-                'vel_ult'             => $vel_ult, // Variable original.
-                'vel_ult_calculada'   => $vel_ult, // Agregado para la vista.
+                'vel_ult_calculada'   => $vel_ult,
                 'unixtime'            => $unixtime,
                 'gradient'            => $d,
-                'ls_class'            => $this->ls_class,
-                'ref_class'           => ['presione', 'presado'],
-                'formatoData'         => $formatoData
+                'formatoData'         => [
+                    'formato' => $formatoData['formato'] ?? 'No disponible',
+                    'ancho_bobina' => $formatoData['ancho_bobina'] ?? 'No disponible'
+                ]
             ];
 
+            // Para API, añadimos datos formatados específicamente para UI
             if ($asApiResponse) {
+                // Calcula datos de la interfaz necesarios para JavaScript
+                $class = $this->ls_class[$periodo];
+                $ref_class = ['presione', 'presado'];
+                
+                $data['uiData'] = [
+                    'class' => $class,
+                    'refClass' => [
+                        $ref_class[$class[0]],
+                        $ref_class[$class[1]],
+                        $ref_class[$class[2]]
+                    ],
+                    'preConta' => $conta - 1000 * $this->ls_periodos[$periodo],
+                    'postConta' => $conta + 1000 * $this->ls_periodos[$periodo],
+                    'estiloFondo' => sprintf(
+                        "background: linear-gradient(195deg, rgba(107,170,34,0.9) %d%%, rgba(255,164,1,0.9) %d%%, rgba(234,53,34,0.9) %d%%, rgba(100,10,5,0.9) %d%%);",
+                        $d[3], $d[2], $d[1], $d[0]
+                    )
+                ];
+                
                 header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(['status' => 'success', 'data' => $data], JSON_UNESCAPED_UNICODE);
                 exit;
             }
 
-            // La presentación se delega a la capa de vistas.
+            // Para vista, devuelve el array de datos
             return $data;
         } catch (Exception $e) {
             error_log("DashboardController error: " . $e->getMessage());
             if ($asApiResponse) {
                 header('Content-Type: application/json; charset=utf-8', true, 500);
-                echo json_encode(['status' => 'error', 'message' => "Ocurrió un error. Consulte los logs."], JSON_UNESCAPED_UNICODE);
+                echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
                 exit;
             }
-            // Optionally, handle non API errors
             throw $e;
         }
+    }
+    
+    /**
+     * Nuevo método que devuelve solo los datos necesarios para la API
+     * @return void Envía respuesta JSON directamente
+     */
+    public function apiGetDashboardData() {
+        $this->index(true);
     }
 }

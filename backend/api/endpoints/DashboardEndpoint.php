@@ -38,9 +38,9 @@ try {
         $_GET['conta'] = $params['conta'];
     }
 
-    // Instanciar el controlador y capturar datos (se asume que index() retorna un arreglo)
+    // Instanciar el controlador y capturar datos (ahora forzamos respuesta API)
     $controller = new DashboardController();
-    $data = $controller->index(); // se elimina el parámetro "true"
+    $data = $controller->index(true); // Forzamos respuesta JSON
     echo json_encode(\Backend\Api\Responses\ApiResponse::success($data));
     exit;
 } catch (Exception $e) {
