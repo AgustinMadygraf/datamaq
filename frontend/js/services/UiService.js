@@ -10,6 +10,8 @@ class UiService {
      */
     static async updateDashboard(data) {
         try {
+            console.log("UiService - Iniciando actualización del dashboard");
+            
             // Generar el contenido del info-display
             const infoDisplayHtml = this.generateInfoDisplayHtml(data);
             
@@ -17,14 +19,35 @@ class UiService {
             const container = document.getElementById('info-display-container');
             if (container) {
                 container.innerHTML = infoDisplayHtml;
+                
+                // Verificar que el container del gráfico fue creado correctamente
+                const chartContainer = document.getElementById('container');
+                if (chartContainer) {
+                    console.log("UiService - Contenedor del gráfico creado correctamente");
+                    
+                    // Notificar que el contenedor está listo
+                    try {
+                        document.dispatchEvent(new CustomEvent('containerReady', {
+                            detail: { containerId: 'container' }
+                        }));
+                        console.log("UiService - Evento containerReady disparado");
+                    } catch(eventError) {
+                        console.error("UiService - Error al disparar evento containerReady:", eventError);
+                    }
+                } else {
+                    console.error("UiService - Error: El contenedor del gráfico no fue creado");
+                }
+            } else {
+                console.error("UiService - Error: No se encontró el contenedor info-display-container");
             }
             
             // Agregar event listeners a los botones de la botonera
             this.setupBotoneraEventListeners();
             
+            console.log("UiService - Dashboard actualizado correctamente");
             return true;
         } catch (error) {
-            console.error('Error en UiService.updateDashboard:', error);
+            console.error('UiService - Error en updateDashboard:', error);
             throw error;
         }
     }
@@ -44,6 +67,9 @@ class UiService {
             // Generar la botonera
             const botoneraHtml = this.generateBotoneraHtml(data);
             
+            // Asegurarse de que el ID del contenedor del gráfico sea único y siempre el mismo
+            const containerId = 'container';
+            
             // Retornar el HTML completo del info-display
             // Asegurarnos de que el div#container se crea correctamente
             const html = `
@@ -56,7 +82,7 @@ class UiService {
                                 <p2>Ancho Bobina ${ancho_bobina}</p2>
                             </div>
                         </div>
-                        <div id="container" class="graf"></div>
+                        <div id="${containerId}" class="graf" style="min-height: 400px;"></div>
                         <div class="botonera-container">
                             ${botoneraHtml}
                         </div>
