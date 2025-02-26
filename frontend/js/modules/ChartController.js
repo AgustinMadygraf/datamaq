@@ -7,10 +7,10 @@ El gráfico se genera con los datos inyectados desde index.php, y el evento de d
 import { onDbClick } from './DoubleClickHandler.js';
 
 (function() {
-    document.addEventListener('DOMContentLoaded', function() {
+    // Function to initialize Highcharts with available data.
+    function initChart() {
         try {
             console.log("Initializing chart_viewer...");
-            // Validate that the container element exists
             var container = document.getElementById('container');
             if (!container) {
                 console.error("Error: The container element with id 'container' was not found.");
@@ -27,7 +27,8 @@ import { onDbClick } from './DoubleClickHandler.js';
                 }
             });
 
-            var chartData = window.chartData; // Datos inyectados desde index.php
+            // Use the global window.chartData without fallback.
+            var chartData = window.chartData;
             console.log("Chart data received:", chartData);
 
             Highcharts.chart('container', {
@@ -37,7 +38,7 @@ import { onDbClick } from './DoubleClickHandler.js';
                     marginRight: 10,
                     events: {
                         load: function () { 
-                            console.log("Chart loaded successfully"); 
+                            console.log("Chart loaded successfully");
                             // ...existing code...
                         },
                         click: function (event) { 
@@ -121,6 +122,15 @@ import { onDbClick } from './DoubleClickHandler.js';
             });
         } catch (e) {
             console.error("Error during chart initialization:", e);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.chartData) {
+            initChart();
+        } else {
+            console.warn("window.chartData not found. Waiting for chartDataReady event.");
+            document.addEventListener('chartDataReady', initChart);
         }
     });
 
