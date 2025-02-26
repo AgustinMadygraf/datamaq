@@ -1,158 +1,187 @@
-## 1. Mejora: Refactorización Modular de Frontend (ChartViewer JS)
+# Plan de Mejoras Priorizadas para el Proyecto DataMaq
 
-### Dependencias:
-- Inyección actual de datos en index.php (window.chartData).  
-- Uso de Highcharts y la estructura IIFE en el archivo que se convertirá en ChartController.js.
-
-### Subtareas:
-
-#### 1.1. Encapsular la lógica en clases y separar responsabilidades  
-- **Título de la subtarea:**  
-  "Reorganización de ChartController: Modularización y separación de métodos"
-
-- **Archivos involucrados:**  
-  - ChartController.js (archivo resultante de la reubicación y renombrado)
-
-- **Acción a realizar:**  
-  - **Paso 1:** Auditar el archivo actual para identificar la lógica de inicialización, manejo de eventos (como doble clic) y renderizado del gráfico.  
-  - **Paso 2:** Dividir el código en métodos independientes dentro de una clase, definiendo claramente métodos como:  
-    - `initialize()` para configurar el entorno y cargar datos iniciales.  
-    - `attachEventListeners()` para registrar eventos (sin modificar la funcionalidad actual).  
-    - `renderChart()` para encapsular la invocación a Highcharts y la presentación del gráfico.  
-  - **Paso 3:** Insertar comentarios que documenten la responsabilidad de cada método, haciendo hincapié en la separación de concerns.  
-  - **Paso 4:** Preparar pruebas manuales de cada método de forma incremental (por ejemplo, invocar primero initialize y luego adjuntar eventos) para asegurar que la funcionalidad no se rompe durante el proceso de refactorización.
-
-- **Justificación detallada:**  
-  Al separar cada responsabilidad en métodos claros se aplica el principio de Responsabilidad Única de SOLID. Esto facilita la introducción de mejoras futuras (como la migración a Fetch API y eventualmente a Vue.js) sin afectar el comportamiento actual de la aplicación. Además, la modularización en una clase permite aislar la lógica del gráfico y reducir el impacto en producción mediante pruebas incrementales.
-
-- **Archivos de referencia:**  
-  - Código actual del IIFE en ChartController.js  
-  - Buenas prácticas de modularización y principios SOLID en JavaScript moderno
-
-#### 1.2. Documentar y preparar la transición a Fetch API  
-- **Título de la subtarea:**  
-  "Incorporar comentarios y puntos de extensión para migración a consumo API"
-
-- **Archivos involucrados:**  
-  - ChartController.js  
-  - index.php (especialmente donde se inyecta window.chartData)
-
-- **Acción a realizar:**  
-  - Comentar en el módulo creado los puntos exactos donde se espera reemplazar la inyección de datos global (window.chartData) por una llamada activa a un endpoint API usando Fetch.  
-  - Marcar secciones del código para que en una fase posterior se reemplace el método de adquisición de datos, sin eliminar la funcionalidad actual.
-
-- **Justificación detallada:**  
-  Incluir puntos de extensión y documentación facilita la migración gradual sin la necesidad de revertir cambios masivos en producción. Los comentarios claros permiten a futuros desarrolladores identificar rápidamente dónde intervenir sin afectar la lógica existente.
-
-- **Archivos de referencia:**  
-  - Código actual y comentarios en index.php y ChartController.js
-
----
-
-## 2. Mejora: Desacoplar la Inyección de Datos del Backend al Frontend
-
-### Dependencias:
-- El método actual de inyección directa de `window.chartData` en index.php.  
-- Endpoints API disponibles y el trabajo en DashboardController.
+## 1️⃣ Implementar Mecanismo Seguro de Manipulación del DOM
+**Dependencias:** Ninguna
 
 ### Subtareas:
+#### 1.1 Crear utilidad de sanitización de HTML
+- **Archivos involucrados:** `/frontend/js/utils/DomUtils.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** El uso de `innerHTML` sin sanitización en UiService.js crea vulnerabilidades XSS. Una utilidad centralizada permite implementar una protección consistente.
+- **Archivos de referencia:** UiService.js (línea 84: `container.innerHTML = infoDisplayHtml`)
 
-#### 2.1. Identificar puntos de inyección y documentar la dependencia  
-- **Título de la subtarea:**  
-  "Análisis y documentación de la integración de datos en index.php"
+#### 1.2 Implementar funciones de creación segura de elementos
+- **Archivos involucrados:** `/frontend/js/utils/DomUtils.js`
+- **Acción:** Modificar
+- **Justificación:** Proporcionar alternativas seguras a `innerHTML` mediante métodos que creen elementos DOM de forma controlada.
+- **Archivos de referencia:** UiService.js (método `generateInfoDisplayHtml`)
 
-- **Archivos involucrados:**  
-  - index.php  
-  - DashboardController.php
+#### 1.3 Actualizar UiService para usar métodos seguros
+- **Archivos involucrados:** UiService.js
+- **Acción:** Modificar
+- **Justificación:** Reemplazar todas las instancias de `innerHTML` con los nuevos métodos seguros de manipulación del DOM.
+- **Archivos de referencia:** `DomUtils.js`
 
-- **Acción a realizar:**  
-  - Localizar y documentar dónde y cómo se inyecta la variable global `window.chartData`.  
-  - Crear un documento interno o comentarios en código que describan cómo se relaciona esta inyección con la lógica del backend.
-
-- **Justificación detallada:**  
-  Conocer la dependencia actual es clave para planificar una migración sin afectar la funcionalidad. Este análisis permite coordinar esfuerzos entre modificaciones en el backend y la actualización del frontend.
-
-- **Archivos de referencia:**  
-  - DashboardController.php, index.php, dashboard_test.php
-
-#### 2.2. Crear un endpoint API robusto para exposición de datos (fase de transición)  
-- **Título de la subtarea:**  
-  "Fortalecer y documentar el endpoint API de datos para Dashboard"
-
-- **Archivos involucrados:**  
-  - dashboard.php  
-  - dashboard_test.php
-
-- **Acción a realizar:**  
-  - Revisar y reforzar la validación de parámetros y seguridad en el endpoint.  
-  - Documentar el funcionamiento y los parámetros esperados en dichos endpoints.
-
-- **Justificación detallada:**  
-  Un endpoint sólido y bien documentado servirá de base para reemplazar la inyección de datos, haciendo la transición a una arquitectura desacoplada sin afectar la estabilidad actual.
-
-- **Archivos de referencia:**  
-  - dashboard.php, dashboard_test.php
-
-#### 2.3. Planificar la migración gradual del consumo en el frontend  
-- **Título de la subtarea:**  
-  "Plan de migración para reemplazar window.chartData por llamadas Fetch"
-
-- **Archivos involucrados:**  
-  - ChartController.js  
-  - index.php
-
-- **Acción a realizar:**  
-  - Incluir en el módulo de ChartController un esquema documentado que permita la futura conversión a Fetch, sin eliminar la solución actual.  
-  - Coordinar pruebas para la transición y asegurarse que, una vez migrado, se desactive la inyección directa en index.php.
-
-- **Justificación detallada:**  
-  Permitir una migración incremental evita interrupciones en producción. Se garantiza que cada cambio se pueda probar de manera aislada y revertir en caso de incidencias.
-
-- **Archivos de referencia:**  
-  - dashboard_test.php, index.php
-
----
-
-## 3. Mejora: Reorganización y Documentación de la Estructura de Archivos y Dependencias
-
-### Dependencias:
-- Ubicaciones actuales de vistas, controladores y configuraciones en el proyecto.  
-- La dispersión de recursos frontend (plantillas, scripts, imágenes).
+## 2️⃣ Implementar Sistema Centralizado de Estado
+**Dependencias:** Parcialmente dependiente de la tarea 1
 
 ### Subtareas:
+#### 2.1 Completar implementación de AppState
+- **Archivos involucrados:** AppState.js
+- **Acción:** Modificar
+- **Justificación:** Ya existe una implementación parcial en ApiService.js que hace referencia a este archivo. Debe expandirse para gestionar todo el estado de la aplicación.
+- **Archivos de referencia:** ApiService.js (línea 1: `import appState from '../state/AppState.js'`)
 
-#### 3.1. Reorganizar la carpeta de Frontend para aislar recursos (HTML, JS, CSS)  
-- **Título de la subtarea:**  
-  "Estructuración de recursos frontend en carpetas específicas"
+#### 2.2 Migrar datos desde window.chartData
+- **Archivos involucrados:** main.js, ChartController.js
+- **Acción:** Modificar
+- **Justificación:** Eliminar el uso de `window.chartData` como variable global para almacenar datos críticos, mejorando la seguridad y mantenibilidad.
+- **Archivos de referencia:** main.js (líneas 108-114), ChartController.js
 
-- **Archivos involucrados:**  
-  - Plantillas en templates  
-  - Scripts en js  
-  - Imágenes en img
+#### 2.3 Implementar patrón observador para notificaciones
+- **Archivos involucrados:** AppState.js
+- **Acción:** Modificar
+- **Justificación:** Reemplazar los eventos personalizados del DOM con un sistema de suscripción para notificar cambios de estado.
+- **Archivos de referencia:** main.js (línea 132-145: CustomEvent 'chartDataReady')
 
-- **Acción a realizar:**  
-  - Revisar y reubicar recursos según su tipo para mejorar la mantenibilidad.  
-  - Documentar la nueva estructura y comunicarla al equipo.
+#### 2.4 Actualizar DoubleClickHandler para usar AppState
+- **Archivos involucrados:** DoubleClickHandler.js
+- **Acción:** Modificar
+- **Justificación:** Actualmente accede directamente a `window.chartData`, necesita usar el sistema centralizado de estado.
+- **Archivos de referencia:** DoubleClickHandler.js (línea 14-16: acceso a `window.chartData`)
 
-- **Justificación detallada:**  
-  Una estructura organizada permite una migración gradual y facilita la separación de responsabilidades entre backend y frontend.
+## 3️⃣ Estandarizar Manejo de Operaciones Asíncronas
+**Dependencias:** Ninguna
 
-- **Archivos de referencia:**  
-  - header.html, info_display.html, botonera.html, index.html
+### Subtareas:
+#### 3.1 Crear servicio centralizado para operaciones fetch
+- **Archivos involucrados:** `/frontend/js/services/HttpService.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** Estandarizar todas las peticiones fetch con manejo consistente de errores, timeouts y cancelación.
+- **Archivos de referencia:** ApiService.js (métodos fetch)
 
-#### 3.2. Documentar las interfaces y dependencias entre backend y frontend  
-- **Título de la subtarea:**  
-  "Creación de documentación interna de interfaces y dependencias"
+#### 3.2 Implementar manejador global de errores
+- **Archivos involucrados:** `/frontend/js/utils/ErrorHandler.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** Centralizar el manejo de errores para garantizar un tratamiento consistente en toda la aplicación.
+- **Archivos de referencia:** ApiService.js, ChartController.js (múltiples bloques try-catch)
 
-- **Archivos involucrados:**  
-  - index.php, DashboardController.php  
-  - Archivos de vista como header.php, info_display.php
+#### 3.3 Actualizar ApiService para usar HttpService
+- **Archivos involucrados:** ApiService.js
+- **Acción:** Modificar
+- **Justificación:** Delegar las peticiones HTTP al servicio centralizado para mejorar la consistencia y mantenibilidad.
+- **Archivos de referencia:** `HttpService.js`
 
-- **Acción a realizar:**  
-  - Elaborar un documento o comentarios en código que detallen la relación entre cada capa (controladores, servicios, vistas y scripts JS).
+## 4️⃣ Refactorizar ChartController para Responsabilidad Única
+**Dependencias:** Tarea 2 (Sistema de Estado)
 
-- **Justificación detallada:**  
-  Esta documentación facilitará la incorporación de nuevos desarrolladores y sentará las bases para una futura migración a frameworks modernos.
+### Subtareas:
+#### 4.1 Extraer lógica de inicialización
+- **Archivos involucrados:** `/frontend/js/modules/chart/ChartInitializer.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** ChartController.js tiene ~300 líneas con múltiples responsabilidades, violando el principio de responsabilidad única.
+- **Archivos de referencia:** ChartController.js (métodos de inicialización)
 
-- **Archivos de referencia:**  
-  - Todas las ubicaciones del backend y frontend que intervienen en la renderización y provisión de datos.
+#### 4.2 Extraer lógica de manejo de eventos
+- **Archivos involucrados:** `/frontend/js/modules/chart/ChartEventHandler.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** Separar el manejo de eventos para cumplir con el principio de responsabilidad única.
+- **Archivos de referencia:** ChartController.js (métodos de eventos)
+
+#### 4.3 Extraer lógica de renderizado
+- **Archivos involucrados:** `/frontend/js/modules/chart/ChartRenderer.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** Separar el renderizado para cumplir con el principio de responsabilidad única.
+- **Archivos de referencia:** ChartController.js (método createChart)
+
+#### 4.4 Simplificar ChartController
+- **Archivos involucrados:** ChartController.js
+- **Acción:** Modificar
+- **Justificación:** Convertir ChartController en una fachada que coordine las nuevas clases específicas.
+- **Archivos de referencia:** `ChartInitializer.js`, `ChartEventHandler.js`, `ChartRenderer.js`
+
+## 5️⃣ Implementar Inyección de Dependencias Simple
+**Dependencias:** Tarea 4 (Refactorización de ChartController)
+
+### Subtareas:
+#### 5.1 Modificar constructores para recibir dependencias
+- **Archivos involucrados:** ChartController.js
+- **Acción:** Modificar
+- **Justificación:** Eliminar instanciaciones directas dentro de clases para reducir acoplamiento.
+- **Archivos de referencia:** ChartController.js (líneas 14-30: inicialización de `validator` y `seriesBuilder`)
+
+#### 5.2 Crear servicio de fábrica
+- **Archivos involucrados:** `/frontend/js/services/ServiceFactory.js` (crear)
+- **Acción:** Crear archivo
+- **Justificación:** Centralizar la creación de instancias para facilitar la inyección de dependencias.
+- **Archivos de referencia:** main.js
+
+#### 5.3 Actualizar inicialización en main.js
+- **Archivos involucrados:** main.js
+- **Acción:** Modificar
+- **Justificación:** Inicializar la aplicación usando el patrón de inyección de dependencias.
+- **Archivos de referencia:** `ServiceFactory.js`
+
+## 6️⃣ Implementar Patrón de Plugin para SeriesBuilder
+**Dependencias:** Tarea 5 (Inyección de Dependencias)
+
+### Subtareas:
+#### 6.1 Refactorizar SeriesBuilder para extensibilidad
+- **Archivos involucrados:** SeriesBuilder.js
+- **Acción:** Modificar
+- **Justificación:** Actualmente para añadir un nuevo tipo de serie hay que modificar múltiples métodos. Implementar un sistema de plugins mejoraría la extensibilidad.
+- **Archivos de referencia:** SeriesBuilder.js (método `buildSeries`)
+
+#### 6.2 Extraer definiciones de series a archivos separados
+- **Archivos involucrados:** `/frontend/js/modules/chart/series/` (crear carpeta y archivos)
+- **Acción:** Crear archivos
+- **Justificación:** Cada tipo de serie debería estar en un archivo separado para facilitar extensión sin modificar el código original.
+- **Archivos de referencia:** SeriesBuilder.js (métodos `buildInductiveSensorSeries`, `buildOpticalSensorSeries`, etc.)
+
+## 7️⃣ Reorganizar Estructura de Carpetas
+**Dependencias:** Tarea 4, 5 y 6 parcialmente completadas
+
+### Subtareas:
+#### 7.1 Crear estructura de carpetas organizada
+- **Archivos involucrados:** Estructura general del proyecto
+- **Acción:** Crear carpetas
+- **Justificación:** Mejorar la organización para facilitar el mantenimiento y la escalabilidad.
+- **Archivos de referencia:** Todo el proyecto
+
+#### 7.2 Mover archivos a ubicaciones apropiadas
+- **Archivos involucrados:** Múltiples archivos
+- **Acción:** Mover y actualizar imports
+- **Justificación:** Mejorar la coherencia estructural entre archivos relacionados.
+- **Archivos de referencia:** Todo el proyecto
+
+## 8️⃣ Extraer y Organizar Estilos CSS
+**Dependencias:** Ninguna
+
+### Subtareas:
+#### 8.1 Crear estructura de carpetas CSS
+- **Archivos involucrados:** css (crear carpetas)
+- **Acción:** Crear carpetas
+- **Justificación:** Los estilos están actualmente embebidos en main.html y necesitan ser organizados.
+- **Archivos de referencia:** main.html (estilos en línea)
+
+#### 8.2 Extraer estilos de main.html
+- **Archivos involucrados:** `/frontend/css/main.css`, main.html
+- **Acción:** Crear y modificar
+- **Justificación:** Separar la presentación de la estructura para mejor mantenimiento.
+- **Archivos de referencia:** main.html (líneas 13-62: estilos CSS)
+
+#### 8.3 Implementar metodología BEM
+- **Archivos involucrados:** `/frontend/css/components/*.css`
+- **Acción:** Crear
+- **Justificación:** Mejorar la nomenclatura de clases para evitar conflictos y aumentar mantenibilidad.
+- **Archivos de referencia:** main.html (líneas 13-62: clases CSS genéricas como `.c1`, `.graf`)
+
+## 🔥 Decisión Final
+La implementación debería seguir este orden ya que:
+
+1. Las mejoras de seguridad (manipulación del DOM) son prioritarias y no tienen dependencias.
+2. El sistema de gestión de estado centralizado es fundamental y requiere cambios mínimos para funcionar.
+3. Las mejoras en operaciones asíncronas proporcionarán mayor robustez inmediata.
+4. La refactorización de componentes para responsabilidad única mejorará la mantenibilidad sin cambios estructurales profundos.
+5. Las mejoras de arquitectura (inyección de dependencias, patrones de diseño) pueden implementarse después de tener una base más sólida.
+6. Los cambios estructurales son menos prioritarios y pueden implementarse gradualmente.
