@@ -1,6 +1,5 @@
 <!--includes/SendData_python.php-->
 <?php
-require 'conn.php';
 require_once __DIR__ . '/../backend/core/Database.php';
 
 // Obtener el último registro de la base de datos local
