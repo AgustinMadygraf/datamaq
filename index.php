@@ -24,29 +24,26 @@ if (preg_match('/\.(js|css)$/i', $_SERVER['REQUEST_URI'])) {
     // Si el archivo no existe, continuamos con el flujo normal para que se muestre un 404
 }
 
-require_once __DIR__ . '/backend/config/error_config.php';
+require_once __DIR__ . '/backend/controllers/DashboardController.php';
 require_once __DIR__ . '/backend/core/ViewRenderer.php';
-require_once __DIR__ . '/backend/helpers/CsrfHelper.php';
 
-// Inicializar variables básicas para la vista inicial
-$periodo = isset($_GET["periodo"]) && in_array($_GET["periodo"], ['semana', 'turno', 'hora']) ? $_GET["periodo"] : 'semana';
-$conta = isset($_GET["conta"]) ? intval($_GET["conta"]) : null;
+// Instanciar el controlador y obtener los datos para la vista principal
+$controller = new DashboardController();
+$data = $controller->index();
 
-// Generar token CSRF para formularios
-$csrfToken = CsrfHelper::generateToken();
-
-// Renderizar las plantillas estáticas
+// Renderizar la cabecera
 $header = ViewRenderer::render(__DIR__ . '/frontend/templates/header.html');
 
-// Renderizar la página principal con los datos mínimos necesarios para iniciar
-echo ViewRenderer::render(__DIR__ . '/frontend/templates/main.html', [
-    'header' => $header,
-    'initialData' => json_encode([
-        'periodo' => $periodo,
-        'conta' => $conta,
-        'csrfToken' => $csrfToken
-    ])
+// Agregar la cabecera y datos iniciales al array de datos
+$data['header'] = $header;
+$data['initialData'] = json_encode([
+    'periodo' => $data['periodo'] ?? null,
+    'conta' => $data['conta'] ?? null,
+    'csrfToken' => $data['csrfToken'] ?? null
 ]);
+
+// Renderizar la vista principal con los datos preparados por el controlador
+echo ViewRenderer::render(__DIR__ . '/frontend/templates/main.html', $data);
 
 error_log("INFO - Renderizado básico completado - Memory usage: " . memory_get_peak_usage(true));
 ?>

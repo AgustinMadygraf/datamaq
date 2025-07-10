@@ -54,8 +54,13 @@ class ViewRenderer {
                 );
             }
             
+
             // Reemplazar los marcadores {{variable}} con los valores
             foreach ($data as $key => $value) {
+                // Si el valor es un array, lo convertimos a JSON para evitar el notice
+                if (is_array($value)) {
+                    $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+                }
                 $content = str_replace('{{'.$key.'}}', $value, $content);
             }
 
