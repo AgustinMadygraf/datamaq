@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control de Producción</title>
+    <link rel="stylesheet" href="frontend/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="frontend/img/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<body>
+    <!-- Cabecera (puedes reemplazar por un include si usas un framework JS) -->
+    <div id="header-container"></div>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Dashboard (Versión HTML + JS)</h1>
+        <div id="dashboard-data" class="mt-4">
+            <div class="graf">
+                <div id="container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Cargar la cabecera estática
+    fetch('frontend/templates/header.html')
+        .then(resp => resp.text())
+        .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('backend/api/endpoints/dashboard.php')
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.initialData = data.data;
+                // NO borres el dashboard-data aquí
+                // document.getElementById('dashboard-data').innerHTML = '';
+                // Ahora carga los scripts de la app
+                const mainScript = document.createElement('script');
+                mainScript.type = 'module';
+                mainScript.src = 'frontend/js/main.js';
+                document.body.appendChild(mainScript);
+
+                const chartScript = document.createElement('script');
+                chartScript.type = 'module';
+                chartScript.src = 'frontend/js/modules/ChartController.js';
+                document.body.appendChild(chartScript);
+            } else {
+                document.getElementById('dashboard-data').innerHTML = 'Error al cargar datos.';
+            }
+        })
+        .catch(() => {
+            document.getElementById('dashboard-data').innerHTML = 'Error de conexión con la API.';
+        });
+    </script>
+</body>
+</html>
