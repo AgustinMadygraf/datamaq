@@ -41,6 +41,15 @@ try {
     // Instanciar el controlador y capturar datos (ahora forzamos respuesta API)
     $controller = new DashboardController();
     $data = $controller->index(true); // Forzamos respuesta JSON
+
+    // Reordenar el array para que 'rawdata' esté al final
+    if (is_array($data) && isset($data['rawdata'])) {
+        $rawdata = $data['rawdata'];
+        unset($data['rawdata']);
+        // Agregar 'rawdata' al final
+        $data['rawdata'] = $rawdata;
+    }
+
     echo json_encode(\Backend\Api\Responses\ApiResponse::success($data));
     exit;
 } catch (Exception $e) {
