@@ -25,9 +25,6 @@
 
     <!-- Contenedor principal -->
     <div class="container mt-5 pt-5">
-        <div class="graf">
-            <div id="container"></div>
-        </div>
         <div id="info-display-container"></div>
         <!-- Puedes agregar aquí otros bloques dinámicos según sea necesario -->
     </div>
@@ -81,13 +78,7 @@
         appState.data = data;
         const info = renderInfoDisplay(data);
         document.getElementById('info-display-container').innerHTML = info;
-        // Recargar el gráfico si ChartController está disponible
-        if (window.ChartController && typeof window.ChartController.reloadChart === 'function') {
-            window.ChartController.reloadChart(data);
-        } else if (window.initChart) {
-            // Alternativamente, si tienes una función global initChart
-            window.initChart();
-        }
+        // El gráfico ahora se renderiza dentro de renderInfoDisplay
     }
 
     // Renderiza la info de producción
@@ -136,6 +127,12 @@
         });
 
         document.getElementById('info-display-container').innerHTML = html;
+        // Renderizar el gráfico en el nuevo contenedor
+        if (window.ChartController && typeof window.ChartController.initChart === 'function') {
+            window.ChartController.initChart();
+        } else if (typeof renderGrafico === 'function') {
+            renderGrafico(data.rawdata);
+        }
     }
 
     // Cambia el período y recarga los datos
