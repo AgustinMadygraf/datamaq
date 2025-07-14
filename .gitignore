@@ -10,3 +10,5 @@ vendor/
 .env
 docs/todo.md
 todo.txt
+node_modules/
+coverage/
