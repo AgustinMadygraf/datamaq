@@ -5,7 +5,7 @@ Path: frontend/js/main.js
 
 import ApiService from './services/ApiService.js';
 import UiService from './services/UiService.js';
-import store from '../../assets/JS/store.js';
+import store from './store.js';
 
 console.log("main.js cargado correctamente.");
 
