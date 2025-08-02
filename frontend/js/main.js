@@ -3,9 +3,10 @@ Path: frontend/js/main.js
 */
 
 
+
 import ApiService from './services/ApiService.js';
 import UiService from './services/UiService.js';
-import store from './store.js';
+import appState from './state/AppState.js';
 
 console.log("main.js cargado correctamente.");
 
@@ -15,7 +16,7 @@ function hideLoadingIndicator() {
     if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
     }
-    store.setLoading(false);
+    appState.update('loading', { global: false });
 }
 
 // Función para notificar que el contenedor del gráfico está listo
@@ -69,7 +70,7 @@ function notifyContainerReady() {
             setTimeout(notifyContainerReady, 500);
         }
     } catch (error) {
-        store.setError(error);
+        appState.addError('global', error);
         console.error("main.js - Error al notificar que el contenedor está listo:", error);
     }
 }
@@ -77,7 +78,7 @@ function notifyContainerReady() {
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         console.log("main.js - DOMContentLoaded iniciado");
-        const initialData = store.getState().initialData;
+        const initialData = appState.getState().initialData;
         console.log("main.js - Datos iniciales:", initialData);
 
         // Obtener periodo y conta de los datos iniciales
@@ -89,12 +90,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             response = await ApiService.getDashboardData(periodo, conta);
         } catch (apiError) {
             console.error("main.js - Error al obtener datos de la API:", apiError);
-            store.setError(apiError);
+            appState.addError('global', apiError);
             throw new Error("Error de comunicación con la API: " + apiError.message);
         }
 
         if (response.status !== 'success') {
-            store.setError(response.message || 'No se recibieron datos');
+            appState.addError('global', response.message || 'No se recibieron datos');
             throw new Error('Error en la respuesta de la API: ' + (response.message || 'No se recibieron datos'));
         }
 
@@ -105,15 +106,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         await UiService.updateDashboard(data);
 
         // Guardar los datos del gráfico en el store
-        store.setChartData({
-            conta: data.conta,
-            rawdata: data.rawdata,
-            ls_periodos: data.ls_periodos,
-            menos_periodo: data.menos_periodo,
-            periodo: data.periodo
-        });
 
-        console.log("main.js - chartData configurado en store:", store.getState().chartData);
+        if (typeof appState.setChartData === 'function') {
+            appState.setChartData({
+                conta: data.conta,
+                rawdata: data.rawdata,
+                ls_periodos: data.ls_periodos,
+                menos_periodo: data.menos_periodo,
+                periodo: data.periodo
+            });
+        } else {
+            // fallback si no existe setChartData
+            appState.update('chartData', {
+                conta: data.conta,
+                rawdata: data.rawdata,
+                ls_periodos: data.ls_periodos,
+                menos_periodo: data.menos_periodo,
+                periodo: data.periodo
+            });
+        }
+
+        console.log("main.js - chartData configurado en appState:", appState.getState().chartData);
 
         // Notificar que el contenedor está listo (iniciar verificación)
         notifyContainerReady();
@@ -129,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         chartDataSource: 'main.js',
                         timestamp: Date.now(),
                         // Incluir una copia de los datos como respaldo
-                        chartData: store.getState().chartData
+                        chartData: appState.getState().chartData
                     } 
                 });
                 document.dispatchEvent(event);
@@ -143,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("main.js - Error crítico en la aplicación:", error);
         console.log("main.js - Stack trace:", error.stack);
-        store.setError(error);
+        appState.addError('global', error);
         // Mostrar mensaje de error al usuario
         const container = document.getElementById('info-display-container');
         if (container) {
@@ -161,7 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Mecanismo de verificación global para chartData
 window.checkChartDataAvailability = function() {
-    const chartData = store.getState().chartData;
+    const chartData = appState.getState().chartData;
     console.log("Verificación global de chartData:", {
         exists: typeof chartData !== 'undefined',
         value: chartData
@@ -171,7 +184,7 @@ window.checkChartDataAvailability = function() {
 
 // Añadir manejador de errores global para debugging
 window.addEventListener('error', function(event) {
-    store.setError(event.error || event.message);
+    appState.addError('global', event.error || event.message);
     console.error('main.js - Error global capturado:', {
         message: event.message,
         source: event.filename,

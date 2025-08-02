@@ -1,19 +1,20 @@
-# GUÍA DE REFACTORIZACIÓN Y AUDITORÍA PARA DESACOPLAMIENTO BACKEND-FRONTEND (PHP → Python Ready)
+# GUÍA DE REFACTORIZACIÓN Y AUDITORÍA PARA DESACOPLAMIENTO FRONTEND (HTML/CSS/JS → Vue.js Ready)
 
 ## Objetivo
-Guiar la refactorización y auditoría del sistema para lograr un backend completamente desacoplado del frontend, aplicando principios de arquitectura limpia. El objetivo es que el backend pueda ser implementado en PHP o migrado a Python (Flask) sin afectar al frontend, facilitando la evolución tecnológica.
+Guiar la refactorización y auditoría del sistema para lograr un frontend desacoplado, aplicando principios de arquitectura limpia. El objetivo es que el frontend actual (HTML, CSS, JS) evolucione de forma ordenada y sea fácilmente migrable a un framework moderno como Vue.js.
 
 ---
 
 ## POLÍTICA DE ARQUITECTURA PARA DESACOPLAMIENTO Y MIGRACIÓN
 
-1. El flujo de dependencias será **unidireccional: UI/Infra → Interfaces (Endpoints/API) → Application (Servicios) → Domain (Modelos)**.
-2. El frontend (plantillas, JS, CSS) debe consumir solo APIs REST/JSON, nunca lógica de backend embebida.
-3. Las capas internas solo dependen de **abstracciones**; las concretas se inyectan (por ejemplo, usando interfaces o inyección de dependencias).
-4. **Sin dependencias** entre `domain` y librerías/frameworks externos (PHP o Python).
-5. **Sin ciclos** detectables por herramientas de análisis de dependencias.
-6. Complejidad ciclomática ≤ 10 por función; longitud de archivo ≤ 400 líneas.
-7. Test coverage global ≥ 80 %; los tests de unidad no acceden a red, disco ni DB reales (usar mocks/fixtures).
+1. El flujo de dependencias será **unidireccional: UI (HTML/CSS) → JS (Controladores/Vistas) → Servicios/API → Modelos de Dominio**.
+2. El frontend debe consumir solo APIs REST/JSON, nunca lógica embebida ni dependencias directas del backend.
+3. Separar claramente la lógica de presentación (renderizado), lógica de negocio (servicios) y acceso a datos (API).
+4. Evitar dependencias globales y acoplamientos fuertes entre módulos JS; usar funciones puras y módulos ES6.
+5. Todo el estado de la aplicación debe estar centralizado y ser fácilmente serializable (pensando en Vuex/pinia).
+6. Componentes y funciones reutilizables deben estar en módulos independientes.
+7. Complejidad ciclomática ≤ 10 por función; longitud de archivo ≤ 400 líneas.
+8. Cobertura de tests ≥ 80 % (tests de unidad para lógica JS; mocks para API).
 
 ---
 
@@ -24,7 +25,7 @@ Guiar la refactorización y auditoría del sistema para lograr un backend comple
 
 1. **Mapa de Capas y Migrabilidad**
    - Muestra el árbol de carpetas (≤ 3 niveles).
-   - Indica qué partes pueden migrarse 1:1 y cuáles requieren rediseño.
+   - Indica qué partes pueden migrarse 1:1 y cuáles requieren rediseño para Vue.js.
 
 2. **Fortalezas / Debilidades para el Desacoplamiento y la Migración**
    - Listas separadas; ordena por impacto en el desacoplamiento y migración.
@@ -35,3 +36,14 @@ Guiar la refactorización y auditoría del sistema para lograr un backend comple
    - Indica si su eliminación o refactorización facilita el desacoplamiento y la migración.
 
 **Puntuación:** <n>/100 — <clasificación>
+
+---
+
+## SUGERENCIAS ESPECÍFICAS PARA EL PROYECTO ACTUAL
+
+- **Separar lógica de UI y lógica de negocio:** Extraer funciones de renderizado y manipulación del DOM a módulos independientes.
+- **Centralizar el estado:** Crear un módulo JS para el estado global (imitando Vuex/pinia).
+- **Servicios de API:** Encapsular llamadas a la API en módulos de servicios.
+- **Componentizar:** Identificar bloques repetidos (botonera, info, gráficos) y convertirlos en funciones/componentes reutilizables.
+- **Evitar código duplicado:** Consolidar lógica repetida en utilidades.
+- **Preparar para Vue:** Usar módulos ES6, evitar variables globales y side-
