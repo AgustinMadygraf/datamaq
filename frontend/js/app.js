@@ -10,6 +10,11 @@ class DashboardApp {
     constructor() {}
 
     async init() {
+        const params = new URLSearchParams(window.location.search);
+        const periodo = params.get('periodo');
+        const conta = params.get('conta');
+        console.log("app.js - Parámetros de la URL:", { periodo, conta });
+
         // Cargar dinámicamente el header
         fetch('frontend/templates/header.html')
             .then(response => response.text())
@@ -21,7 +26,16 @@ class DashboardApp {
         if (loading) loading.style.display = '';
 
         try {
-            const result = await ApiService.getDashboardData();
+            let result;
+            // Solo pasa los parámetros si existen
+            if (periodo || conta) {
+                result = await ApiService.getDashboardData(
+                    periodo ? periodo : undefined,
+                    conta ? conta : undefined
+                );
+            } else {
+                result = await ApiService.getDashboardData();
+            }
             if (loading) loading.style.display = 'none';
             if (result.status === 'success') {
                 window.initialData = result.data;
