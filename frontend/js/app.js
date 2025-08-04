@@ -12,8 +12,13 @@ class DashboardApp {
     async init() {
         const params = new URLSearchParams(window.location.search);
         const periodo = params.get('periodo');
-        const conta = params.get('conta');
+        let conta = params.get('conta');
         console.log("app.js - Parámetros de la URL:", { periodo, conta });
+
+        // Normalizar el valor de conta: reemplazar coma por punto
+        if (typeof conta === 'string') {
+            conta = conta.replace(',', '.');
+        }
 
         // Cargar dinámicamente el header
         fetch('frontend/templates/header.html')
