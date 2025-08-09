@@ -72,22 +72,23 @@ class ChartController {
     // Registra el estado actual de chartData con detalles adicionales
     logChartDataStatus() {
         try {
-            const chartDataExists = typeof window.chartData !== 'undefined';
-            const chartDataType = chartDataExists ? typeof window.chartData : 'undefined';
-            const chartDataIsObject = chartDataExists && typeof window.chartData === 'object';
-            const chartDataIsNull = chartDataExists && window.chartData === null;
-            
+            const chartData = appState.getChartData();
+            const chartDataExists = chartData !== undefined && chartData !== null;
+            const chartDataType = chartDataExists ? typeof chartData : 'undefined';
+            const chartDataIsObject = chartDataExists && typeof chartData === 'object';
+            const chartDataIsNull = chartDataExists && chartData === null;
+
             console.log("ChartController - Estado detallado de chartData:", {
                 exists: chartDataExists,
                 type: chartDataType,
                 isObject: chartDataIsObject,
                 isNull: chartDataIsNull,
-                value: chartDataExists ? window.chartData : undefined,
+                value: chartDataExists ? chartData : undefined,
                 chartInitialized: this.chartInitialized,
                 dataReceived: this.chartDataReceived,
                 failedAttempts: this.failedAttempts
             });
-            
+
             // Inspeccionar contexto global (window)
             console.log("ChartController - Objetos globales relevantes presentes:", {
                 initialData: typeof window.initialData !== 'undefined',
@@ -96,7 +97,7 @@ class ChartController {
                 jQuery: typeof window.jQuery !== 'undefined',
                 $: typeof window.$ !== 'undefined',
             });
-            
+
             return chartDataExists;
         } catch (e) {
             console.error("ChartController - Error al registrar estado de chartData:", e);
@@ -114,8 +115,6 @@ class ChartController {
     async initChart() {
         try {
             console.log("ChartController - Iniciando initChart()...");
-            
-            // Obtener datos del estado centralizado en lugar de window.chartData
             const chartData = appState.getChartData();
             
             if (!chartData) {
