@@ -1,4 +1,5 @@
 /**
+ * Path: frontend/js/state/AppState.js
  * AppState.js - Gestión centralizada del estado de la aplicación
  * Implementa el patrón observable para desacoplar la gestión del estado de los componentes UI
  */

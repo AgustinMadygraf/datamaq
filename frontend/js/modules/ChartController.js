@@ -4,76 +4,33 @@ Este script se encarga de generar el gráfico de Highcharts y de manejar el even
 */
 
 import { onDbClick } from './DoubleClickHandler.js';
+import HighchartsConfig from './chart/HighchartsConfig.js';
 import ChartDataValidator from './chart/ChartDataValidator.js';
 import SeriesBuilder from './chart/SeriesBuilder.js';
-import HighchartsConfig from './chart/HighchartsConfig.js';
+import appState from '../state/AppState.js';
+
+// Módulos nuevos a crear
+import { waitForElement } from '../utils/DomUtils.js';
+import ChartEventManager from './chart/ChartEventManager.js';
 
 // Clase principal para manejar el gráfico
 class ChartController {
     constructor() {
-        try {
-            console.log("ChartController - Constructor iniciado");
-            
-            this.chartInitialized = false;
-            this.chartDataReceived = false;
-            this.failedAttempts = 0;
-            this.maxFailedAttempts = 5;
-            
-            // Intentar cargar las dependencias con manejo de errores
-            try {
-                this.validator = new ChartDataValidator();
-                console.log("ChartController - ChartDataValidator inicializado correctamente");
-            } catch (e) {
-                console.error("ChartController - Error al crear ChartDataValidator:", e);
-                // Crear un validador fallback básico
-                this.validator = {
-                    validateChartData: (data) => {
-                        console.warn("ChartController - Usando validador fallback");
-                        return data && data.rawdata && Array.isArray(data.rawdata);
-                    }
-                };
-            }
-            
-            try {
-                this.seriesBuilder = new SeriesBuilder();
-                console.log("ChartController - SeriesBuilder inicializado correctamente");
-            } catch (e) {
-                console.error("ChartController - Error al crear SeriesBuilder:", e);
-                // Crear un builder fallback básico
-                this.seriesBuilder = {
-                    buildSeries: () => {
-                        console.warn("ChartController - Usando builder fallback");
-                        return [];
-                    }
-                };
-            }
-
-            // Intentar acceder a window.chartData en el constructor (solo para depuración)
-            try {
-                console.log("ChartController - Estado inicial de window.chartData:", 
-                            window.chartData ? "Definido" : "No definido");
-                
-                if (window.chartData) {
-                    console.log("ChartController - window.chartData ya está disponible en constructor:", 
-                                typeof window.chartData);
-                }
-            } catch (e) {
-                console.error("ChartController - Error al acceder a window.chartData en constructor:", e);
-            }
-
-            // Vincular métodos al contexto de la instancia
-            this.initChart = this.initChart.bind(this);
-            this.logChartDataStatus = this.logChartDataStatus.bind(this);
-            this.setupEventListeners = this.setupEventListeners.bind(this);
-            this.startPeriodicCheck = this.startPeriodicCheck.bind(this);
-            this.handleChartClick = this.handleChartClick.bind(this);
-            this.handleChartLoad = this.handleChartLoad.bind(this);
-            this.forceChartDataLoad = this.forceChartDataLoad.bind(this);
-            
-            console.log("ChartController - Constructor completado exitosamente");
-        } catch (e) {
-            console.error("ChartController - Error fatal en el constructor:", e);
-        }
+        // Inicialización básica
+        this.chartInitialized = false;
+        this.chartDataReceived = false;
+        this.failedAttempts = 0;
+        this.maxFailedAttempts = 5;
+        
+        // Inicializar dependencias
+        this.validator = new ChartDataValidator();
+        this.seriesBuilder = new SeriesBuilder();
+        this.eventManager = new ChartEventManager(this);
+        
+        // Bindear métodos
+        this.initChart = this.initChart.bind(this);
+        this.handleChartClick = this.handleChartClick.bind(this);
+        this.handleChartLoad = this.handleChartLoad.bind(this);
     }
     
     // Método para forzar la carga de datos del gráfico desde main.js
@@ -168,69 +125,40 @@ class ChartController {
     // Método para esperar a que el contenedor esté disponible
     waitForContainer(maxWaitTime = 5000, interval = 200) {
         console.log("ChartController - Esperando a que el contenedor esté disponible");
-        
-        return new Promise((resolve, reject) => {
-            // Si ya está disponible, resolvemos inmediatamente
-            const container = document.getElementById('container');
-            if (container) {
-                console.log("ChartController - Contenedor encontrado inmediatamente");
-                resolve(container);
-                return;
-            }
-            
-            // Variables para la espera
-            const startTime = Date.now();
-            let checkInterval;
-            
-            // Función para verificar el contenedor
-            const checkContainer = () => {
-                const container = document.getElementById('container');
-                
-                if (container) {
-                    clearInterval(checkInterval);
-                    console.log("ChartController - Contenedor encontrado después de esperar");
-                    resolve(container);
-                } else if (Date.now() - startTime > maxWaitTime) {
-                    clearInterval(checkInterval);
-                    console.error(`ChartController - Tiempo de espera agotado después de ${maxWaitTime}ms`);
-                    reject(new Error("Tiempo de espera agotado buscando el contenedor"));
-                }
-            };
-            
-            // Iniciar verificación periódica
-            checkInterval = setInterval(checkContainer, interval);
-        });
+        return waitForElement('container', maxWaitTime, interval);
     }
 
     // Inicializa el gráfico Highcharts con manejo mejorado de errores
     async initChart() {
         try {
             console.log("ChartController - Iniciando initChart()...");
-            const chartDataExists = this.logChartDataStatus();
             
-            if (!chartDataExists) {
+            // Obtener datos del estado centralizado en lugar de window.chartData
+            const chartData = appState.getChartData();
+            
+            if (!chartData) {
                 console.error("ChartController - chartData no existe, no se puede inicializar el gráfico");
                 this.failedAttempts++;
                 
                 if (this.failedAttempts >= this.maxFailedAttempts) {
                     console.error("ChartController - Máximo de intentos de inicialización alcanzado");
                 } else {
-                    console.log("ChartController - Intentando forzar carga de datos...");
-                    this.forceChartDataLoad();
+                    console.log("ChartController - Intentando cargar datos...");
+                    this.loadChartData();
                 }
                 return;
             }
 
             // Verificar existencia de Highcharts
             if (typeof window.Highcharts === 'undefined') {
-                console.error("ChartController - Error: Highcharts no está definido. Verificar que la librería está cargada.");
+                console.error("ChartController - Error: Highcharts no está definido.");
                 return;
             }
 
-            // Esperar a que el contenedor esté disponible
+            // Esperar a que el contenedor esté disponible usando la utilidad
             let container;
             try {
-                container = await this.waitForContainer();
+                container = await waitForElement('container');
                 console.log("ChartController - Container obtenido correctamente");
             } catch (containerError) {
                 console.error("ChartController - Error esperando al contenedor:", containerError);

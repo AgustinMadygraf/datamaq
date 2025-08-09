@@ -1,187 +1,78 @@
-# Plan de Mejoras Priorizadas para el Proyecto DataMaq
+# Listado de Tareas para Desacoplamiento y Migración a Vue.js
 
-## 1️⃣ Implementar Mecanismo Seguro de Manipulación del DOM
-**Dependencias:** Ninguna
+## 1. **Eliminar Dependencias Globales y Centralizar Estado**
+- **1.1. Eliminar uso de `window.chartData` y `window.initialData`**
+    - Refactorizar todos los módulos para consumir el estado desde `AppState`.
+    - Migrar inicialización y actualización de datos a través de `AppState`.
+- **1.2. Unificar la gestión de estado en `AppState`**
+    - Eliminar duplicidad entre main.js, app.js y otros.
+    - Adaptar todos los servicios y controladores para usar solo `AppState`.
 
-### Subtareas:
-#### 1.1 Crear utilidad de sanitización de HTML
-- **Archivos involucrados:** `/frontend/js/utils/DomUtils.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** El uso de `innerHTML` sin sanitización en UiService.js crea vulnerabilidades XSS. Una utilidad centralizada permite implementar una protección consistente.
-- **Archivos de referencia:** UiService.js (línea 84: `container.innerHTML = infoDisplayHtml`)
+---
 
-#### 1.2 Implementar funciones de creación segura de elementos
-- **Archivos involucrados:** `/frontend/js/utils/DomUtils.js`
-- **Acción:** Modificar
-- **Justificación:** Proporcionar alternativas seguras a `innerHTML` mediante métodos que creen elementos DOM de forma controlada.
-- **Archivos de referencia:** UiService.js (método `generateInfoDisplayHtml`)
+## 2. **Desacoplar Lógica de Presentación y Renderizado**
+- **2.1. Extraer generación de HTML de `UiService` a templates independientes**
+    - Convertir funciones como `generateInfoDisplayHtml` y `generateBotoneraHtml` en componentes Vue SFC.
+    - Crear archivos `.vue` para cada bloque de UI.
+- **2.2. Eliminar manipulación directa del DOM**
+    - Reemplazar `document.getElementById`, `innerHTML`, y listeners por bindings reactivos.
+    - Adaptar event listeners de la botonera a métodos Vue.
 
-#### 1.3 Actualizar UiService para usar métodos seguros
-- **Archivos involucrados:** UiService.js
-- **Acción:** Modificar
-- **Justificación:** Reemplazar todas las instancias de `innerHTML` con los nuevos métodos seguros de manipulación del DOM.
-- **Archivos de referencia:** `DomUtils.js`
+---
 
-## 2️⃣ Implementar Sistema Centralizado de Estado
-**Dependencias:** Parcialmente dependiente de la tarea 1
+## 3. **Refactorizar Controladores y Servicios**
+- **3.1. Descomponer ChartController.js en componentes y servicios**
+    - Separar lógica de inicialización, renderizado y eventos en módulos independientes.
+    - Crear un componente Vue para el gráfico.
+- **3.2. Adaptar DoubleClickHandler.js para emitir eventos Vue**
+    - Reemplazar lógica de doble click por métodos y emits de Vue.
 
-### Subtareas:
-#### 2.1 Completar implementación de AppState
-- **Archivos involucrados:** AppState.js
-- **Acción:** Modificar
-- **Justificación:** Ya existe una implementación parcial en ApiService.js que hace referencia a este archivo. Debe expandirse para gestionar todo el estado de la aplicación.
-- **Archivos de referencia:** ApiService.js (línea 1: `import appState from '../state/AppState.js'`)
+---
 
-#### 2.2 Migrar datos desde window.chartData
-- **Archivos involucrados:** main.js, ChartController.js
-- **Acción:** Modificar
-- **Justificación:** Eliminar el uso de `window.chartData` como variable global para almacenar datos críticos, mejorando la seguridad y mantenibilidad.
-- **Archivos de referencia:** main.js (líneas 108-114), ChartController.js
+## 4. **Componentizar Bloques Reutilizables**
+- **4.1. Identificar y migrar bloques repetidos (botonera, info, gráficos)**
+    - Crear componentes Vue para cada bloque.
+    - Usar props y emits para comunicación entre componentes.
+- **4.2. Consolidar utilidades y lógica repetida**
+    - Unificar funciones en `utils/` y eliminar duplicados.
 
-#### 2.3 Implementar patrón observador para notificaciones
-- **Archivos involucrados:** AppState.js
-- **Acción:** Modificar
-- **Justificación:** Reemplazar los eventos personalizados del DOM con un sistema de suscripción para notificar cambios de estado.
-- **Archivos de referencia:** main.js (línea 132-145: CustomEvent 'chartDataReady')
+---
 
-#### 2.4 Actualizar DoubleClickHandler para usar AppState
-- **Archivos involucrados:** DoubleClickHandler.js
-- **Acción:** Modificar
-- **Justificación:** Actualmente accede directamente a `window.chartData`, necesita usar el sistema centralizado de estado.
-- **Archivos de referencia:** DoubleClickHandler.js (línea 14-16: acceso a `window.chartData`)
+## 5. **Encapsular Servicios de API**
+- **5.1. Refactorizar `ApiService` para desacoplar de la UI**
+    - Eliminar referencias a `window.*` y dependencias directas del DOM.
+    - Usar solo el estado centralizado y devolver datos puros.
 
-## 3️⃣ Estandarizar Manejo de Operaciones Asíncronas
-**Dependencias:** Ninguna
+---
 
-### Subtareas:
-#### 3.1 Crear servicio centralizado para operaciones fetch
-- **Archivos involucrados:** `/frontend/js/services/HttpService.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** Estandarizar todas las peticiones fetch con manejo consistente de errores, timeouts y cancelación.
-- **Archivos de referencia:** ApiService.js (métodos fetch)
+## 6. **Simplificar Inicialización y Ciclo de Vida**
+- **6.1. Consolidar punto de entrada único**
+    - Unificar la lógica de main.js y app.js en un solo archivo compatible con Vue.
+    - Eliminar inicialización redundante y listeners globales.
+- **6.2. Migrar eventos customizados a sistema de props/emits**
+    - Reemplazar `CustomEvent` por comunicación Vue.
 
-#### 3.2 Implementar manejador global de errores
-- **Archivos involucrados:** `/frontend/js/utils/ErrorHandler.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** Centralizar el manejo de errores para garantizar un tratamiento consistente en toda la aplicación.
-- **Archivos de referencia:** ApiService.js, ChartController.js (múltiples bloques try-catch)
+---
 
-#### 3.3 Actualizar ApiService para usar HttpService
-- **Archivos involucrados:** ApiService.js
-- **Acción:** Modificar
-- **Justificación:** Delegar las peticiones HTTP al servicio centralizado para mejorar la consistencia y mantenibilidad.
-- **Archivos de referencia:** `HttpService.js`
+## 7. **Preparar Migración de Templates y Estilos**
+- **7.1. Migrar index.html y templates a estructura Vue**
+    - Convertir la estructura principal en `App.vue`.
+    - Adaptar header.html y otros templates a componentes Vue.
+- **7.2. Adaptar estilos CSS para componentes Vue**
+    - Modularizar estilos y eliminar dependencias globales.
 
-## 4️⃣ Refactorizar ChartController para Responsabilidad Única
-**Dependencias:** Tarea 2 (Sistema de Estado)
+---
 
-### Subtareas:
-#### 4.1 Extraer lógica de inicialización
-- **Archivos involucrados:** `/frontend/js/modules/chart/ChartInitializer.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** ChartController.js tiene ~300 líneas con múltiples responsabilidades, violando el principio de responsabilidad única.
-- **Archivos de referencia:** ChartController.js (métodos de inicialización)
+## 8. **Mejorar Testeo y Cobertura**
+- **8.1. Crear tests unitarios para lógica JS**
+    - Tests para servicios, utilidades y validadores.
+- **8.2. Mockear llamadas a API y eventos**
+    - Asegurar cobertura ≥ 80%.
 
-#### 4.2 Extraer lógica de manejo de eventos
-- **Archivos involucrados:** `/frontend/js/modules/chart/ChartEventHandler.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** Separar el manejo de eventos para cumplir con el principio de responsabilidad única.
-- **Archivos de referencia:** ChartController.js (métodos de eventos)
+---
 
-#### 4.3 Extraer lógica de renderizado
-- **Archivos involucrados:** `/frontend/js/modules/chart/ChartRenderer.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** Separar el renderizado para cumplir con el principio de responsabilidad única.
-- **Archivos de referencia:** ChartController.js (método createChart)
-
-#### 4.4 Simplificar ChartController
-- **Archivos involucrados:** ChartController.js
-- **Acción:** Modificar
-- **Justificación:** Convertir ChartController en una fachada que coordine las nuevas clases específicas.
-- **Archivos de referencia:** `ChartInitializer.js`, `ChartEventHandler.js`, `ChartRenderer.js`
-
-## 5️⃣ Implementar Inyección de Dependencias Simple
-**Dependencias:** Tarea 4 (Refactorización de ChartController)
-
-### Subtareas:
-#### 5.1 Modificar constructores para recibir dependencias
-- **Archivos involucrados:** ChartController.js
-- **Acción:** Modificar
-- **Justificación:** Eliminar instanciaciones directas dentro de clases para reducir acoplamiento.
-- **Archivos de referencia:** ChartController.js (líneas 14-30: inicialización de `validator` y `seriesBuilder`)
-
-#### 5.2 Crear servicio de fábrica
-- **Archivos involucrados:** `/frontend/js/services/ServiceFactory.js` (crear)
-- **Acción:** Crear archivo
-- **Justificación:** Centralizar la creación de instancias para facilitar la inyección de dependencias.
-- **Archivos de referencia:** main.js
-
-#### 5.3 Actualizar inicialización en main.js
-- **Archivos involucrados:** main.js
-- **Acción:** Modificar
-- **Justificación:** Inicializar la aplicación usando el patrón de inyección de dependencias.
-- **Archivos de referencia:** `ServiceFactory.js`
-
-## 6️⃣ Implementar Patrón de Plugin para SeriesBuilder
-**Dependencias:** Tarea 5 (Inyección de Dependencias)
-
-### Subtareas:
-#### 6.1 Refactorizar SeriesBuilder para extensibilidad
-- **Archivos involucrados:** SeriesBuilder.js
-- **Acción:** Modificar
-- **Justificación:** Actualmente para añadir un nuevo tipo de serie hay que modificar múltiples métodos. Implementar un sistema de plugins mejoraría la extensibilidad.
-- **Archivos de referencia:** SeriesBuilder.js (método `buildSeries`)
-
-#### 6.2 Extraer definiciones de series a archivos separados
-- **Archivos involucrados:** `/frontend/js/modules/chart/series/` (crear carpeta y archivos)
-- **Acción:** Crear archivos
-- **Justificación:** Cada tipo de serie debería estar en un archivo separado para facilitar extensión sin modificar el código original.
-- **Archivos de referencia:** SeriesBuilder.js (métodos `buildInductiveSensorSeries`, `buildOpticalSensorSeries`, etc.)
-
-## 7️⃣ Reorganizar Estructura de Carpetas
-**Dependencias:** Tarea 4, 5 y 6 parcialmente completadas
-
-### Subtareas:
-#### 7.1 Crear estructura de carpetas organizada
-- **Archivos involucrados:** Estructura general del proyecto
-- **Acción:** Crear carpetas
-- **Justificación:** Mejorar la organización para facilitar el mantenimiento y la escalabilidad.
-- **Archivos de referencia:** Todo el proyecto
-
-#### 7.2 Mover archivos a ubicaciones apropiadas
-- **Archivos involucrados:** Múltiples archivos
-- **Acción:** Mover y actualizar imports
-- **Justificación:** Mejorar la coherencia estructural entre archivos relacionados.
-- **Archivos de referencia:** Todo el proyecto
-
-## 8️⃣ Extraer y Organizar Estilos CSS
-**Dependencias:** Ninguna
-
-### Subtareas:
-#### 8.1 Crear estructura de carpetas CSS
-- **Archivos involucrados:** css (crear carpetas)
-- **Acción:** Crear carpetas
-- **Justificación:** Los estilos están actualmente embebidos en main.html y necesitan ser organizados.
-- **Archivos de referencia:** main.html (estilos en línea)
-
-#### 8.2 Extraer estilos de main.html
-- **Archivos involucrados:** `/frontend/css/main.css`, main.html
-- **Acción:** Crear y modificar
-- **Justificación:** Separar la presentación de la estructura para mejor mantenimiento.
-- **Archivos de referencia:** main.html (líneas 13-62: estilos CSS)
-
-#### 8.3 Implementar metodología BEM
-- **Archivos involucrados:** `/frontend/css/components/*.css`
-- **Acción:** Crear
-- **Justificación:** Mejorar la nomenclatura de clases para evitar conflictos y aumentar mantenibilidad.
-- **Archivos de referencia:** main.html (líneas 13-62: clases CSS genéricas como `.c1`, `.graf`)
-
-## 🔥 Decisión Final
-La implementación debería seguir este orden ya que:
-
-1. Las mejoras de seguridad (manipulación del DOM) son prioritarias y no tienen dependencias.
-2. El sistema de gestión de estado centralizado es fundamental y requiere cambios mínimos para funcionar.
-3. Las mejoras en operaciones asíncronas proporcionarán mayor robustez inmediata.
-4. La refactorización de componentes para responsabilidad única mejorará la mantenibilidad sin cambios estructurales profundos.
-5. Las mejoras de arquitectura (inyección de dependencias, patrones de diseño) pueden implementarse después de tener una base más sólida.
-6. Los cambios estructurales son menos prioritarios y pueden implementarse gradualmente.
+## 9. **Documentar y Validar Refactorización**
+- **9.1. Documentar cambios y nuevas estructuras**
+    - Actualizar README y guías de migración.
+- **9.2. Validar migrabilidad y compatibilidad**
+    - Probar cada componente y servicio en entorno Vue.
