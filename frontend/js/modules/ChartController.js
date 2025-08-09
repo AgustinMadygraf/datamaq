@@ -49,7 +49,8 @@ class ChartController {
                         console.log("ChartController - ApiService importado correctamente");
                         
                         // Obtener datos del dashboard
-                        const periodo = window.initialData.periodo || 'semana';
+                        const initialData = appState.getInitialData();
+                        const periodo = initialData?.periodo || 'semana';
                         const conta = window.initialData.conta || null;
                         
                         return ApiService.getDashboardData(periodo, conta);

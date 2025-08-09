@@ -94,12 +94,17 @@ class AppState {
      * @param {object} chartData - Datos del gráfico
      */
     setChartData(chartData) {
-        if (!chartData) {
-            console.warn("AppState - Intentando establecer datos de gráfico nulos o indefinidos");
+        if (!chartData || typeof chartData !== 'object') {
+            console.warn("AppState - Intentando establecer datos de gráfico inválidos");
             return false;
         }
-
-        console.log("AppState - Actualizando datos del gráfico:", chartData);
+        // Validación opcional de propiedades requeridas
+        const required = ['conta', 'rawdata', 'ls_periodos', 'menos_periodo', 'periodo'];
+        for (const key of required) {
+            if (!(key in chartData)) {
+                console.warn(`AppState - chartData incompleto, falta '${key}'`);
+            }
+        }
         return this.update('chart', chartData);
     }
 
@@ -115,7 +120,10 @@ class AppState {
      * @param {object} initialData - Datos iniciales
      */
     setInitialData(initialData) {
-        console.log("AppState - Actualizando datos iniciales:", initialData);
+        if (!initialData || typeof initialData !== 'object') {
+            console.warn("AppState - Intentando establecer datos iniciales inválidos");
+            return false;
+        }
         return this.update('initial', initialData);
     }
 
