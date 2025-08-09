@@ -76,25 +76,31 @@ class DashboardApp {
 
     async changePeriodo(periodo) {
         // Evitar recarga si el periodo no cambia
-        if (periodo === appState.getChartData().periodo) return;
+        if (periodo === appState.getChartData()?.periodo) return;
 
-        const loading = document.getElementById('loading-indicator');
-        if (loading) loading.style.display = '';
+        // Centralizar el estado de carga usando AppState
+        appState.setLoading('dashboard', true);
 
         try {
             // Usar ApiService para obtener los datos del nuevo periodo
             const result = await ApiService.getDashboardData(periodo);
 
-            if (loading) loading.style.display = 'none';
+            // Finalizar estado de carga
+            appState.setLoading('dashboard', false);
 
             if (result.status === 'success') {
+                // Actualizar el estado centralizado con los nuevos datos
                 appState.setInitialData(result.data);
+                // Actualizar la UI en base al estado
                 await UiService.updateDashboard(result.data);
             } else {
+                // Registrar error en el estado centralizado
+                appState.addError('dashboard', 'Error al cargar datos.');
                 UiService.showError('Error al cargar datos.');
             }
         } catch (error) {
-            if (loading) loading.style.display = 'none';
+            appState.setLoading('dashboard', false);
+            appState.addError('dashboard', error);
             UiService.showError('Error de conexión con la API.');
         }
     }
