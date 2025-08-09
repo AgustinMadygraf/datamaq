@@ -34,53 +34,34 @@ class ChartController {
     }
     
     // Método para forzar la carga de datos del gráfico desde main.js
-    forceChartDataLoad() {
+    async forceChartDataLoad() {
         try {
             console.log("ChartController - Intentando forzar carga de datos desde main.js");
-            
-            // Verificar si el módulo main.js está cargado
-            if (typeof window.initialData !== 'undefined') {
-                console.log("ChartController - initialData encontrado, intentando cargar datos");
-                
-                // Importar dinámicamente ApiService
-                import('../services/ApiService.js')
-                    .then(module => {
-                        const ApiService = module.default;
-                        console.log("ChartController - ApiService importado correctamente");
-                        
-                        // Obtener datos del dashboard
-                        const initialData = appState.getInitialData();
-                        const periodo = initialData?.periodo || 'semana';
-                        const conta = window.initialData.conta || null;
-                        
-                        return ApiService.getDashboardData(periodo, conta);
-                    })
-                    .then(response => {
-                        if (response.status === 'success') {
-                            console.log("ChartController - Datos recibidos correctamente de API");
-                            
-                            // Actualizar chartData
-                            window.chartData = {
-                                conta: response.data.conta,
-                                rawdata: response.data.rawdata,
-                                ls_periodos: response.data.ls_periodos,
-                                menos_periodo: response.data.menos_periodo,
-                                periodo: response.data.periodo
-                            };
-                            
-                            console.log("ChartController - window.chartData establecido:", window.chartData);
-                            this.initChart();
-                        } else {
-                            throw new Error("Error en la respuesta de la API: " + response.message);
-                        }
-                    })
-                    .catch(err => {
-                        console.error("ChartController - Error al cargar datos:", err);
-                        this.failedAttempts++;
-                    });
-            } else {
+
+            const initialData = appState.getInitialData();
+            if (!initialData) {
                 console.warn("ChartController - initialData no encontrado");
                 this.failedAttempts++;
+                return;
+            }
+
+            const ApiService = (await import('../services/ApiService.js')).default;
+            const periodo = initialData.periodo || 'semana';
+            const conta = initialData.conta || null;
+
+            const response = await ApiService.getDashboardData(periodo, conta);
+            if (response.status === 'success') {
+                console.log("ChartController - Datos recibidos correctamente de API");
+                appState.setChartData({
+                    conta: response.data.conta,
+                    rawdata: response.data.rawdata,
+                    ls_periodos: response.data.ls_periodos,
+                    menos_periodo: response.data.menos_periodo,
+                    periodo: response.data.periodo
+                });
+                this.initChart();
+            } else {
+                throw new Error("Error en la respuesta de la API: " + response.message);
             }
         } catch (e) {
             console.error("ChartController - Error en forceChartDataLoad:", e);
