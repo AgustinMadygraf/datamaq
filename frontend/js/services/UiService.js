@@ -4,7 +4,7 @@ Este servicio se encarga de actualizar la interfaz de usuario con los datos reci
 */
 
 import { sanitizeHTML } from '../utils/DomUtils.js';
-
+import appState from '../state/AppState.js';
 class UiService {
     /**
      * Actualiza el dashboard completo con los datos recibidos
@@ -108,7 +108,7 @@ class UiService {
         try {
             const { periodo, conta } = data;
             const { refClass, preConta, postConta } = data.uiData;
-            const csrfToken = window.initialData?.csrfToken || '';
+            const csrfToken = (typeof appState.getInitialData === 'function' ? appState.getInitialData().csrfToken : '') || '';
             
             return `
                 <div class="botonera">
@@ -178,16 +178,16 @@ class UiService {
                     if (response.status === 'success') {
                         // Actualizar la UI con los nuevos datos
                         await UiService.updateDashboard(response.data);
-                        
-                        // Actualizar los datos del gráfico
-                        window.chartData = {
+
+                        // Actualizar los datos del gráfico en el estado centralizado
+                        appState.setChartData({
                             conta: response.data.conta,
                             rawdata: response.data.rawdata,
                             ls_periodos: response.data.ls_periodos,
                             menos_periodo: response.data.menos_periodo,
                             periodo: response.data.periodo
-                        };
-                        
+                        });
+
                         // Notificar que los datos del gráfico están listos
                         document.dispatchEvent(new CustomEvent('chartDataReady'));
                     } else {

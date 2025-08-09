@@ -43,8 +43,8 @@ class DashboardApp {
             }
             if (loading) loading.style.display = 'none';
             if (result.status === 'success') {
-                window.initialData = result.data;
-                this._renderDashboard(window.initialData);
+                appState.setInitialData(result.data);
+                this._renderDashboard(result.data);
                 // Cargar scripts solo una vez
                 if (!window._scriptsLoaded) {
                     const mainScript = document.createElement('script');
@@ -88,7 +88,7 @@ class DashboardApp {
             if (loading) loading.style.display = 'none';
 
             if (result.status === 'success') {
-                window.initialData = result.data;
+                appState.setInitialData(result.data);
                 await UiService.updateDashboard(result.data);
             } else {
                 UiService.showError('Error al cargar datos.');

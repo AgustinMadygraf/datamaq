@@ -89,9 +89,10 @@ class ChartController {
                 failedAttempts: this.failedAttempts
             });
 
-            // Inspeccionar contexto global (window)
-            console.log("ChartController - Objetos globales relevantes presentes:", {
-                initialData: typeof window.initialData !== 'undefined',
+            // Inspeccionar contexto global y estado centralizado
+            const initialData = appState.getInitialData();
+            console.log("ChartController - Objetos relevantes presentes:", {
+                initialData: initialData !== undefined && initialData !== null,
                 Highcharts: typeof window.Highcharts !== 'undefined',
                 Chart: typeof window.Chart !== 'undefined',
                 jQuery: typeof window.jQuery !== 'undefined',
@@ -183,11 +184,11 @@ class ChartController {
                 }
             });
 
-            // Validar los datos
-            if (!this.validator.validateChartData(window.chartData)) {
-                console.error("ChartController - Validación de chartData falló");
-                return;
-            }
+                // Validar los datos usando el estado centralizado
+                if (!this.validator.validateChartData(appState.getChartData())) {
+                    console.error("ChartController - Validación de chartData falló");
+                    return;
+                }
 
             this.chartDataReceived = true;
 
@@ -247,10 +248,11 @@ class ChartController {
         try {
             console.log("ChartController - Creando gráfico...");
             
-            // Definir las series
+            // Definir las series usando el estado centralizado
+            const chartData = appState.getChartData();
             let series = [];
             try {
-                series = this.seriesBuilder.buildSeries(window.chartData);
+                series = this.seriesBuilder.buildSeries(chartData);
             } catch (seriesError) {
                 console.error("ChartController - Error al construir series:", seriesError);
                 // Series fallback
@@ -259,14 +261,14 @@ class ChartController {
                     data: [[Date.now(), 0]]
                 }];
             }
-            
+
             let config = {};
             try {
                 // Obtener la configuración del gráfico
                 config = HighchartsConfig.getChartConfig(
-                    window.chartData, 
-                    series, 
-                    this.handleChartClick, 
+                    chartData,
+                    series,
+                    this.handleChartClick,
                     this.handleChartLoad
                 );
             } catch (configError) {
@@ -319,6 +321,7 @@ class ChartController {
         try {
             console.log("ChartController - Configurando event listeners");
             
+
             // Escuchar cuando el DOM esté listo
             document.addEventListener('DOMContentLoaded', () => {
                 console.log("ChartController - DOMContentLoaded disparado");
@@ -326,14 +329,14 @@ class ChartController {
                     const chartDataExists = this.logChartDataStatus();
                     
                     if (chartDataExists) {
-                        console.log("ChartController - window.chartData encontrado en DOMContentLoaded, iniciando gráfico");
+                        console.log("ChartController - chartData encontrado en DOMContentLoaded, iniciando gráfico");
                         this.initChart();
                     } else {
-                        console.warn("ChartController - window.chartData no encontrado. Esperando evento chartDataReady");
-                        
-                        // Verificar si main.js está cargado
+                        console.warn("ChartController - chartData no encontrado. Esperando evento chartDataReady");
+                        // Verificar si main.js está cargado usando el estado centralizado
+                        const initialData = appState.getInitialData();
                         console.log("ChartController - Estado de módulos:", {
-                            "window.initialData": window.initialData !== undefined ? "disponible" : "no disponible"
+                            initialData: initialData !== undefined && initialData !== null ? "disponible" : "no disponible"
                         });
                     }
                 } catch (err) {
@@ -344,24 +347,20 @@ class ChartController {
             // Escuchar el evento chartDataReady
             document.addEventListener('chartDataReady', (event) => {
                 console.log("ChartController - Evento chartDataReady recibido", event.detail);
-                
                 try {
                     const chartDataExists = this.logChartDataStatus();
-                    
                     if (!chartDataExists) {
-                        console.error("ChartController - window.chartData sigue indefinido después del evento chartDataReady");
-                        
+                        console.error("ChartController - chartData sigue indefinido después del evento chartDataReady");
                         // Recuperación: intentar obtener datos del evento
                         if (event.detail && event.detail.chartData) {
                             console.log("ChartController - Intentando recuperar chartData desde el evento");
-                            window.chartData = event.detail.chartData;
+                            appState.setChartData(event.detail.chartData);
                         } else {
                             // Intentar forzar carga
                             this.forceChartDataLoad();
                             return;
                         }
                     }
-                    
                     console.log("ChartController - Iniciando gráfico desde evento chartDataReady");
                     // Pequeño retraso para asegurar que el DOM está listo
                     setTimeout(this.initChart, 100);
@@ -369,11 +368,11 @@ class ChartController {
                     console.error("ChartController - Error en el manejador de chartDataReady:", err);
                 }
             });
-            
+
             // Nueva verificación: Custom event para cuando el container se haga visible
             document.addEventListener('containerReady', () => {
                 console.log("ChartController - Evento containerReady recibido");
-                if (window.chartData && !this.chartInitialized) {
+                if (appState.getChartData() && !this.chartInitialized) {
                     setTimeout(this.initChart, 100);
                 }
             });
@@ -396,8 +395,9 @@ class ChartController {
                 console.log(`ChartController - Verificación periódica #${checkAttempts}`);
                 
                 try {
-                    // Verificar si chartData existe
-                    const chartDataExists = typeof window.chartData !== 'undefined' && window.chartData !== null;
+                    // Verificar si chartData existe usando el estado centralizado
+                    const chartData = appState.getChartData();
+                    const chartDataExists = chartData !== undefined && chartData !== null;
                     
                     // Verificar si el contenedor existe
                     const containerExists = document.getElementById('container') !== null;

@@ -8,7 +8,7 @@ class AppState {
     constructor() {
         // Estado interno inicial
         this._state = {
-            // Datos del gráfico (anteriormente window.chartData)
+            // Datos del gráfico
             chart: {
                 conta: null,
                 rawdata: [],
@@ -16,7 +16,7 @@ class AppState {
                 menos_periodo: null,
                 periodo: 'semana'
             },
-            // Datos iniciales (anteriormente window.initialData)
+            // Datos iniciales
             initial: {
                 periodo: 'semana',
                 conta: null,
@@ -90,7 +90,7 @@ class AppState {
     }
 
     /**
-     * Establece los datos del gráfico (reemplaza window.chartData)
+     * Establece los datos del gráfico
      * @param {object} chartData - Datos del gráfico
      */
     setChartData(chartData) {
@@ -116,7 +116,7 @@ class AppState {
     }
 
     /**
-     * Establece los datos iniciales (reemplaza window.initialData)
+     * Establece los datos iniciales
      * @param {object} initialData - Datos iniciales
      */
     setInitialData(initialData) {
