@@ -1,12 +1,16 @@
 /*
+// Redirigir eventos globales mouseup al event bus
+window.addEventListener('mouseup', (e) => {
+    eventBus.emit('mouseup', e);
+});
 Path: frontend/js/main.js
 */
-
-
 
 import ApiService from './services/ApiService.js';
 import UiService from './services/UiService.js';
 import appState from './state/AppState.js';
+import eventBus from './utils/EventBus.js';
+import { EVENT_CONTRACT } from './utils/eventBus.contract.js';
 
 console.log("main.js cargado correctamente.");
 
@@ -39,14 +43,12 @@ function notifyContainerReady() {
                 container.style.width = '100%';
             }
             
-            // Disparar evento para notificar que el contenedor está listo
-            document.dispatchEvent(new CustomEvent('containerReady', {
-                detail: { 
-                    containerId: 'container',
-                    timestamp: Date.now()
-                }
-            }));
-            console.log("main.js - Evento containerReady disparado");
+            // Disparar evento para notificar que el contenedor está listo usando event bus
+            eventBus.emit('containerReady', {
+                containerId: 'container',
+                timestamp: Date.now()
+            });
+            console.log("main.js - Evento containerReady disparado (event bus)");
         } else {
             console.warn("main.js - Contenedor del gráfico aún no existe");
             
@@ -75,20 +77,10 @@ function notifyContainerReady() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("DOMContentLoaded", async () => {
     try {
         console.log("main.js - DOMContentLoaded iniciado");
-        // Consultar los datos iniciales desde AppState
-        const initialData = appState.getState().initialData;
-        console.log("main.js - Datos iniciales:", initialData);
-
-        // Obtener periodo y conta de los datos iniciales
-        const { periodo, conta } = initialData || {};
-
-        // Centralizar el estado de carga usando AppState
-        appState.setLoading('dashboard', true);
-
-        let response;
+        eventBus.emit('appDomReady', { timestamp: Date.now() });
         try {
             response = await ApiService.getDashboardData(periodo, conta);
         } catch (apiError) {

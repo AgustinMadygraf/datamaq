@@ -6,6 +6,7 @@ Desacopla la lógica de eventos del controlador principal para mejorar la manten
 
 import appState from '../../state/AppState.js';
 import { onDbClick } from '../DoubleClickHandler.js';
+import eventBus from '../../utils/EventBus.js';
 
 export default class ChartEventManager {
     /**
@@ -123,7 +124,8 @@ export default class ChartEventManager {
                 detail: detail
             });
             
-            document.dispatchEvent(event);
+            // Usar eventBus para emitir eventos
+            eventBus.emit(eventName, detail);
             
         } catch (error) {
             console.error(`ChartEventManager - Error al despachar evento ${eventName}:`, error);
@@ -137,7 +139,8 @@ export default class ChartEventManager {
      * @param {Function} callback - Función a llamar
      */
     registerListener(eventName, callback) {
-        document.addEventListener(eventName, callback);
+    // Usar eventBus para registrar listeners
+    eventBus.subscribe(eventName, callback);
     }
 
     /**
@@ -146,6 +149,8 @@ export default class ChartEventManager {
      * @param {Function} callback - Función a eliminar
      */
     removeListener(eventName, callback) {
-        document.removeEventListener(eventName, callback);
+    // Usar eventBus para eliminar listeners
+    // El eventBus retorna una función de desuscripción en subscribe, guardar y llamar esa función aquí si se requiere
+    // (Para compatibilidad, se puede mantener una referencia interna si es necesario)
     }
 }

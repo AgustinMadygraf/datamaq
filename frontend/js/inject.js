@@ -1,7 +1,3 @@
-/*
-Path: frontend/js/inject.js
-*/
-
 document.addEventListener('mouseup', function(e) {
     let targetClass = '';
     try {
@@ -36,32 +32,27 @@ document.addEventListener('mouseup', function(e) {
         // Depuración: log del valor final de targetClass y su tipo
         console.log('inject.js - targetClass final:', targetClass, 'typeof:', typeof targetClass);
 
+        let safeClass = '';
         try {
-            // Forzar conversión a string antes de usar indexOf
-            let safeClass = '';
-            try {
-                safeClass = String(targetClass);
-                console.log('inject.js - safeClass:', safeClass, 'typeof:', typeof safeClass);
-            } catch (convErr) {
-                console.error('inject.js - Error convirtiendo targetClass a string:', convErr);
-                safeClass = '';
-            }
+            safeClass = String(targetClass);
+            console.log('inject.js - safeClass:', safeClass, 'typeof:', typeof safeClass);
+        } catch (convErr) {
+            console.error('inject.js - Error convirtiendo targetClass a string:', convErr);
+            safeClass = '';
+        }
 
-            // Log antes de usar indexOf
-            console.log('inject.js - Antes de indexOf, safeClass:', safeClass, 'typeof:', typeof safeClass);
+        // Log antes de usar indexOf
+        console.log('inject.js - Antes de indexOf, safeClass:', safeClass, 'typeof:', typeof safeClass);
 
-            if (typeof safeClass === 'string') {
-                if (safeClass.indexOf('graf') !== -1) {
-                    console.log('inject.js - Se encontró "graf" en safeClass');
-                    // ...tu lógica aquí...
-                } else {
-                    console.log('inject.js - "graf" NO encontrado en safeClass');
-                }
+        if (typeof safeClass === 'string') {
+            if (safeClass.indexOf('graf') !== -1) {
+                console.log('inject.js - Se encontró "graf" en safeClass');
+                // ...tu lógica aquí...
             } else {
-                console.warn('inject.js - safeClass no es string, no se puede usar indexOf');
+                console.log('inject.js - "graf" NO encontrado en safeClass');
             }
-        } catch (indexErr) {
-            console.error('inject.js - Error usando indexOf en safeClass:', indexErr);
+        } else {
+            console.warn('inject.js - safeClass no es string, no se puede usar indexOf');
         }
     } catch (err) {
         console.error('inject.js - Error en mouseup handler:', err);

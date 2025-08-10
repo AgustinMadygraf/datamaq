@@ -13,6 +13,8 @@ import SeriesBuilder from './chart/SeriesBuilder.js';
 import { waitForElement } from '../utils/DomUtils.js';
 import ChartEventManager from './chart/ChartEventManager.js';
 
+import eventBus from '../utils/EventBus.js';
+import { EVENT_CONTRACT } from '../utils/eventBus.contract.js';
 // Clase principal para manejar el gráfico
 class ChartController {
     constructor() {
@@ -324,37 +326,35 @@ class ChartController {
             
 
             // Escuchar cuando el DOM esté listo
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log("ChartController - DOMContentLoaded disparado");
+            eventBus.subscribe('appDomReady', () => {
+                console.log("ChartController - Evento appDomReady recibido (event bus)");
                 try {
                     const chartDataExists = this.logChartDataStatus();
-                    
                     if (chartDataExists) {
-                        console.log("ChartController - chartData encontrado en DOMContentLoaded, iniciando gráfico");
+                        console.log("ChartController - chartData encontrado en appDomReady, iniciando gráfico");
                         this.initChart();
                     } else {
-                        console.warn("ChartController - chartData no encontrado. Esperando evento chartDataReady");
-                        // Verificar si main.js está cargado usando el estado centralizado
+                        console.warn("ChartController - chartData no encontrado. Esperando evento CHART_DATA_UPDATED");
                         const initialData = appState.getInitialData();
                         console.log("ChartController - Estado de módulos:", {
                             initialData: initialData !== undefined && initialData !== null ? "disponible" : "no disponible"
                         });
                     }
                 } catch (err) {
-                    console.error("ChartController - Error en el manejador de DOMContentLoaded:", err);
+                    console.error("ChartController - Error en el manejador de appDomReady:", err);
                 }
             });
 
-            // Escuchar el evento chartDataReady
-            document.addEventListener('chartDataReady', (event) => {
-                console.log("ChartController - Evento chartDataReady recibido", event.detail);
+            // Escuchar el evento chartDataReady usando event bus local
+            eventBus.subscribe(EVENT_CONTRACT.CHART_DATA_UPDATED, (payload) => {
+                console.log("ChartController - Evento CHART_DATA_UPDATED recibido", payload);
                 try {
-                    if (event.detail && event.detail.chartData) {
-                        this.setChartData(event.detail.chartData);
+                    if (payload && payload.chartData) {
+                        this.setChartData(payload.chartData);
                     }
                     const chartDataExists = this.logChartDataStatus();
                     if (!chartDataExists) {
-                        console.error("ChartController - chartData sigue indefinido después del evento chartDataReady");
+                        console.error("ChartController - chartData sigue indefinido después del evento CHART_DATA_UPDATED");
                         this.forceChartDataLoad();
                         return;
                     }
@@ -366,8 +366,8 @@ class ChartController {
             });
 
             // Nueva verificación: Custom event para cuando el container se haga visible
-            document.addEventListener('containerReady', () => {
-                console.log("ChartController - Evento containerReady recibido");
+            eventBus.subscribe('containerReady', (payload) => {
+                console.log("ChartController - Evento containerReady recibido (event bus)", payload);
                 if (this.chartData && !this.chartInitialized) {
                     setTimeout(this.initChart, 100);
                 }

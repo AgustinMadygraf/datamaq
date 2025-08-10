@@ -5,6 +5,8 @@ Este servicio se encarga de actualizar la interfaz de usuario con los datos reci
 
 import { sanitizeHTML } from '../utils/DomUtils.js';
 import appState from '../state/AppState.js';
+import eventBus from '../utils/EventBus.js';
+import { EVENT_CONTRACT } from '../utils/eventBus.contract.js';
 class UiService {
     /**
      * Actualiza el dashboard completo con los datos recibidos
@@ -245,54 +247,19 @@ class UiService {
     static setupBotoneraEventListeners() {
         // Implementar la funcionalidad de los botones utilizando AJAX en lugar de envío de formulario
         const forms = document.querySelectorAll('.botonera form');
-        
+
         forms.forEach(form => {
-            form.addEventListener('submit', async (e) => {
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                
+
                 // Extraer periodo y conta de la URL del formulario
                 const action = form.getAttribute('action');
                 const params = new URLSearchParams(action.split('?')[1]);
                 const periodo = params.get('periodo');
                 const conta = params.get('conta');
-                
-                // Mostrar indicador de carga
-                document.getElementById('loading-indicator').style.display = 'flex';
-                
-                try {
-                    // Actualizar la URL sin recargar la página
-                    window.history.pushState({}, '', action);
-                    
-                    // Cargar los nuevos datos
-                    const response = await import('./ApiService.js').then(module => {
-                        return module.default.getDashboardData(periodo, conta);
-                    });
-                    
-                    if (response.status === 'success') {
-                        // Actualizar la UI con los nuevos datos
-                        await UiService.updateDashboard(response.data);
 
-                        // Actualizar los datos del gráfico en el estado centralizado
-                        appState.setChartData({
-                            conta: response.data.conta,
-                            rawdata: response.data.rawdata,
-                            ls_periodos: response.data.ls_periodos,
-                            menos_periodo: response.data.menos_periodo,
-                            periodo: response.data.periodo
-                        });
-
-                        // Notificar que los datos del gráfico están listos
-                        document.dispatchEvent(new CustomEvent('chartDataReady'));
-                    } else {
-                        throw new Error(response.message || 'Error al cargar los datos');
-                    }
-                } catch (error) {
-                    console.error('Error al procesar la acción del botón:', error);
-                    alert('Error: ' + error.message);
-                } finally {
-                    // Ocultar indicador de carga
-                    document.getElementById('loading-indicator').style.display = 'none';
-                }
+                // Emitir evento en el event bus para manejar la acción de la botonera
+                eventBus.emit('botoneraSubmit', { periodo, conta, action });
             });
         });
     }
