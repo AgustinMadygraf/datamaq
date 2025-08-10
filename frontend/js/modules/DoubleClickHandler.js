@@ -1,19 +1,9 @@
 
+
 import appState from '../state/AppState.js';
 
-let doubleClicker = {
-    clickedOnce: false,
-    timer: null,
-    timeBetweenClicks: 400
-};
-
-function resetDoubleClick() {
-    clearTimeout(doubleClicker.timer);
-    doubleClicker.timer = null;
-    doubleClicker.clickedOnce = false;
-}
-
-function zoomIn(event) {
+export function onDbClick(event) {
+    // Ejecuta directamente la acción de zoom sin lógica de doble clic
     try {
         console.log("Executing zoomIn with event:", event);
         const chartData = appState.getChartData();
@@ -24,15 +14,5 @@ function zoomIn(event) {
         window.open(window.location.pathname + '?periodo=' + menos_periodo[periodo] + '&conta=' + tiempo, "_self");
     } catch (err) {
         console.log("Error in zoomIn:", err);
-    }
-}
-
-export function onDbClick(event) {
-    if (doubleClicker.clickedOnce && doubleClicker.timer) {
-        resetDoubleClick();
-        zoomIn(event);
-    } else {
-        doubleClicker.clickedOnce = true;
-        doubleClicker.timer = setTimeout(resetDoubleClick, doubleClicker.timeBetweenClicks);
     }
 }

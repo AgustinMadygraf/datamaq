@@ -29,33 +29,39 @@ export default class ChartEventManager {
      * @param {Object} event - Evento de Highcharts
      */
     handleChartClick(event) {
-        try {
-            if (!event || !event.xAxis || !event.xAxis[0]) {
-                console.warn("ChartEventManager - Evento de clic sin coordenadas X válidas");
-                return;
-            }
+            try {
+                if (!event || !event.xAxis || !event.xAxis[0]) {
+                    console.warn("ChartEventManager - Evento de clic sin coordenadas X válidas");
+                    return;
+                }
 
-            // Implementación del detector de doble clic
-            if (this.clickTimeout) {
-                clearTimeout(this.clickTimeout);
-                this.clickTimeout = null;
-                
-                // Es un doble clic
-                onDbClick(event);
-                return;
+                // Detector de doble clic centralizado aquí
+                if (this._lastClick && (event.xAxis[0].value === this._lastClick.xValue)) {
+                    const now = Date.now();
+                    if (now - this._lastClick.time < this.clickDelay) {
+                        // Doble clic detectado
+                        this._lastClick = null;
+                        onDbClick(event);
+                        return;
+                    }
+                }
+                // Registrar el clic actual
+                this._lastClick = {
+                    xValue: event.xAxis[0].value,
+                    time: Date.now()
+                };
+                // Esperar por posible segundo clic
+                setTimeout(() => {
+                    // Si no hubo doble clic, procesar como simple clic
+                    if (this._lastClick) {
+                        this.processSingleClick(event);
+                        this._lastClick = null;
+                    }
+                }, this.clickDelay);
+            } catch (error) {
+                console.error("ChartEventManager - Error al manejar clic:", error);
+                appState.addError('chartEvent', error);
             }
-            
-            // Primer clic - esperar por posible segundo clic
-            this.clickTimeout = setTimeout(() => {
-                // Fue un solo clic
-                this.processSingleClick(event);
-                this.clickTimeout = null;
-            }, this.clickDelay);
-            
-        } catch (error) {
-            console.error("ChartEventManager - Error al manejar clic:", error);
-            appState.addError('chartEvent', error);
-        }
     }
 
     /**
@@ -101,6 +107,9 @@ export default class ChartEventManager {
             
             // Notificar que el gráfico está listo
             this.dispatchChartEvent('chartReady', {
+
+            // Este módulo está diseñado para ser desacoplado y reutilizable.
+            // Puede integrarse con ChartController, ChartRenderer, etc. mediante inyección de dependencias.
                 chart: event.target
             });
             
@@ -118,15 +127,14 @@ export default class ChartEventManager {
     dispatchChartEvent(eventName, detail = {}) {
         try {
             // Crear y despachar un evento personalizado
-            const event = new CustomEvent(eventName, {
-                bubbles: true,
+            const customEvent = new CustomEvent(eventName, {
                 cancelable: true,
                 detail: detail
             });
-            
+
             // Usar eventBus para emitir eventos
             eventBus.emit(eventName, detail);
-            
+
         } catch (error) {
             console.error(`ChartEventManager - Error al despachar evento ${eventName}:`, error);
             appState.addError('chartEvent', error);
@@ -139,8 +147,8 @@ export default class ChartEventManager {
      * @param {Function} callback - Función a llamar
      */
     registerListener(eventName, callback) {
-    // Usar eventBus para registrar listeners
-    eventBus.subscribe(eventName, callback);
+        // Usar eventBus para registrar listeners
+        return eventBus.subscribe(eventName, callback);
     }
 
     /**
@@ -149,8 +157,9 @@ export default class ChartEventManager {
      * @param {Function} callback - Función a eliminar
      */
     removeListener(eventName, callback) {
-    // Usar eventBus para eliminar listeners
-    // El eventBus retorna una función de desuscripción en subscribe, guardar y llamar esa función aquí si se requiere
-    // (Para compatibilidad, se puede mantener una referencia interna si es necesario)
+        // Usar eventBus para eliminar listeners
+        // El eventBus retorna una función de desuscripción en subscribe, guardar y llamar esa función aquí si se requiere
+        // (Para compatibilidad, se puede mantener una referencia interna si es necesario)
+        eventBus.unsubscribe(eventName, callback);
     }
 }
