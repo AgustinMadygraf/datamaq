@@ -7,7 +7,7 @@ import { onDbClick } from './DoubleClickHandler.js';
 import HighchartsConfig from './chart/HighchartsConfig.js';
 import ChartDataValidator from './chart/ChartDataValidator.js';
 import SeriesBuilder from './chart/SeriesBuilder.js';
-import appState from '../state/AppState.js';
+// El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
 import { waitForElement } from '../utils/DomUtils.js';
@@ -16,43 +16,45 @@ import ChartEventManager from './chart/ChartEventManager.js';
 // Clase principal para manejar el gráfico
 class ChartController {
     constructor() {
-        // Inicialización básica
         this.chartInitialized = false;
         this.chartDataReceived = false;
         this.failedAttempts = 0;
         this.maxFailedAttempts = 5;
-        
-        // Inicializar dependencias
+        this.chartData = null;
+        this.initialData = null;
         this.validator = new ChartDataValidator();
         this.seriesBuilder = new SeriesBuilder();
         this.eventManager = new ChartEventManager(this);
-        
-        // Bindear métodos
         this.initChart = this.initChart.bind(this);
         this.handleChartClick = this.handleChartClick.bind(this);
         this.handleChartLoad = this.handleChartLoad.bind(this);
+    }
+
+    setChartData(chartData) {
+        this.chartData = chartData;
+    }
+
+    setInitialData(initialData) {
+        this.initialData = initialData;
     }
     
     // Método para forzar la carga de datos del gráfico desde main.js
     async forceChartDataLoad() {
         try {
             console.log("ChartController - Intentando forzar carga de datos desde main.js");
-
-            const initialData = appState.getInitialData();
+            const initialData = this.initialData;
             if (!initialData) {
                 console.warn("ChartController - initialData no encontrado");
                 this.failedAttempts++;
                 return;
             }
-
             const ApiService = (await import('../services/ApiService.js')).default;
             const periodo = initialData.periodo || 'semana';
             const conta = initialData.conta || null;
-
             const response = await ApiService.getDashboardData(periodo, conta);
             if (response.status === 'success') {
                 console.log("ChartController - Datos recibidos correctamente de API");
-                appState.setChartData({
+                this.setChartData({
                     conta: response.data.conta,
                     rawdata: response.data.rawdata,
                     ls_periodos: response.data.ls_periodos,
@@ -72,7 +74,7 @@ class ChartController {
     // Registra el estado actual de chartData con detalles adicionales
     logChartDataStatus() {
         try {
-            const chartData = appState.getChartData();
+            const chartData = this.chartData;
             const chartDataExists = chartData !== undefined && chartData !== null;
             const chartDataType = chartDataExists ? typeof chartData : 'undefined';
             const chartDataIsObject = chartDataExists && typeof chartData === 'object';
@@ -90,7 +92,7 @@ class ChartController {
             });
 
             // Inspeccionar contexto global y estado centralizado
-            const initialData = appState.getInitialData();
+            const initialData = this.initialData;
             console.log("ChartController - Objetos relevantes presentes:", {
                 initialData: initialData !== undefined && initialData !== null,
                 Highcharts: typeof window.Highcharts !== 'undefined',
@@ -116,8 +118,7 @@ class ChartController {
     async initChart() {
         try {
             console.log("ChartController - Iniciando initChart()...");
-            const chartData = appState.getChartData();
-            
+            const chartData = this.chartData;
             if (!chartData) {
                 console.error("ChartController - chartData no existe, no se puede inicializar el gráfico");
                 this.failedAttempts++;
@@ -185,7 +186,7 @@ class ChartController {
             });
 
                 // Validar los datos usando el estado centralizado
-                if (!this.validator.validateChartData(appState.getChartData())) {
+                if (!this.validator.validateChartData(this.chartData)) {
                     console.error("ChartController - Validación de chartData falló");
                     return;
                 }
@@ -249,7 +250,7 @@ class ChartController {
             console.log("ChartController - Creando gráfico...");
             
             // Definir las series usando el estado centralizado
-            const chartData = appState.getChartData();
+            const chartData = this.chartData;
             let series = [];
             try {
                 series = this.seriesBuilder.buildSeries(chartData);
@@ -348,21 +349,16 @@ class ChartController {
             document.addEventListener('chartDataReady', (event) => {
                 console.log("ChartController - Evento chartDataReady recibido", event.detail);
                 try {
+                    if (event.detail && event.detail.chartData) {
+                        this.setChartData(event.detail.chartData);
+                    }
                     const chartDataExists = this.logChartDataStatus();
                     if (!chartDataExists) {
                         console.error("ChartController - chartData sigue indefinido después del evento chartDataReady");
-                        // Recuperación: intentar obtener datos del evento
-                        if (event.detail && event.detail.chartData) {
-                            console.log("ChartController - Intentando recuperar chartData desde el evento");
-                            appState.setChartData(event.detail.chartData);
-                        } else {
-                            // Intentar forzar carga
-                            this.forceChartDataLoad();
-                            return;
-                        }
+                        this.forceChartDataLoad();
+                        return;
                     }
                     console.log("ChartController - Iniciando gráfico desde evento chartDataReady");
-                    // Pequeño retraso para asegurar que el DOM está listo
                     setTimeout(this.initChart, 100);
                 } catch (err) {
                     console.error("ChartController - Error en el manejador de chartDataReady:", err);
@@ -372,7 +368,7 @@ class ChartController {
             // Nueva verificación: Custom event para cuando el container se haga visible
             document.addEventListener('containerReady', () => {
                 console.log("ChartController - Evento containerReady recibido");
-                if (appState.getChartData() && !this.chartInitialized) {
+                if (this.chartData && !this.chartInitialized) {
                     setTimeout(this.initChart, 100);
                 }
             });
@@ -396,7 +392,7 @@ class ChartController {
                 
                 try {
                     // Verificar si chartData existe usando el estado centralizado
-                    const chartData = appState.getChartData();
+                    const chartData = this.chartData;
                     const chartDataExists = chartData !== undefined && chartData !== null;
                     
                     // Verificar si el contenedor existe
@@ -450,19 +446,14 @@ class ChartController {
     }
 
     // Método de inicialización mejorado
-    init() {
+    init(initialData, chartData) {
         try {
             console.log("ChartController - Inicializando...");
-            
-            // Registrar el estado inicial
+            this.setInitialData(initialData);
+            this.setChartData(chartData);
             this.logChartDataStatus();
-            
-            // Configurar event listeners
             this.setupEventListeners();
-            
-            // Iniciar verificación periódica
             this.startPeriodicCheck();
-            
             console.log("ChartController - Inicialización completada");
         } catch (e) {
             console.error("ChartController - Error durante la inicialización:", e);
@@ -470,22 +461,5 @@ class ChartController {
     }
 }
 
-// Crear la instancia del controlador
-let chartController;
-
-// Inicializar el controlador con manejo de errores global
-try {
-    console.log("ChartController - Creando instancia");
-    chartController = new ChartController();
-    chartController.init();
-    console.log("ChartController - Instancia creada e inicializada correctamente");
-} catch (e) {
-    console.error("ChartController - Error fatal al crear o inicializar el controlador:", e);
-    // Crear un controlador fallback
-    chartController = {
-        init: () => console.error("ChartController - Usando controlador fallback")
-    };
-}
-
-// Exportar la instancia creada
-export default chartController;
+// Exportar la clase para que el controlador principal la instancie y pase el estado
+export default ChartController;

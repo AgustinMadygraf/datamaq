@@ -1,7 +1,47 @@
+
 /**
  * Path: frontend/js/state/AppState.js
  * AppState.js - Gestión centralizada del estado de la aplicación
  * Implementa el patrón observable para desacoplar la gestión del estado de los componentes UI
+ *
+ * SHAPE DEL ESTADO (compatible con Redux/Context):
+ * {
+ *   chart: {
+ *     conta: string|null,
+ *     rawdata: Array,
+ *     ls_periodos: Array,
+ *     menos_periodo: string|null,
+ *     periodo: string
+ *   },
+ *   initial: {
+ *     periodo: string,
+ *     conta: string|null,
+ *     csrfToken: string|null
+ *   },
+ *   loading: {
+ *     dashboard: boolean,
+ *     chart: boolean
+ *   },
+ *   errors: Array<{ id: number, source: string, message: string, timestamp: string }>
+ * }
+ *
+ * MÉTODOS PRINCIPALES:
+ * - getState(): Obtiene el estado completo
+ * - get(key): Obtiene una parte específica del estado
+ * - update(key, value, merge): Actualiza una parte del estado
+ * - setChartData(chartData): Actualiza datos del gráfico
+ * - getChartData(): Obtiene datos del gráfico
+ * - setInitialData(initialData): Actualiza datos iniciales
+ * - getInitialData(): Obtiene datos iniciales
+ * - setLoading(key, isLoading): Actualiza estado de carga
+ * - isLoading(): Verifica si algún componente está cargando
+ * - addError(source, error): Registra un error
+ * - clearError(id): Elimina un error
+ * - clearAllErrors(): Elimina todos los errores
+ * - subscribe(key, callback): Suscribe a cambios de estado
+ * - resetState(): Restablece el estado inicial
+ *
+ * Todas las claves y métodos son serializables y desacoplados de la UI.
  */
 
 class AppState {

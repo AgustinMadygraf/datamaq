@@ -5,9 +5,12 @@ Path: frontend/js/app.js
 import UiService from './services/UiService.js';
 import appState from './state/AppState.js';
 import ApiService from './services/ApiService.js';
+import ChartController from './modules/ChartController.js';
 
 class DashboardApp {
-    constructor() {}
+    constructor() {
+        this.chartController = null;
+    }
 
     async init() {
         const params = new URLSearchParams(window.location.search);
@@ -45,6 +48,12 @@ class DashboardApp {
             if (result.status === 'success') {
                 appState.setInitialData(result.data);
                 this._renderDashboard(result.data);
+                // Suscribirse a cambios en chartData para actualizar la UI automáticamente
+                appState.subscribe('chart', (newChartData) => {
+                    // Combinar initialData y chartData para renderizar
+                    const initialData = appState.getInitialData();
+                    this._renderDashboard({ ...initialData, ...newChartData });
+                });
                 // Cargar scripts solo una vez
                 if (!window._scriptsLoaded) {
                     const mainScript = document.createElement('script');
@@ -71,7 +80,23 @@ class DashboardApp {
         if (!data) return;
         appState.periodo = data.periodo;
         appState.data = data;
-        await UiService.updateDashboard(data);
+        // Obtener la estructura de datos para el info-display
+        const infoDisplayStructure = UiService.getDashboardDataForRender(data);
+        // Renderizar el HTML usando el componente funcional
+        const { renderInfoDisplay } = await import('./components/InfoDisplay.js');
+        const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
+        // Actualizar el DOM
+        const container = document.getElementById('info-display-container');
+        if (container) {
+            container.innerHTML = infoDisplayHtml;
+        } else {
+            console.error('DashboardApp - No se encontró el contenedor info-display-container');
+        }
+        // Instanciar o actualizar ChartController con el estado
+        if (!this.chartController) {
+            this.chartController = new ChartController();
+        }
+        this.chartController.init(appState.getInitialData(), appState.getChartData());
     }
 
     async changePeriodo(periodo) {
@@ -92,7 +117,7 @@ class DashboardApp {
                 // Actualizar el estado centralizado con los nuevos datos
                 appState.setInitialData(result.data);
                 // Actualizar la UI en base al estado
-                await UiService.updateDashboard(result.data);
+                await this._renderDashboard(result.data);
             } else {
                 // Registrar error en el estado centralizado
                 appState.addError('dashboard', 'Error al cargar datos.');
