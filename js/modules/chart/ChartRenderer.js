@@ -4,8 +4,8 @@ Responsable de la renderización y configuración del gráfico Highcharts.
 */
 
 // Importar dependencias necesarias
-// import Highcharts from 'highcharts'; // Asume que Highcharts está disponible globalmente
-// import appState from '../../state/AppState.js'; // Si existe un gestor de estado
+import HighchartsConfig from './HighchartsConfig.js';
+// Asume que Highcharts está disponible globalmente
 
 export default class ChartRenderer {
     constructor(chartController) {
@@ -20,25 +20,29 @@ export default class ChartRenderer {
     createChart(container, chartData) {
         try {
             console.log("ChartRenderer - Creando gráfico...");
-            // Aquí iría la lógica para construir la configuración de Highcharts
-            // const config = this.buildConfig(chartData);
-            // Highcharts.chart(container, config);
-            // Por ahora, solo loguea para pruebas
-            return true;
+            // Obtener series desde SeriesBuilder
+            const series = this.chartController.seriesBuilder.buildSeries(chartData);
+            // Obtener configuración desde HighchartsConfig
+            const config = HighchartsConfig.getChartConfig(
+                chartData,
+                series,
+                this.chartController.eventManager.handleChartClick,
+                this.chartController.eventManager.handleChartLoad
+            );
+            if (typeof Highcharts !== 'undefined') {
+                Highcharts.chart(container, config);
+                console.log("ChartRenderer - Renderizado de Highcharts completado");
+                return true;
+            } else {
+                throw new Error("Highcharts no está definido");
+            }
         } catch (e) {
             console.error("ChartRenderer - Error crítico en createChart:", e);
-            // appState.addError('chartRender', e); // Si existe appState
+            // Fallback: mostrar mensaje de error en el contenedor
+            if (container && typeof container.innerHTML === 'string') {
+                container.innerHTML = '<div class="alert alert-danger">Error al cargar el gráfico</div>';
+            }
             return false;
         }
-    }
-
-    /**
-     * Construye la configuración de Highcharts a partir de los datos
-     * @param {Object} chartData
-     * @returns {Object} config
-     */
-    buildConfig(chartData) {
-        // Implementar según necesidades
-        return {};
     }
 }

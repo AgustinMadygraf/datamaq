@@ -5,6 +5,7 @@ Este script se encarga de generar el gráfico de Highcharts y de manejar el even
 
 import { onDbClick } from './DoubleClickHandler.js';
 import HighchartsConfig from './chart/HighchartsConfig.js';
+import ChartRenderer from './chart/ChartRenderer.js';
 import ChartDataValidator from './chart/ChartDataValidator.js';
 import SeriesBuilder from './chart/SeriesBuilder.js';
 // El estado se recibirá por argumentos/setters
@@ -25,11 +26,12 @@ class ChartController {
         this.maxFailedAttempts = 5;
         this.chartData = null;
         this.initialData = null;
-        this.validator = new ChartDataValidator();
-        this.seriesBuilder = new SeriesBuilder();
-        this.eventManager = new ChartEventManager(this);
-        this.dataLoader = new ChartDataLoader(this);
-        this.initChart = this.initChart.bind(this);
+    this.validator = new ChartDataValidator();
+    this.seriesBuilder = new SeriesBuilder();
+    this.eventManager = new ChartEventManager(this);
+    this.dataLoader = new ChartDataLoader(this);
+    this.chartRenderer = new ChartRenderer(this);
+    this.initChart = this.initChart.bind(this);
         // Elimina los binds de los métodos que ahora delegan en eventManager
     }
     // Métodos requeridos por ChartEventManager
@@ -263,76 +265,8 @@ class ChartController {
     }
 
     createChart(container) {
-        try {
-            console.log("ChartController - Creando gráfico...");
-            
-            // Definir las series usando el estado centralizado
-            const chartData = this.chartData;
-            let series = [];
-            try {
-                series = this.seriesBuilder.buildSeries(chartData);
-            } catch (seriesError) {
-                console.error("ChartController - Error al construir series:", seriesError);
-                // Series fallback
-                series = [{
-                    name: 'Fallback',
-                    data: [[Date.now(), 0]]
-                }];
-            }
-
-            let config = {};
-            try {
-                // Obtener la configuración del gráfico usando los métodos del event manager
-                config = HighchartsConfig.getChartConfig(
-                    chartData,
-                    series,
-                    this.eventManager.handleChartClick,
-                    this.eventManager.handleChartLoad
-                );
-            } catch (configError) {
-                console.error("ChartController - Error al obtener configuración:", configError);
-                // Configuración fallback básica
-                config = {
-                    chart: {
-                        type: 'spline',
-                        events: {
-                            load: this.eventManager.handleChartLoad
-                        }
-                    },
-                    title: { text: 'Gráfico de recuperación' },
-                    series: series
-                };
-            }
-            
-            // Crear el gráfico
-            try {
-                console.log("ChartController - Iniciando renderizado de Highcharts");
-                Highcharts.chart('container', config);
-                console.log("ChartController - Renderizado de Highcharts completado");
-            } catch (renderError) {
-                console.error("ChartController - Error al renderizar el gráfico:", renderError);
-                
-                // Intento final de recuperación: gráfico ultra simple
-                console.log("ChartController - Intentando renderizar gráfico mínimo de recuperación");
-                try {
-                    Highcharts.chart('container', {
-                        chart: { type: 'line' },
-                        title: { text: 'Error de renderizado - Gráfico fallback' },
-                        series: [{ data: [1, 2, 3] }]
-                    });
-                } catch (finalError) {
-                    console.error("ChartController - Falló incluso el gráfico de recuperación:", finalError);
-                    // Mostrar mensaje de error en el contenedor
-                    container.innerHTML = '<div class="alert alert-danger">Error al cargar el gráfico</div>';
-                }
-            }
-        } catch (e) {
-            console.error("ChartController - Error crítico en createChart:", e);
-            // Si hay un contenedor válido, mostrar un mensaje de error
-            if (container && typeof container.innerHTML === 'string') {
-                container.innerHTML = '<div class="alert alert-danger">Error crítico al crear el gráfico</div>';
-            }
-        }
+        // Delegar la creación del gráfico al ChartRenderer
+        this.chartRenderer.createChart(container, this.chartData);
     }
 
     setupEventListeners() {
