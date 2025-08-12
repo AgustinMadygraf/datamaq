@@ -3,7 +3,7 @@ ChartDataLoader.js
 Responsable de la carga y recuperación de datos para el gráfico Highcharts.
 */
 
-// import ApiService from '../../services/ApiService.js'; // Descomentar si existe ApiService
+import ApiService from '../../services/ApiService.js';
 
 export default class ChartDataLoader {
     constructor(chartController) {
@@ -20,13 +20,28 @@ export default class ChartDataLoader {
     async loadChartData(initialData) {
         try {
             console.log("ChartDataLoader - Cargando datos del gráfico");
-            // Simulación de llamada a API
-            // const response = await ApiService.getDashboardData(initialData);
-            // if (response.status === 'success') {
-            //     return response.data;
-            // }
-            // return null;
-            return {}; // Retorna objeto vacío para pruebas
+            if (!initialData) {
+                console.warn("ChartDataLoader - initialData no proporcionado");
+                this.failedAttempts++;
+                return null;
+            }
+            const periodo = initialData.periodo || 'semana';
+            const conta = initialData.conta || null;
+            const response = await ApiService.getDashboardData(periodo, conta);
+            if (response && response.status === 'success') {
+                // Retornar el formato esperado por ChartController
+                return {
+                    conta: response.data.conta,
+                    rawdata: response.data.rawdata,
+                    ls_periodos: response.data.ls_periodos,
+                    menos_periodo: response.data.menos_periodo,
+                    periodo: response.data.periodo
+                };
+            } else {
+                console.error("ChartDataLoader - Error en la respuesta de la API:", response?.message);
+                this.failedAttempts++;
+                return null;
+            }
         } catch (e) {
             console.error("ChartDataLoader - Error al cargar datos:", e);
             this.failedAttempts++;

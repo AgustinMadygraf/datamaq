@@ -12,6 +12,7 @@ import SeriesBuilder from './chart/SeriesBuilder.js';
 // Módulos nuevos a crear
 import { waitForElement } from '../utils/DomUtils.js';
 import ChartEventManager from './chart/ChartEventManager.js';
+import ChartDataLoader from './chart/ChartDataLoader.js';
 
 import eventBus from '../utils/EventBus.js';
 import { EVENT_CONTRACT } from '../utils/eventBus.contract.js';
@@ -27,6 +28,7 @@ class ChartController {
         this.validator = new ChartDataValidator();
         this.seriesBuilder = new SeriesBuilder();
         this.eventManager = new ChartEventManager(this);
+        this.dataLoader = new ChartDataLoader(this);
         this.initChart = this.initChart.bind(this);
         // Elimina los binds de los métodos que ahora delegan en eventManager
     }
@@ -66,29 +68,19 @@ class ChartController {
     // Método para forzar la carga de datos del gráfico desde main.js
     async forceChartDataLoad() {
         try {
-            console.log("ChartController - Intentando forzar carga de datos desde main.js");
+            console.log("ChartController - Intentando forzar carga de datos desde ChartDataLoader");
             const initialData = this.initialData;
             if (!initialData) {
                 console.warn("ChartController - initialData no encontrado");
                 this.failedAttempts++;
                 return;
             }
-            const ApiService = (await import('../services/ApiService.js')).default;
-            const periodo = initialData.periodo || 'semana';
-            const conta = initialData.conta || null;
-            const response = await ApiService.getDashboardData(periodo, conta);
-            if (response.status === 'success') {
-                console.log("ChartController - Datos recibidos correctamente de API");
-                this.setChartData({
-                    conta: response.data.conta,
-                    rawdata: response.data.rawdata,
-                    ls_periodos: response.data.ls_periodos,
-                    menos_periodo: response.data.menos_periodo,
-                    periodo: response.data.periodo
-                });
+            const chartData = await this.dataLoader.loadChartData(initialData);
+            if (chartData) {
+                this.setChartData(chartData);
                 this.initChart();
             } else {
-                throw new Error("Error en la respuesta de la API: " + response.message);
+                throw new Error("Error al cargar datos del gráfico");
             }
         } catch (e) {
             console.error("ChartController - Error en forceChartDataLoad:", e);
