@@ -11,7 +11,7 @@ import SeriesBuilder from './chart/SeriesBuilder.js';
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
-import { waitForElement } from '../utils/DomUtils.js';
+import ChartDomManager from './chart/ChartDomManager.js';
 import ChartEventManager from './chart/ChartEventManager.js';
 import ChartDataLoader from './chart/ChartDataLoader.js';
 
@@ -31,6 +31,7 @@ class ChartController {
     this.eventManager = new ChartEventManager(this);
     this.dataLoader = new ChartDataLoader(this);
     this.chartRenderer = new ChartRenderer(this);
+    this.domManager = new ChartDomManager();
     this.initChart = this.initChart.bind(this);
         // Elimina los binds de los métodos que ahora delegan en eventManager
     }
@@ -130,7 +131,7 @@ class ChartController {
     // Método para esperar a que el contenedor esté disponible
     waitForContainer(maxWaitTime = 5000, interval = 200) {
         console.log("ChartController - Esperando a que el contenedor esté disponible");
-        return waitForElement('container', maxWaitTime, interval);
+        return this.domManager.waitForContainer('container', maxWaitTime, interval);
     }
 
     // Inicializa el gráfico Highcharts con manejo mejorado de errores
@@ -160,35 +161,23 @@ class ChartController {
             // Esperar a que el contenedor esté disponible usando la utilidad
             let container;
             try {
-                container = await waitForElement('container');
+                container = await this.domManager.waitForContainer('container');
                 console.log("ChartController - Container obtenido correctamente");
             } catch (containerError) {
                 console.error("ChartController - Error esperando al contenedor:", containerError);
-                
                 // Verificar si el contenedor hay que crearlo
-                const infoDisplayContainer = document.getElementById('info-display-container');
-                if (infoDisplayContainer) {
-                    console.log("ChartController - Intentando crear el contenedor manualmente");
-                    // Crear el contenedor si no existe
-                    const newContainer = document.createElement('div');
-                    newContainer.id = 'container';
-                    newContainer.className = 'graf';
-                    infoDisplayContainer.appendChild(newContainer);
-                    container = newContainer;
+                container = this.domManager.createContainer('info-display-container', 'container', 'graf');
+                if (container) {
                     console.log("ChartController - Contenedor creado manualmente:", container);
                 } else {
                     console.error("ChartController - No se puede crear el contenedor, no se encontró el contenedor padre");
-                    
                     // Imprimir todos los elementos con clase 'graf' para depuración
                     const grafElements = document.querySelectorAll('.graf');
-                    console.log(`ChartController - Encontrados ${grafElements.length} elementos con clase 'graf':`, 
-                                Array.from(grafElements));
-                    
+                    console.log(`ChartController - Encontrados ${grafElements.length} elementos con clase 'graf':`, Array.from(grafElements));
                     // Verificar la estructura DOM
                     console.log("ChartController - Estructura del DOM:", {
                         body: document.body.innerHTML.substring(0, 500) + '...'
                     });
-                    
                     return;
                 }
             }
@@ -197,11 +186,8 @@ class ChartController {
                 id: container.id,
                 className: container.className,
                 parentNode: container.parentNode?.tagName,
-                isVisible: container.offsetParent !== null,
-                dimensions: {
-                    width: container.offsetWidth,
-                    height: container.offsetHeight
-                }
+                isVisible: this.domManager.isContainerVisible(container),
+                dimensions: this.domManager.getContainerDimensions(container)
             });
 
                 // Validar los datos usando el estado centralizado
