@@ -28,8 +28,31 @@ class ChartController {
         this.seriesBuilder = new SeriesBuilder();
         this.eventManager = new ChartEventManager(this);
         this.initChart = this.initChart.bind(this);
-        this.handleChartClick = this.handleChartClick.bind(this);
-        this.handleChartLoad = this.handleChartLoad.bind(this);
+        // Elimina los binds de los métodos que ahora delegan en eventManager
+    }
+    // Métodos requeridos por ChartEventManager
+    getChartData() {
+        return this.chartData;
+    }
+
+    updateChartSelection(selection) {
+        // Puedes guardar la selección en el estado o emitir un evento
+        this.chartSelection = selection;
+        // Opcional: emitir evento o log
+        console.log('ChartController - chartSelection actualizada:', selection);
+    }
+
+    updateChartStatus(status) {
+        this.chartStatus = status;
+        this.chartInitialized = !!status.loaded;
+        console.log('ChartController - chartStatus actualizado:', status);
+    }
+
+    addError(context, error) {
+        // Puedes guardar los errores en un array o simplemente loguear
+        if (!this.errors) this.errors = [];
+        this.errors.push({ context, error });
+        console.error(`ChartController - Error registrado en contexto '${context}':`, error);
     }
 
     setChartData(chartData) {
@@ -267,12 +290,12 @@ class ChartController {
 
             let config = {};
             try {
-                // Obtener la configuración del gráfico
+                // Obtener la configuración del gráfico usando los métodos del event manager
                 config = HighchartsConfig.getChartConfig(
                     chartData,
                     series,
-                    this.handleChartClick,
-                    this.handleChartLoad
+                    this.eventManager.handleChartClick,
+                    this.eventManager.handleChartLoad
                 );
             } catch (configError) {
                 console.error("ChartController - Error al obtener configuración:", configError);
@@ -281,7 +304,7 @@ class ChartController {
                     chart: {
                         type: 'spline',
                         events: {
-                            load: this.handleChartLoad
+                            load: this.eventManager.handleChartLoad
                         }
                     },
                     title: { text: 'Gráfico de recuperación' },

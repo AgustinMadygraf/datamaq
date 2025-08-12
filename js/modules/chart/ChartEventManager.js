@@ -4,7 +4,6 @@ Este módulo gestiona los eventos relacionados con el gráfico de Highcharts.
 Desacopla la lógica de eventos del controlador principal para mejorar la mantenibilidad.
 */
 
-import appState from '../../state/AppState.js';
 import { onDbClick } from '../DoubleClickHandler.js';
 import eventBus from '../../utils/EventBus.js';
 
@@ -29,39 +28,41 @@ export default class ChartEventManager {
      * @param {Object} event - Evento de Highcharts
      */
     handleChartClick(event) {
-            try {
-                if (!event || !event.xAxis || !event.xAxis[0]) {
-                    console.warn("ChartEventManager - Evento de clic sin coordenadas X válidas");
+        try {
+            if (!event || !event.xAxis || !event.xAxis[0]) {
+                console.warn("ChartEventManager - Evento de clic sin coordenadas X válidas");
+                return;
+            }
+
+            // Detector de doble clic centralizado aquí
+            if (this._lastClick && (event.xAxis[0].value === this._lastClick.xValue)) {
+                const now = Date.now();
+                if (now - this._lastClick.time < this.clickDelay) {
+                    // Doble clic detectado
+                    this._lastClick = null;
+                    onDbClick(event);
                     return;
                 }
-
-                // Detector de doble clic centralizado aquí
-                if (this._lastClick && (event.xAxis[0].value === this._lastClick.xValue)) {
-                    const now = Date.now();
-                    if (now - this._lastClick.time < this.clickDelay) {
-                        // Doble clic detectado
-                        this._lastClick = null;
-                        onDbClick(event);
-                        return;
-                    }
-                }
-                // Registrar el clic actual
-                this._lastClick = {
-                    xValue: event.xAxis[0].value,
-                    time: Date.now()
-                };
-                // Esperar por posible segundo clic
-                setTimeout(() => {
-                    // Si no hubo doble clic, procesar como simple clic
-                    if (this._lastClick) {
-                        this.processSingleClick(event);
-                        this._lastClick = null;
-                    }
-                }, this.clickDelay);
-            } catch (error) {
-                console.error("ChartEventManager - Error al manejar clic:", error);
-                appState.addError('chartEvent', error);
             }
+            // Registrar el clic actual
+            this._lastClick = {
+                xValue: event.xAxis[0].value,
+                time: Date.now()
+            };
+            // Esperar por posible segundo clic
+            setTimeout(() => {
+                // Si no hubo doble clic, procesar como simple clic
+                if (this._lastClick) {
+                    this.processSingleClick(event);
+                    this._lastClick = null;
+                }
+            }, this.clickDelay);
+        } catch (error) {
+            console.error("ChartEventManager - Error al manejar clic:", error);
+            if (this.chartController && typeof this.chartController.addError === 'function') {
+                this.chartController.addError('chartEvent', error);
+            }
+        }
     }
 
     /**
@@ -70,27 +71,34 @@ export default class ChartEventManager {
      */
     processSingleClick(event) {
         try {
-            const chartData = appState.getChartData();
+            // Obtener chartData desde el controlador
+            const chartData = this.chartController && typeof this.chartController.getChartData === 'function'
+                ? this.chartController.getChartData()
+                : this.chartController.chartData;
             if (!chartData) return;
-            
+
             const xValue = event.xAxis[0].value;
             console.log("ChartEventManager - Clic en X:", xValue);
-            
+
             // Actualizar estado con la posición seleccionada
-            appState.update('chartSelection', { 
-                x: xValue,
-                timestamp: new Date().getTime()
-            });
-            
+            if (this.chartController && typeof this.chartController.updateChartSelection === 'function') {
+                this.chartController.updateChartSelection({
+                    x: xValue,
+                    timestamp: new Date().getTime()
+                });
+            }
+
             // Disparar evento personalizado
-            this.dispatchChartEvent('chartPointSelected', { 
+            this.dispatchChartEvent('chartPointSelected', {
                 x: xValue,
                 rawX: event.xAxis[0].value
             });
-            
+
         } catch (error) {
             console.error("ChartEventManager - Error en procesamiento de clic simple:", error);
-            appState.addError('chartEvent', error);
+            if (this.chartController && typeof this.chartController.addError === 'function') {
+                this.chartController.addError('chartEvent', error);
+            }
         }
     }
 
@@ -101,21 +109,22 @@ export default class ChartEventManager {
     handleChartLoad(event) {
         try {
             console.log("ChartEventManager - Gráfico cargado completamente");
-            
-            // Actualizar estado
-            appState.update('chartStatus', { loaded: true, timestamp: new Date().getTime() });
-            
+
+            // Actualizar estado en el controlador si existe método
+            if (this.chartController && typeof this.chartController.updateChartStatus === 'function') {
+                this.chartController.updateChartStatus({ loaded: true, timestamp: new Date().getTime() });
+            }
+
             // Notificar que el gráfico está listo
             this.dispatchChartEvent('chartReady', {
-
-            // Este módulo está diseñado para ser desacoplado y reutilizable.
-            // Puede integrarse con ChartController, ChartRenderer, etc. mediante inyección de dependencias.
                 chart: event.target
             });
-            
+
         } catch (error) {
             console.error("ChartEventManager - Error en evento de carga:", error);
-            appState.addError('chartEvent', error);
+            if (this.chartController && typeof this.chartController.addError === 'function') {
+                this.chartController.addError('chartEvent', error);
+            }
         }
     }
 
@@ -126,18 +135,13 @@ export default class ChartEventManager {
      */
     dispatchChartEvent(eventName, detail = {}) {
         try {
-            // Crear y despachar un evento personalizado
-            const customEvent = new CustomEvent(eventName, {
-                cancelable: true,
-                detail: detail
-            });
-
             // Usar eventBus para emitir eventos
             eventBus.emit(eventName, detail);
-
         } catch (error) {
             console.error(`ChartEventManager - Error al despachar evento ${eventName}:`, error);
-            appState.addError('chartEvent', error);
+            if (this.chartController && typeof this.chartController.addError === 'function') {
+                this.chartController.addError('chartEvent', error);
+            }
         }
     }
 
