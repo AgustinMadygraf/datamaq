@@ -7,7 +7,7 @@ import { onDbClick } from './DoubleClickHandler.js';
 import HighchartsConfig from './chart/HighchartsConfig.js';
 import ChartRenderer from './chart/ChartRenderer.js';
 import ChartDataValidator from './chart/ChartDataValidator.js';
-import SeriesBuilder from './chart/SeriesBuilder.js';
+import SeriesBuilder from '../../src/domain/services/SeriesBuilder.js';
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
