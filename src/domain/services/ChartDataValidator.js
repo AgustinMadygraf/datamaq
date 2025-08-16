@@ -1,5 +1,5 @@
 /*
-Path: js/modules/chart/ChartDataValidator.js
+Path: src/domain/services/ChartDataValidator.js
 */
 
 export default class ChartDataValidator {
