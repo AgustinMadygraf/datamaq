@@ -9,7 +9,7 @@ class ApiService {
     /**
      * URL base para las peticiones API
      */
-    static BASE_URL = '/DataMaq/backend/api';
+    static BASE_URL = '/datamaq_php/backend/api';
     
     /**
      * Obtiene los datos del dashboard desde la API
