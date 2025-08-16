@@ -79,59 +79,6 @@ class UiService {
     }
 
     /**
-     * Wrapper temporal para compatibilidad: genera HTML a partir de la estructura
-     */
-    static generateInfoDisplayHtml(data) {
-        try {
-            const structure = this.getInfoDisplayStructure(data);
-            // Función auxiliar para renderizar la estructura como HTML
-            function renderNode(node) {
-                if (Array.isArray(node)) {
-                    return node.map(renderNode).join('');
-                }
-                switch (node.type) {
-                    case 'hoja':
-                        return `<div class="hoja" style="${sanitizeHTML(node.style)}">${renderNode(node.children)}</div>`;
-                    case 'info':
-                        return `<div class="info">${renderNode(node.children)}</div>`;
-                    case 'cabecera':
-                        return `<div class="cabecera">${renderNode(node.children)}</div>`;
-                    case 'c1':
-                        return `<div class="c1">${renderNode(node.children)}</div>`;
-                    case 'p2':
-                        return `<p2>${sanitizeHTML(node.text)}</p2>`;
-                    case 'p1':
-                        return `<p1>${sanitizeHTML(node.text)}</p1>`;
-                    case 'graf':
-                        return `<div id="${sanitizeHTML(node.id)}" class="graf" style="${sanitizeHTML(node.style)}"></div>`;
-                    case 'botonera-container':
-                        // Renderiza la botonera usando la estructura
-                        return `<div class="botonera-container">${renderNode(node.children)}</div>`;
-                    case 'form':
-                        let formHtml = `<form action="${node.action}" method="${node.method}" class="${node.className}">`;
-                        for (const input of node.inputs) {
-                            if (input.type === 'hidden') {
-                                formHtml += `<input type="hidden" name="${input.name}" value="${input.value}">`;
-                            } else if (input.type === 'submit') {
-                                formHtml += `<input type="submit" value="${input.value}" class="${input.className}">`;
-                            }
-                        }
-                        formHtml += '</form>';
-                        return formHtml;
-                    case 'spacer':
-                        return "<div class='spacer'></div>";
-                    default:
-                        return '';
-                }
-            }
-            return renderNode(structure);
-        } catch (error) {
-            console.error("UiService - Error en generateInfoDisplayHtml:", error);
-            return `<div class="alert alert-danger">Error al generar la visualización: ${error.message}</div>`;
-        }
-    }
-
-    /**
      * Genera el HTML para la botonera
      * @param {Object} data - Datos recibidos de la API
      * @returns {string} HTML generado
@@ -236,7 +183,6 @@ class UiService {
             html += '</div>';
             return html;
         } catch (error) {
-            console.error('Error en UiService.generateBotoneraHtml:', error);
             return `<div class="alert alert-danger">Error en la botonera: ${error.message}</div>`;
         }
     }
