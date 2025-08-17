@@ -15,7 +15,7 @@ import ChartEventManager from '../../../src/adapters/controllers/ChartEventManag
 import ChartDataLoader from '../../../src/adapters/repositories/ChartDataLoader.js';
 
 import eventBus from '../../../js/utils/EventBus.js';
-import { EVENT_CONTRACT } from '../../../js/utils/eventBus.contract.js';
+import { EVENT_CONTRACT } from '../eventBus/eventBus.contract.js';
 // Clase principal para manejar el gráfico
 class ChartController {
     constructor() {
