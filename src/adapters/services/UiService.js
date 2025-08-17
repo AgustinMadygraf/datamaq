@@ -3,7 +3,7 @@ Path: js/services/UiService.js
 Este servicio se encarga de actualizar la interfaz de usuario con los datos recibidos de la API.
 */
 
-import { sanitizeHTML } from '../../../js/utils/DomUtils.js';
+import { sanitizeHTML } from '../utils/DomUtils.js';
 import appState from '../../application/state/AppState.js';
 import eventBus from '../eventBus/EventBus.js';
 import { EVENT_CONTRACT } from '../eventBus/eventBus.contract.js';

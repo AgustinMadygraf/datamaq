@@ -4,7 +4,7 @@ Componente funcional para renderizar el info-display a partir de una estructura 
 */
 
 import { renderBotonera } from '../../../src/adapters/views/Botonera.js';
-import { sanitizeHTML } from '../../../js/utils/DomUtils.js';
+import { sanitizeHTML } from '../utils/DomUtils.js';
 export function renderInfoDisplay(structure) {
     // Función auxiliar para renderizar nodos
     function renderNode(node) {
