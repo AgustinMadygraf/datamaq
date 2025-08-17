@@ -10,7 +10,7 @@ import BuildChartSeriesUseCase from '../../domain/usecases/BuildChartSeriesUseCa
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
-import ChartDomManager from '../../../js/modules/chart/ChartDomManager.js';
+import ChartDomManager from './ChartDomManager.js';
 import ChartEventManager from '../../../src/adapters/controllers/ChartEventManager.js';
 import ChartDataLoader from '../../../js/modules/chart/ChartDataLoader.js';
 

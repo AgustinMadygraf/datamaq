@@ -1,6 +1,5 @@
 /*
-ChartDomManager.js
-Responsable de la gestión y manipulación del DOM para el gráfico Highcharts.
+Path: src/adapters/controllers/ChartDomManager.js
 */
 
 export default class ChartDomManager {
