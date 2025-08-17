@@ -1,5 +1,5 @@
 /*
-Path: js/modules/chart/SeriesBuilder.js
+Path: src/domain/services/SeriesBuilder.js
 */
 
 export default class SeriesBuilder {

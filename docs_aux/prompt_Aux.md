@@ -1,28 +1,48 @@
 ```
-# PRIORIZACIÓN DE TAREAS (Iteración 2)
+Ayudame a migrar hacia arquitectura limpia. Dime cuáles son las certezas y cuáles son las dudas.
+`js/` que es la carpeta donde teng el proyecto funcional, hacia `src/`  donde quiero ordenar desde arquitectura limpia.
 
-1. Revisa todos los hallazgos del informe anterior.
-2. Etiqueta cada hallazgo con su **impacto**: 🔴 Alto | 🟡 Medio | 🟢 Bajo, valorando:
-   - Riesgo técnico (bloqueos, deuda creciente)  
-   - Beneficio de negocio (velocidad, calidad, coste)  
-3. **Descarta** los hallazgos 🟡 Medio y 🟢 Bajo.  
-4. Por cada hallazgo 🔴 Alto genera una **tarea** con esta ficha:
-   - **Nombre**
-   - **Ubicación** (carpeta/archivo + capa)
-   - **Motivo crítico**
-   - **Ganancia esperada**
-
-5. Formula un plan de refactorización completo
-6. En caso que tengas dudas sobre el plan de refactorización, deberás hacer preguntas. Si no tenés dudas, deberás informar que tenés certezas y de que debemos proceder.
+src/
+  domain/
+    entities/
+    usecases/
+    services/
+  application/
+    services/
+    interfaces/
+    state/
+  adapters/
+    controllers/
+    repositories/
+    views/
+    eventBus/
+  infrastructure/
+    api/
+    external/
+public/
+js/ 
+  components/
+  modules/
+    chart
+  services
+  state
+  utils
+  
 
 ```
 
 ---
 
 ```
-Avancemos con la tarea 1, desestima las tareas de medio y bajo impacto.
+Intenta responder las dudas. Luego si tenés dudas hazmelo saber. Si no tenés dudas, procede a elaborar el plan de migración hacia arquitectura pero sólo si tenés certezas
 ```
 
+---
+
+```
+Quiero que me indiques que archivos puedo copiar y pegar (y actualizar las importaciones). desde `js/` que es la carpeta donde teng el proyecto funcional, hacia `src/`  donde quiero ordenar desde arquitectura limpia.
+En caso de que haya que hacer más modificaciones dime cuáles son los archivos enfunción del impacto, riesgo y esfuerzo
+```
 ---
 
 ```
@@ -33,14 +53,6 @@ Sobre las opciones que me ofrecés, ¿cuáles son las ventajas y las desventajas
 
 ```
 Sí, realiza la tarea que mencionas
-```
-
----
-
-```
- Desestima las tareas de impacto medio y bajo impacto. Dime que tareas haz realizado y cuales me quedan pendiente. Luego avancemos con la tarea de mayor impacto pendiente.
-
-
 ```
 
 ---

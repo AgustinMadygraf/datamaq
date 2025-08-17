@@ -4,7 +4,7 @@ Path: src/adapters/controllers/ChartController.js
 
 import { onDbClick } from '../../../js/modules/DoubleClickHandler.js';
 import HighchartsConfig from '../../../js/modules/chart/HighchartsConfig.js';
-import ChartRenderer from '../../../js/modules/chart/ChartRenderer.js';
+import ChartRenderer from '../views/ChartRenderer.js';
 import ChartDataValidator from '../../domain/services/ChartDataValidator.js';
 import BuildChartSeriesUseCase from '../../domain/usecases/BuildChartSeriesUseCase.js';
 // El estado se recibirá por argumentos/setters
