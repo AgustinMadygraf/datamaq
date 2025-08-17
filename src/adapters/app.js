@@ -2,10 +2,10 @@
 Path: js/app.js
 */
 
-import UiService from './services/UiService.js';
-import appState from '../application/AppState.js';
-import ApiService from './services/ApiService.js';
-import ChartController from './controllers/ChartController.js';
+import UiService from './services/ui_service.js';
+import appState from '../application/app_state.js';
+import ApiService from './services/api_service.js';
+import ChartController from './controllers/chart_controller.js';
 
 class DashboardApp {
     constructor() {
@@ -71,7 +71,7 @@ class DashboardApp {
                     // Corrige la ruta del ChartController
                     const chartScript = document.createElement('script');
                     chartScript.type = 'module';
-                    chartScript.src = 'src/adapters/controllers/ChartController.js'; // <-- Nueva ruta
+                    chartScript.src = 'src/adapters/controllers/chart_controller.js'; // <-- Nueva ruta
                     document.body.appendChild(chartScript);
                     window._scriptsLoaded = true;
                 }
@@ -91,7 +91,7 @@ class DashboardApp {
         // Obtener la estructura de datos para el info-display
         const infoDisplayStructure = UiService.getDashboardDataForRender(data);
         // Renderizar el HTML usando el componente funcional
-        const { renderInfoDisplay } = await import('./controllers/InfoDisplay.js');
+        const { renderInfoDisplay } = await import('./controllers/info_display.js');
         const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
         // Actualizar el DOM
         const container = document.getElementById('info-display-container');

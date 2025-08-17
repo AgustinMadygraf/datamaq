@@ -25,13 +25,6 @@ public/
       accesibility.js
       bootstrap.bundle.min.js
       highcharts.js
-  js/
-    api-client.js
-    app.js
-    computer_vision.js
-    headerLoader.js
-    inject.js
-    main.js
   templates/
     computer-vision.html
     header.html
@@ -42,7 +35,7 @@ src/
       ChartDomManager.js
       ChartEventmanager.js
       DoubleClickHandler.js
-      InfoDisplay.js
+      info_display.js
     eventBus/
       eventBus.contract.js
       EventBus.js
@@ -56,6 +49,12 @@ src/
     views/
     Botonera.js
       ChartRenderer.js
+    api-client.js
+    app.js
+    computer_vision.js
+    headerLoader.js
+    inject.js
+    main.js
   application/
     AppState.js
   domain/

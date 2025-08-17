@@ -2,20 +2,20 @@
 Path: src/adapters/controllers/ChartController.js
 */
 
-import { onDbClick } from './DoubleClickHandler.js';
-import HighchartsConfig from '../../../src/infrastructure/HighchartsConfig.js';
-import ChartRenderer from '../views/ChartRenderer.js';
-import ChartDataValidator from '../../domain/services/ChartDataValidator.js';
-import BuildChartSeriesUseCase from '../../domain/usecases/BuildChartSeriesUseCase.js';
+import { onDbClick } from './double_click_handler.js';
+import HighchartsConfig from '../../infrastructure/highcharts_config.js';
+import ChartRenderer from '../views/chart_renderer.js';
+import ChartDataValidator from '../../domain/services/chart_data_validator.js';
+import BuildChartSeriesUseCase from '../../domain/usecases/build_chart_series_use_case.js';
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
-import ChartDomManager from './ChartDomManager.js';
-import ChartEventManager from '../../../src/adapters/controllers/ChartEventManager.js';
-import ChartDataLoader from '../../../src/adapters/repositories/ChartDataLoader.js';
+import ChartDomManager from './chart_dom_manager.js';
+import ChartEventManager from './chart_event_manager.js';
+import ChartDataLoader from '../repositories/chart_data_loader.js';
 
-import eventBus from '../eventBus/EventBus.js';
-import { EVENT_CONTRACT } from '../eventBus/eventBus.contract.js';
+import eventBus from '../event_bus/event_bus.js';
+import { EVENT_CONTRACT } from '../event_bus/event_bus_contract.js';
 // Clase principal para manejar el gráfico
 class ChartController {
     constructor() {

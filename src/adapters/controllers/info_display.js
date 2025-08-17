@@ -1,10 +1,10 @@
 /*
-Path: js/components/InfoDisplay.js
+Path: js/components/info_display.js
 Componente funcional para renderizar el info-display a partir de una estructura de datos
 */
 
-import { renderBotonera } from '../../../src/adapters/views/Botonera.js';
-import { sanitizeHTML } from '../utils/DomUtils.js';
+import { renderBotonera } from '../views/botonera.js';
+import { sanitizeHTML } from '../utils/dom_utils.js';
 export function renderInfoDisplay(structure) {
     // Función auxiliar para renderizar nodos
     function renderNode(node) {

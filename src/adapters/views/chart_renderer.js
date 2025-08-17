@@ -3,7 +3,7 @@ Path: src/adapters/views/ChartRenderer.js
 */
 
 // Importar dependencias necesarias
-import HighchartsConfig from '../../../src/infrastructure/HighchartsConfig.js';
+import HighchartsConfig from '../../infrastructure/highcharts_config.js';
 // Asume que Highcharts está disponible globalmente
 
 export default class ChartRenderer {
