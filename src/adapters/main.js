@@ -7,11 +7,11 @@ window.addEventListener('mouseup', (e) => {
     eventBus.emit(EVENT_CONTRACT.MOUSE_UP, e);
 });
 
-import ApiService from '../../src/adapters/services/ApiService.js';
-import UiService from '../../src/adapters/services/UiService.js';
-import appState from '../../src/application/AppState.js';
-import eventBus from '../../src/adapters/eventBus/EventBus.js';
-import { EVENT_CONTRACT } from '../../src/adapters/eventBus/eventBus.contract.js';
+import ApiService from './services/ApiService.js';
+import UiService from './services/UiService.js';
+import appState from '../application/AppState.js';
+import eventBus from './eventBus/EventBus.js';
+import { EVENT_CONTRACT } from './eventBus/eventBus.contract.js';
 
 console.log("main.js cargado correctamente.");
 

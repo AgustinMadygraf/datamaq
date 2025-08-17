@@ -23,11 +23,11 @@
         <div id="container"></div>
     </div>
     <script src="public/assets/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="public/js/app.js"></script>
-    <script type="module" src="public/js/main.js"></script>
-    <script type="module" src="public/js/inject.js"></script>
+    <script type="module" src="src/adapters/app.js"></script>
+    <script type="module" src="src/adapters/main.js"></script>
+    <script type="module" src="src/adapters/inject.js"></script>
     <script type="module">
-        import { loadHeader } from './public/js/headerLoader.js';
+        import { loadHeader } from './src/adapters/headerLoader.js';
         loadHeader();
     </script>
 </body>

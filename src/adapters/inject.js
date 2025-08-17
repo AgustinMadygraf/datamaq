@@ -2,8 +2,8 @@
 Path: public/js/inject.js
 */
 
-import eventBus from '../../src/adapters/eventBus/EventBus.js';
-import { EVENT_CONTRACT } from '../../src/adapters/eventBus/eventBus.contract.js';
+import eventBus from './eventBus/EventBus.js';
+import { EVENT_CONTRACT } from './eventBus/eventBus.contract.js';
 
 document.addEventListener('mouseup', function(e) {
     let targetClass = '';

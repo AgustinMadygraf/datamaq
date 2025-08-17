@@ -1,7 +1,7 @@
 // public/js/computer_vision.js
 // Lógica extraída de computer_vision.html
 
-import { loadHeader } from './headerLoader.js';
+import { loadHeader } from '../../public/js/headerLoader.js';
 
 // Cargar el header dinámicamente con manejo de error/fallback
 window.addEventListener('DOMContentLoaded', () => {
