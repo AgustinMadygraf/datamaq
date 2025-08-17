@@ -2,22 +2,17 @@
 Path: src/adapters/controllers/ChartController.js
 */
 
-import { onDbClick } from './double_click_handler.js';
-import HighchartsConfig from '../../infrastructure/highcharts_config.js';
-import ChartRenderer from '../views/chart_renderer.js';
-import ChartDataValidator from '../../entities/chart_data_validator.js';
 import ValidateChartDataUseCase from '../../use_cases/validate_chart_data.js';
-import BuildChartSeriesUseCase from '../../use_cases/build_chart_series.js';
-// El estado se recibirá por argumentos/setters
+import BuildChartSeriesUseCase  from '../../use_cases/build_chart_series.js';
 
-// Módulos nuevos a crear
-import ChartDomManager from './chart_dom_manager.js';
-import ChartEventManager from './chart_event_manager.js';
-import ChartDataLoader from '../repositories/chart_data_loader.js';
+import { onDbClick }            from './double_click_handler.js';
+import ChartDomManager          from './chart_dom_manager.js';
+import ChartEventManager        from './chart_event_manager.js';
+import ChartRenderer            from '../views/chart_renderer.js';
+import ChartDataLoader          from '../repositories/chart_data_loader.js';
+import eventBus                 from '../event_bus/event_bus.js';
+import { EVENT_CONTRACT }       from '../event_bus/event_bus_contract.js';
 
-import eventBus from '../event_bus/event_bus.js';
-import { EVENT_CONTRACT } from '../event_bus/event_bus_contract.js';
-// Clase principal para manejar el gráfico
 class ChartController {
     constructor() {
         this.chartInitialized = false;
@@ -198,16 +193,6 @@ class ChartController {
 
             this.chartDataReceived = true;
 
-            // Configuración global de Highcharts
-            try {
-                HighchartsConfig.applyGlobalConfig();
-            } catch (configError) {
-                console.error("ChartController - Error al aplicar configuración global:", configError);
-                // Configuración fallback
-                Highcharts.setOptions({
-                    global: { useUTC: false }
-                });
-            }
 
             // Crear el gráfico
             this.createChart(container);
