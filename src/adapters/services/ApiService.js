@@ -2,7 +2,7 @@
 Path: src/adapters/services/ApiService.js
 */
 
-import appState from '../../application/state/AppState.js';
+import appState from '../../application/AppState.js';
 
 class ApiService {
     /**

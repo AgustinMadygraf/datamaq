@@ -2,7 +2,7 @@
 Path: src/adapters/controllers/DoubleClickHandler.js
 */
 
-import appState from '../../application/state/AppState.js';
+import appState from '../../application/AppState.js';
 
 export function onDbClick(event) {
     // Ejecuta directamente la acción de zoom sin lógica de doble clic

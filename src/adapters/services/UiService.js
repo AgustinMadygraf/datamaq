@@ -4,7 +4,7 @@ Este servicio se encarga de actualizar la interfaz de usuario con los datos reci
 */
 
 import { sanitizeHTML } from '../utils/DomUtils.js';
-import appState from '../../application/state/AppState.js';
+import appState from '../../application/AppState.js';
 import eventBus from '../eventBus/EventBus.js';
 import { EVENT_CONTRACT } from '../eventBus/eventBus.contract.js';
 class UiService {

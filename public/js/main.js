@@ -8,7 +8,7 @@ Path: js/main.js
 
 import ApiService from '../../src/adapters/services/ApiService.js';
 import UiService from '../../src/adapters/services/UiService.js';
-import appState from '../../src/application/state/AppState.js';
+import appState from '../../src/application/AppState.js';
 import eventBus from '../../src/adapters/eventBus/EventBus.js';
 import { EVENT_CONTRACT } from '../../src/adapters/eventBus/eventBus.contract.js';
 

@@ -1,11 +1,10 @@
 ```
-Actúa como un experto en arquitectura de software y organización de proyectos frontend en JavaScript. Estoy migrando un proyecto funcional que actualmente vive en las carpetas `js/`, `assets/`, `templates/` y el punto de entrada es `index.html`. Hacia una nueva estructura basada en Clean Architecture, organizada en `src/` y `public/`.
+Actúa como un experto en arquitectura de software y organización de proyectos frontend en JavaScript. Estoy migrando un proyecto funcional.
 
 Tu tarea es ayudarme a planificar esta migración respondiendo lo siguiente:
 
 1. **Certezas vs. Dudas**: Indica qué decisiones de migración se pueden hacer con certeza y cuáles presentan ambigüedades que deben analizarse más a fondo.
-2. **Migración directa**: Señala qué archivos del árbol `js/` pueden ser copiados y pegados directamente en la estructura `src/` o `public/`, especificando las nuevas ubicaciones sugeridas y cómo actualizar las rutas de importación correspondientes.
-3. **Modificaciones necesarias**: Si hay archivos que requieren refactorización para encajar en arquitectura limpia, indícalos y clasifícalos por:
+2. **Modificaciones necesarias**: Si hay archivos que requieren refactorización para encajar en arquitectura limpia, indícalos y clasifícalos por:
    - Impacto (alto, medio, bajo)
    - Riesgo (alto, medio, bajo)
    - Esfuerzo estimado (alto, medio, bajo)
@@ -13,34 +12,27 @@ Tu tarea es ayudarme a planificar esta migración respondiendo lo siguiente:
 Aquí está el árbol de carpetas actual del proyecto:
 
 ```
-assets/
-  css/
-    app.css
-    bootstrap.min.css
-    error-notification.css
-  img/
-    favicon.ico
-    logo.png
+public/
+  assets/
+    css/
+      app.css
+      bootstrap.min.css
+      error-notification.css
+    img/
+      favicon.ico
+      logo.png
+    js/
+      accesibility.js
+      bootstrap.bundle.min.js
+      highcharts.js
   js/
-    accesibility.js
-    bootstrap.bundle.min.js
-    higcharts.js
-js/
-  components/
-    Botonera.js
-  services/
-    ApiService.js
-    UiService.js
-  state/
-    AppState.js
-  utils/
-    Dom_Utils.js
-    eventBus.contract.js
-    EventBus.js
-  api-client.js
-  app.js
-  inject.js
-  main.js
+    api-client.js
+    app.js
+    inject.js
+    main.js
+  templates/
+    computer-vision.html
+    header.html
 src/
   adapters/
     controllers/
@@ -50,46 +42,28 @@ src/
       DoubleClickHandler.js
       InfoDisplay.js
     eventBus/
+      eventBus.contract.js
+      EventBus.js
     repositories/
       ChartDataLoader.js
+    services/
+      ApiServices.js
+      UiServices.js
+    utils/
+      DomUtils.js
     views/
+    Botonera.js
       ChartRenderer.js
   application/
-    services/
-    interfaces/
-    state/
+    AppState.js
   domain/
-    entities/
-      services/
-        ChartDataValidator.js
-        SeriesBuilder.js
+    services/
+      ChartDataValidator.js
+      SeriesBuilder.js
     usecases/
       BuildChartSeriesUseCase.js
-    services/
   infrastructure/
-    api/
-    external/
-      HighchartsConfig.js
-templates
-  computer_vision.html
-  header.html
-public/
-js/ 
-  components/
-    Botonera.js
-  services
-    ApiService.js
-    UiService.js
-  state
-    AppState.js
-  utils
-    DomUtils.js
-    eventBus.contract.js
-    EventBus.js
-  app-client.js
-  app.js
-  inject.js
-  main.js
+    HighchartsConfig.js
 index.html
 ```
 
