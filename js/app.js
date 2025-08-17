@@ -68,9 +68,10 @@ class DashboardApp {
                     mainScript.src = 'js/main.js';
                     document.body.appendChild(mainScript);
 
+                    // Corrige la ruta del ChartController
                     const chartScript = document.createElement('script');
                     chartScript.type = 'module';
-                    chartScript.src = 'js/modules/ChartController.js';
+                    chartScript.src = 'src/adapters/controllers/ChartController.js'; // <-- Nueva ruta
                     document.body.appendChild(chartScript);
                     window._scriptsLoaded = true;
                 }

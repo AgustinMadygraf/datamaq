@@ -1,6 +1,5 @@
 /*
-ChartRenderer.js
-Responsable de la renderización y configuración del gráfico Highcharts.
+Path: js/modules/chart/ChartRenderer.js
 */
 
 // Importar dependencias necesarias
@@ -16,12 +15,13 @@ export default class ChartRenderer {
      * Renderiza el gráfico en el contenedor especificado
      * @param {string|HTMLElement} container - ID o elemento del contenedor
      * @param {Object} chartData - Datos para el gráfico
+     * @param {BuildChartSeriesUseCase} buildChartSeriesUseCase - Caso de uso para construir las series
      */
-    createChart(container, chartData) {
+    createChart(container, chartData, buildChartSeriesUseCase) {
         try {
             console.log("ChartRenderer - Creando gráfico...");
-            // Obtener series desde SeriesBuilder
-            const series = this.chartController.seriesBuilder.buildSeries(chartData);
+            // Obtener series desde el caso de uso
+            const series = buildChartSeriesUseCase.execute(chartData);
             // Obtener configuración desde HighchartsConfig
             const config = HighchartsConfig.getChartConfig(
                 chartData,

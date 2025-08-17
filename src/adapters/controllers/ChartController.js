@@ -1,13 +1,12 @@
 /*
-Path: js/modules/ChartController.js
-Este script se encarga de generar el gráfico de Highcharts y de manejar el evento de doble click sobre el gráfico.
+Path: src/adapters/controllers/ChartController.js
 */
 
 import { onDbClick } from '../../../js/modules/DoubleClickHandler.js';
 import HighchartsConfig from '../../../js/modules/chart/HighchartsConfig.js';
 import ChartRenderer from '../../../js/modules/chart/ChartRenderer.js';
 import ChartDataValidator from '../../domain/services/ChartDataValidator.js';
-import SeriesBuilder from '../../domain/services/SeriesBuilder.js';
+import BuildChartSeriesUseCase from '../../domain/usecases/BuildChartSeriesUseCase.js';
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
@@ -27,7 +26,7 @@ class ChartController {
         this.chartData = null;
         this.initialData = null;
     this.validator = new ChartDataValidator();
-    this.seriesBuilder = new SeriesBuilder();
+    this.buildChartSeriesUseCase = new BuildChartSeriesUseCase();
     this.eventManager = new ChartEventManager(this);
     this.dataLoader = new ChartDataLoader(this);
     this.chartRenderer = new ChartRenderer(this);
@@ -252,7 +251,7 @@ class ChartController {
 
     createChart(container) {
         // Delegar la creación del gráfico al ChartRenderer
-        this.chartRenderer.createChart(container, this.chartData);
+        this.chartRenderer.createChart(container, this.chartData, this.buildChartSeriesUseCase);
     }
 
     setupEventListeners() {
