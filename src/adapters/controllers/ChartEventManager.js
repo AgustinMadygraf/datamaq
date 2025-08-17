@@ -4,7 +4,7 @@ Este módulo gestiona los eventos relacionados con el gráfico de Highcharts.
 Desacopla la lógica de eventos del controlador principal para mejorar la mantenibilidad.
 */
 
-import { onDbClick } from '../../../js/modules/DoubleClickHandler.js';
+import { onDbClick } from './DoubleClickHandler.js';
 import eventBus from '../../../js/utils/EventBus.js';
 
 export default class ChartEventManager {

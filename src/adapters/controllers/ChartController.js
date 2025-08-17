@@ -2,7 +2,7 @@
 Path: src/adapters/controllers/ChartController.js
 */
 
-import { onDbClick } from '../../../js/modules/DoubleClickHandler.js';
+import { onDbClick } from './DoubleClickHandler.js';
 import HighchartsConfig from '../../../src/infrastructure/external/HighchartsConfig.js';
 import ChartRenderer from '../views/ChartRenderer.js';
 import ChartDataValidator from '../../domain/services/ChartDataValidator.js';
