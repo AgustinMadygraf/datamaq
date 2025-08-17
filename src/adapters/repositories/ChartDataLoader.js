@@ -1,9 +1,8 @@
 /*
-ChartDataLoader.js
-Responsable de la carga y recuperación de datos para el gráfico Highcharts.
+Path: src/adapters/repositories/ChartDataLoader.js
 */
 
-import ApiService from '../../services/ApiService.js';
+import ApiService from '../../../js/services/ApiService.js';
 
 export default class ChartDataLoader {
     constructor(chartController) {
