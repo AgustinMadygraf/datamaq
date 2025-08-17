@@ -3,20 +3,20 @@ Path: js/modules/ChartController.js
 Este script se encarga de generar el gráfico de Highcharts y de manejar el evento de doble click sobre el gráfico.
 */
 
-import { onDbClick } from './DoubleClickHandler.js';
-import HighchartsConfig from './chart/HighchartsConfig.js';
-import ChartRenderer from './chart/ChartRenderer.js';
-import ChartDataValidator from '../../src/domain/services/ChartDataValidator.js';
-import SeriesBuilder from '../../src/domain/services/SeriesBuilder.js';
+import { onDbClick } from '../../../js/modules/DoubleClickHandler.js';
+import HighchartsConfig from '../../../js/modules/chart/HighchartsConfig.js';
+import ChartRenderer from '../../../js/modules/chart/ChartRenderer.js';
+import ChartDataValidator from '../../domain/services/ChartDataValidator.js';
+import SeriesBuilder from '../../domain/services/SeriesBuilder.js';
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
-import ChartDomManager from './chart/ChartDomManager.js';
-import ChartEventManager from './chart/ChartEventManager.js';
-import ChartDataLoader from './chart/ChartDataLoader.js';
+import ChartDomManager from '../../../js/modules/chart/ChartDomManager.js';
+import ChartEventManager from '../../../js/modules/chart/ChartEventManager.js';
+import ChartDataLoader from '../../../js/modules/chart/ChartDataLoader.js';
 
-import eventBus from '../utils/EventBus.js';
-import { EVENT_CONTRACT } from '../utils/eventBus.contract.js';
+import eventBus from '../../../js/utils/EventBus.js';
+import { EVENT_CONTRACT } from '../../../js/utils/eventBus.contract.js';
 // Clase principal para manejar el gráfico
 class ChartController {
     constructor() {
