@@ -6,7 +6,7 @@ window.addEventListener('mouseup', (e) => {
 Path: js/main.js
 */
 
-import ApiService from './services/ApiService.js';
+import ApiService from '../src/adapters/services/ApiService.js';
 import UiService from './services/UiService.js';
 import appState from '../src/application/state/AppState.js';
 import eventBus from '../src/adapters/eventBus/EventBus.js';
