@@ -11,7 +11,7 @@ import BuildChartSeriesUseCase from '../../domain/usecases/BuildChartSeriesUseCa
 
 // Módulos nuevos a crear
 import ChartDomManager from '../../../js/modules/chart/ChartDomManager.js';
-import ChartEventManager from '../../../js/modules/chart/ChartEventManager.js';
+import ChartEventManager from '../../../src/adapters/controllers/ChartEventManager.js';
 import ChartDataLoader from '../../../js/modules/chart/ChartDataLoader.js';
 
 import eventBus from '../../../js/utils/EventBus.js';

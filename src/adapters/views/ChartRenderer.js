@@ -1,5 +1,5 @@
 /*
-Path: js/modules/chart/ChartRenderer.js
+Path: src/adapters/views/ChartRenderer.js
 */
 
 // Importar dependencias necesarias
