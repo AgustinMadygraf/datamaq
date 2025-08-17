@@ -3,13 +3,13 @@ Path: src/adapters/views/ChartRenderer.js
 */
 
 // Importar dependencias necesarias
-import BuildChartConfigUseCase from '../../use_cases/build_chart_config.js';
+import ChartConfigService from '../../application/chart_config_service.js';
 // Asume que Highcharts está disponible globalmente
 
 export default class ChartRenderer {
     constructor(chartController) {
         this.chartController = chartController;
-        this.buildChartConfigUseCase = new BuildChartConfigUseCase();
+        this.chartConfigService = new ChartConfigService();
     }
 
     /**
@@ -23,8 +23,8 @@ export default class ChartRenderer {
             console.log("ChartRenderer - Creando gráfico...");
             // Obtener series desde el caso de uso
             const series = buildChartSeriesUseCase.execute(chartData);
-            // Obtener configuración desde el caso de uso
-            const config = this.buildChartConfigUseCase.execute({
+            // Obtener configuración desde el servicio de application
+            const config = this.chartConfigService.getChartConfig({
                 chartData,
                 series,
                 title: chartData?.conta ? Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", chartData.conta) : '',
