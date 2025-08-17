@@ -1,6 +1,5 @@
 /*
-Path: js/components/Botonera.js
-Componente funcional para renderizar la botonera a partir de una estructura de datos
+Path: src/adapters/views/Botonera.js
 */
 
 export function renderBotonera(structure) {
