@@ -19,7 +19,7 @@ function hideLoadingIndicator() {
     if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
     }
-    appState.update('loading', { global: false });
+    appState.setLoading('global', false);
 }
 
 // Función para notificar que el contenedor del gráfico está listo
