@@ -90,7 +90,7 @@ class DashboardApp {
         // Obtener la estructura de datos para el info-display
         const infoDisplayStructure = UiService.getDashboardDataForRender(data);
         // Renderizar el HTML usando el componente funcional
-        const { renderInfoDisplay } = await import('./components/InfoDisplay.js');
+        const { renderInfoDisplay } = await import('../src/adapters/controllers/InfoDisplay.js');
         const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
         // Actualizar el DOM
         const container = document.getElementById('info-display-container');
