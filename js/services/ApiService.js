@@ -3,7 +3,7 @@ Path: frontend/js/services/ApiService.js
 Este servicio se encarga de hacer peticiones a la API del backend.
 */
 
-import appState from '../state/AppState.js';
+import appState from '../../src/application/state/AppState.js';
 
 class ApiService {
     /**

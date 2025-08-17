@@ -3,7 +3,7 @@ Path: js/app.js
 */
 
 import UiService from './services/UiService.js';
-import appState from './state/AppState.js';
+import appState from '../src/application/state/AppState.js';
 import ApiService from './services/ApiService.js';
 import ChartController from '../src/adapters/controllers/ChartController.js';
 
