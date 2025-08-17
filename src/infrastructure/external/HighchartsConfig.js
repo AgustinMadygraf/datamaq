@@ -1,5 +1,5 @@
 /**
- * Clase para manejar la configuración de Highcharts
+ Path: src/infrastructure/external/HighchartsConfig.js
  */
 export default class HighchartsConfig {
     /**
