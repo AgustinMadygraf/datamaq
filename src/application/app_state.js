@@ -1,6 +1,6 @@
 
 /*
-Path: src/application/state/AppState.js
+Path: src/application/app_state.js
  */
 
 class AppState {

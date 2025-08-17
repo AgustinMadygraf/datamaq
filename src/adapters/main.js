@@ -7,8 +7,6 @@ window.addEventListener('mouseup', (e) => {
     eventBus.emit(EVENT_CONTRACT.MOUSE_UP, e);
 });
 
-import ApiService from './services/api_service.js';
-import UiService from './services/ui_service.js';
 import appState from '../application/app_state.js';
 import eventBus from './event_bus/event_bus.js';
 import { EVENT_CONTRACT } from './event_bus/event_bus_contract.js';

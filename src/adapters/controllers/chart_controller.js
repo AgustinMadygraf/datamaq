@@ -5,8 +5,8 @@ Path: src/adapters/controllers/ChartController.js
 import { onDbClick } from './double_click_handler.js';
 import HighchartsConfig from '../../infrastructure/highcharts_config.js';
 import ChartRenderer from '../views/chart_renderer.js';
-import ChartDataValidator from '../../domain/chart_data_validator.js';
-import BuildChartSeriesUseCase from '../../domain/build_chart_series_use_case.js';
+import ChartDataValidator from '../../entities/chart_data_validator.js';
+import BuildChartSeriesUseCase from '../../use_cases/build_chart_series.js';
 // El estado se recibirá por argumentos/setters
 
 // Módulos nuevos a crear
