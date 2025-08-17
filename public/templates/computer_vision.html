@@ -34,13 +34,25 @@
 	</div>
 	<script src="../assets/js/bootstrap.bundle.min.js"></script>
 	<script>
-	// Cargar el header dinámicamente
+	// Cargar el header dinámicamente con manejo de error/fallback
 	fetch('../templates/header.html')
-		.then(response => response.text())
+		.then(response => {
+			if (!response.ok) throw new Error('No se pudo cargar el header');
+			return response.text();
+		})
 		.then(html => {
-			document.getElementById('header-container').innerHTML = html;
+			const headerContainer = document.getElementById('header-container');
+			if (headerContainer) {
+				headerContainer.innerHTML = html;
+			}
+		})
+		.catch(err => {
+			const headerContainer = document.getElementById('header-container');
+			if (headerContainer) {
+				headerContainer.innerHTML = `<div class="alert alert-warning" role="alert">No se pudo cargar el menú de navegación.</div>`;
+			}
+			console.error('Error al cargar el header:', err);
 		});
-
 
 	// Mostrar resolución
 	function fetchResolution() {

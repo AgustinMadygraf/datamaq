@@ -20,8 +20,48 @@
     <div id="header-container"></div>
     <div class="container mt-5 pt-5">
         <div id="info-display-container"></div>
+        <div id="container"></div>
     </div>
     <script src="public/assets/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="public/js/app.js"></script>
+    <script type="module" src="public/js/main.js"></script>
+    <script type="module" src="public/js/inject.js"></script>
+    <script>
+    // Cargar el header dinámicamente con manejo de error/fallback y resaltar sección activa
+    fetch('public/templates/header.html')
+        .then(response => {
+            if (!response.ok) throw new Error('No se pudo cargar el header');
+            return response.text();
+        })
+        .then(html => {
+            const headerContainer = document.getElementById('header-container');
+            if (headerContainer) {
+                headerContainer.innerHTML = html;
+                // Resaltar sección activa según la URL actual (comparando solo el nombre de archivo)
+                const navLinks = headerContainer.querySelectorAll('.nav-link');
+                const currentFile = window.location.pathname.split('/').pop();
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href) {
+                        const linkFile = href.split('/').pop();
+                        if (linkFile === currentFile) {
+                            link.classList.add('active');
+                            link.setAttribute('aria-current', 'page');
+                        } else {
+                            link.classList.remove('active');
+                            link.removeAttribute('aria-current');
+                        }
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            const headerContainer = document.getElementById('header-container');
+            if (headerContainer) {
+                headerContainer.innerHTML = `<div class="alert alert-warning" role="alert">No se pudo cargar el menú de navegación.</div>`;
+            }
+            console.error('Error al cargar el header:', err);
+        });
+    </script>
 </body>
 </html>
