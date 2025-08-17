@@ -2,10 +2,10 @@
 Path: js/app.js
 */
 
-import UiService from '../src/adapters/services/UiService.js';
-import appState from '../src/application/state/AppState.js';
-import ApiService from '../src/adapters/services/ApiService.js';
-import ChartController from '../src/adapters/controllers/ChartController.js';
+import UiService from '../../src/adapters/services/UiService.js';
+import appState from '../../src/application/state/AppState.js';
+import ApiService from '../../src/adapters/services/ApiService.js';
+import ChartController from '../../src/adapters/controllers/ChartController.js';
 
 class DashboardApp {
     constructor() {
@@ -24,7 +24,7 @@ class DashboardApp {
         }
 
         // Cargar dinámicamente el header
-        fetch('templates/header.html')
+        fetch('public/templates/header.html')
             .then(response => response.text())
             .then(html => {
                 document.getElementById('header-container').innerHTML = html;
@@ -65,7 +65,7 @@ class DashboardApp {
                 if (!window._scriptsLoaded) {
                     const mainScript = document.createElement('script');
                     mainScript.type = 'module';
-                    mainScript.src = 'js/main.js';
+                    mainScript.src = 'public/js/main.js';
                     document.body.appendChild(mainScript);
 
                     // Corrige la ruta del ChartController
@@ -91,7 +91,7 @@ class DashboardApp {
         // Obtener la estructura de datos para el info-display
         const infoDisplayStructure = UiService.getDashboardDataForRender(data);
         // Renderizar el HTML usando el componente funcional
-        const { renderInfoDisplay } = await import('../src/adapters/controllers/InfoDisplay.js');
+        const { renderInfoDisplay } = await import('../../src/adapters/controllers/InfoDisplay.js');
         const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
         // Actualizar el DOM
         const container = document.getElementById('info-display-container');
