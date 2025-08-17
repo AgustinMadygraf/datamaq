@@ -5,7 +5,7 @@ Desacopla la lógica de eventos del controlador principal para mejorar la manten
 */
 
 import { onDbClick } from './DoubleClickHandler.js';
-import eventBus from '../../../js/utils/EventBus.js';
+import eventBus from '../../../src/adapters/eventBus/EventBus.js';
 
 export default class ChartEventManager {
     /**

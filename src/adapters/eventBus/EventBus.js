@@ -1,6 +1,5 @@
 /*
-Path: js/utils/EventBus.js
-EventBus local para comunicación desacoplada entre módulos
+Path: src/adapters/eventBus/EventBus.js
 */
 
 class EventBus {
