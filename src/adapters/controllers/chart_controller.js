@@ -6,6 +6,7 @@ import { onDbClick } from './double_click_handler.js';
 import HighchartsConfig from '../../infrastructure/highcharts_config.js';
 import ChartRenderer from '../views/chart_renderer.js';
 import ChartDataValidator from '../../entities/chart_data_validator.js';
+import ValidateChartDataUseCase from '../../use_cases/validate_chart_data.js';
 import BuildChartSeriesUseCase from '../../use_cases/build_chart_series.js';
 // El estado se recibirá por argumentos/setters
 
@@ -25,7 +26,7 @@ class ChartController {
         this.maxFailedAttempts = 5;
         this.chartData = null;
         this.initialData = null;
-    this.validator = new ChartDataValidator();
+    this.validateChartDataUseCase = new ValidateChartDataUseCase();
     this.buildChartSeriesUseCase = new BuildChartSeriesUseCase();
     this.eventManager = new ChartEventManager(this);
     this.dataLoader = new ChartDataLoader(this);
@@ -189,8 +190,8 @@ class ChartController {
                 dimensions: this.domManager.getContainerDimensions(container)
             });
 
-                // Validar los datos usando el estado centralizado
-                if (!this.validator.validateChartData(this.chartData)) {
+                // Validar los datos usando el caso de uso
+                if (!this.validateChartDataUseCase.execute(this.chartData)) {
                     console.error("ChartController - Validación de chartData falló");
                     return;
                 }

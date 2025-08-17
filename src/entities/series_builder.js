@@ -1,5 +1,5 @@
 /*
-Path: src/domain/services/SeriesBuilder.js
+Path: src/entities/series_builder.js
 */
 
 export default class SeriesBuilder {

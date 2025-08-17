@@ -1,5 +1,5 @@
 /*
-Path: src/domain/usecases/BuildChartSeriesUseCase.js
+Path: src//use_cases/build_chart_series.js
 */
 
 import SeriesBuilder from '../entities/series_builder.js';
