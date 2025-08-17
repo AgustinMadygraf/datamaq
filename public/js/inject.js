@@ -1,3 +1,10 @@
+/*
+Path: public/js/inject.js
+*/
+
+import eventBus from '../../src/adapters/eventBus/EventBus.js';
+import { EVENT_CONTRACT } from '../../src/adapters/eventBus/eventBus.contract.js';
+
 document.addEventListener('mouseup', function(e) {
     let targetClass = '';
     try {
@@ -47,7 +54,12 @@ document.addEventListener('mouseup', function(e) {
         if (typeof safeClass === 'string') {
             if (safeClass.indexOf('graf') !== -1) {
                 console.log('inject.js - Se encontró "graf" en safeClass');
-                // ...tu lógica aquí...
+                // Emitir evento al eventBus en vez de lógica directa
+                eventBus.emit(EVENT_CONTRACT.MOUSE_UP_ON_GRAF, {
+                    originalEvent: e,
+                    className: safeClass,
+                    timestamp: Date.now()
+                });
             } else {
                 console.log('inject.js - "graf" NO encontrado en safeClass');
             }

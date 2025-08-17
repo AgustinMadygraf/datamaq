@@ -142,7 +142,3 @@ class DashboardApp {
 const dashboardApp = new DashboardApp();
 document.addEventListener('DOMContentLoaded', () => dashboardApp.init());
 
-// Expón el método como función global si es necesario para la botonera
-window.changePeriodo = async function(periodo) {
-    await dashboardApp.changePeriodo(periodo);
-};

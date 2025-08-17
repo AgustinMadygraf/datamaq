@@ -1,10 +1,11 @@
 /*
-// Redirigir eventos globales mouseup al event bus
-window.addEventListener('mouseup', (e) => {
-    eventBus.emit('mouseup', e);
-});
-Path: js/main.js
+Path: public/js/main.js
 */
+
+// Redirigir eventos globales mouseup al event bus usando eventBus importado
+window.addEventListener('mouseup', (e) => {
+    eventBus.emit(EVENT_CONTRACT.MOUSE_UP, e);
+});
 
 import ApiService from '../../src/adapters/services/ApiService.js';
 import UiService from '../../src/adapters/services/UiService.js';
@@ -77,90 +78,13 @@ function notifyContainerReady() {
     }
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-    try {
-        console.log("main.js - DOMContentLoaded iniciado");
-        eventBus.emit('appDomReady', { timestamp: Date.now() });
-        try {
-            response = await ApiService.getDashboardData(periodo, conta);
-        } catch (apiError) {
-            appState.setLoading('dashboard', false);
-            appState.addError('global', apiError);
-            throw new Error("Error de comunicación con la API: " + apiError.message);
-        }
-
-        appState.setLoading('dashboard', false);
-
-        if (response.status !== 'success') {
-            appState.addError('global', response.message || 'No se recibieron datos');
-            throw new Error('Error en la respuesta de la API: ' + (response.message || 'No se recibieron datos'));
-        }
-
-        const data = response.data;
-        console.log("main.js - Datos recibidos:", data);
-
-        // Actualizar la interfaz con los datos recibidos
-        await UiService.updateDashboard(data);
-
-        // Guardar los datos del gráfico en el store centralizado
-        if (typeof appState.setChartData === 'function') {
-            appState.setChartData({
-                conta: data.conta,
-                rawdata: data.rawdata,
-                ls_periodos: data.ls_periodos,
-                menos_periodo: data.menos_periodo,
-                periodo: data.periodo
-            });
-        } else {
-            appState.update('chartData', {
-                conta: data.conta,
-                rawdata: data.rawdata,
-                ls_periodos: data.ls_periodos,
-                menos_periodo: data.menos_periodo,
-                periodo: data.periodo
-            });
-        }
-
-        console.log("main.js - chartData configurado en appState:", appState.getState().chartData);
-
-        // Notificar que el contenedor está listo (iniciar verificación)
-        notifyContainerReady();
-
-        // Disparar evento para que ChartController sepa que los datos están listos
-        setTimeout(() => {
-            try {
-                const event = new CustomEvent('chartDataReady', { 
-                    detail: { 
-                        chartDataSource: 'main.js',
-                        timestamp: Date.now(),
-                        chartData: appState.getState().chartData
-                    } 
-                });
-                document.dispatchEvent(event);
-                console.log("main.js - Evento chartDataReady disparado correctamente");
-            } catch (eventError) {
-                console.error("main.js - Error al disparar evento chartDataReady:", eventError);
-            }
-        }, 200);
-
-        console.log("main.js - Elementos actualizados correctamente.");
-    } catch (error) {
-        appState.setLoading('dashboard', false);
-        appState.addError('global', error);
-        console.error("main.js - Error crítico en la aplicación:", error);
-        console.log("main.js - Stack trace:", error.stack);
-        // Mostrar mensaje de error al usuario
-        const container = document.getElementById('info-display-container');
-        if (container) {
-            container.innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Error al cargar los datos: ${error.message}
-                </div>
-            `;
-        }
-    } finally {
-        hideLoadingIndicator();
-    }
+window.addEventListener("DOMContentLoaded", () => {
+    console.log("main.js - DOMContentLoaded iniciado");
+    eventBus.emit(EVENT_CONTRACT.APP_DOM_READY, { timestamp: Date.now() });
+    // La carga de datos y renderizado ahora está centralizada en app.js
+    // Aquí solo se dispara el evento global y se inicializan listeners si es necesario
+    notifyContainerReady();
+    hideLoadingIndicator();
 });
 
 // Mecanismo de verificación global para chartData

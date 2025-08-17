@@ -1,9 +1,10 @@
 /**
-Path: js/api-client.js
+Path: public/js/api-client.js
  */
 
-// Variable global para almacenar el token CSRF
+
 let csrfToken = '';
+
 
 /**
  * Inicializa el cliente API con el token CSRF
@@ -13,6 +14,7 @@ function initApiClient(token) {
     csrfToken = token;
     console.log('API Client inicializado con token CSRF');
 }
+
 
 /**
  * Realiza peticiones fetch con CSRF token incluido
@@ -42,3 +44,8 @@ function apiRequest(url, method = 'GET', data = null) {
             return response.json();
         });
 }
+
+export default {
+    init: initApiClient,
+    request: apiRequest
+};
