@@ -28,6 +28,8 @@ public/
   js/
     api-client.js
     app.js
+    computer_vision.js
+    headerLoader.js
     inject.js
     main.js
   templates/
