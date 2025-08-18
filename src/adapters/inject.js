@@ -1,5 +1,5 @@
 /*
-Path: public/js/inject.js
+Path: src/adapters/inject.js
 */
 
 import eventBus from './event_bus/event_bus.js';
