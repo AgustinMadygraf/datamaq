@@ -20,7 +20,13 @@ export class StreamWebSocketHandler {
             };
             
             this.ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
+                let data;
+                try {
+                    data = JSON.parse(event.data);
+                } catch (e) {
+                    console.warn('Mensaje WebSocket no es JSON:', event.data);
+                    return; // Ignora mensajes no JSON
+                }
                 this.handleMessage(data);
             };
             

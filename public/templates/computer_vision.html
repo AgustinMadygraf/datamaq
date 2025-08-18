@@ -39,32 +39,46 @@
     <script type="module">
         import { loadHeader } from '../../src/adapters/headerLoader.js';
         import { StreamWebSocketHandler } from '../../src/adapters/streamWebSocket.js';
-        
-        // Cargar el header
-        loadHeader('header.html');
-        
-        // Inicializar WebSocket
-        const wsHandler = new StreamWebSocketHandler();
+
+        // Detectar IP/host dinámicamente
+        const host = window.location.hostname;
+        const port = 5000; // Cambia si usas otro puerto
+
+        // Actualizar el src del stream
+        document.getElementById('stream-img').src = `http://${host}:${port}/stream.mjpg`;
+
+        // Inicializar WebSocket con IP dinámica
+        class CustomWebSocketHandler extends StreamWebSocketHandler {
+            connect() {
+                try {
+                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    const wsUrl = `${protocol}//${host}:${port}/ws`;
+                    this.ws = new WebSocket(wsUrl);
+                    // ...resto igual...
+                } catch (error) {
+                    console.error('Error al conectar WebSocket:', error);
+                }
+            }
+        }
+        const wsHandler = new CustomWebSocketHandler();
         wsHandler.connect();
-        
-        // Obtener información de resolución
+
+        // Obtener información de resolución con IP dinámica
         async function getResolution() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/resolution');
+                const response = await fetch(`http://${host}:${port}/resolution`);
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('resolution-info').textContent = 
+                    document.getElementById('resolution-info').textContent =
                         `Resolución: ${data.width} x ${data.height}`;
                 }
             } catch (error) {
                 console.error('Error al obtener resolución:', error);
             }
         }
-        
-        // Cargar la resolución al iniciar
+
         getResolution();
-        
-        // Limpiar al cerrar la página
+
         window.addEventListener('beforeunload', () => {
             wsHandler.disconnect();
         });
