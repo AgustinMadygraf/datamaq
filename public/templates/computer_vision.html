@@ -6,7 +6,7 @@
 	<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="../assets/css/app.css">
 	<link rel="shortcut icon" href="../assets/img/favicon.ico" type="image/x-icon">
-	<script src="../assets/js/bootstrap.bundle.min.js"></script>
+	<script src="../../src/infrastructure/bootstrap.bundle.min.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -32,7 +32,10 @@
 			<div id="snapshot-error" class="error-message" style="display:none;"></div>
 		</div>
 	</div>
-	<script src="../assets/js/bootstrap.bundle.min.js"></script>
-	<script type="module" src="../js/computer_vision.js"></script>
+	<script src="../../src/infrastructure/bootstrap.bundle.min.js"></script>
+	<script type="module">
+        import { loadHeader } from '../../src/adapters/headerLoader.js';
+        loadHeader('header.html');
+    </script>
 </body>
 </html>
