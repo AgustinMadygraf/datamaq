@@ -18,28 +18,32 @@ class DashboardApp {
         let conta = params.get('conta');
         console.log("app.js - Parámetros de la URL:", { periodo, conta });
 
-        // Normalizar el valor de conta: reemplazar coma por punto
-        if (typeof conta === 'string') {
-            conta = conta.replace(',', '.');
-            console.log("app.js - Valor normalizado de conta:", conta);
-        }
+            // Normalizar el valor de conta: eliminar puntos de miles y reemplazar coma por punto decimal
+            if (typeof conta === 'string') {
+                // Elimina puntos (miles) y reemplaza la coma decimal por punto
+                conta = conta.replace(/\./g, '').replace(',', '.');
+                console.log("app.js - Valor normalizado de conta:", conta);
+            }
 
-        // Cargar dinámicamente el header
-        fetch('public/templates/header.html')
-            .then(response => {
+            // Cargar dinámicamente el header con manejo de errores
+            try {
+                const response = await fetch('public/templates/header.html');
                 if (!response.ok) {
                     console.error("app.js - Error al cargar el header:", response.status);
                     throw new Error("No se pudo cargar el header");
                 }
-                return response.text();
-            })
-            .then(html => {
-                document.getElementById('header-container').innerHTML = html;
-                console.log("app.js - Header cargado correctamente");
-            })
-            .catch(err => {
+                const html = await response.text();
+                const headerContainer = document.getElementById('header-container');
+                if (headerContainer) {
+                    headerContainer.innerHTML = html;
+                    console.log("app.js - Header cargado correctamente");
+                } else {
+                    console.warn("app.js - No se encontró el contenedor header-container");
+                }
+            } catch (err) {
                 console.error("app.js - Error en la carga dinámica del header:", err);
-            });
+                UiService.showError('No se pudo cargar el header.');
+            }
 
         const loading = document.getElementById('loading-indicator');
         if (loading) {
@@ -77,29 +81,44 @@ class DashboardApp {
             if (result.status === 'success') {
                 console.log("app.js - Datos recibidos correctamente:", result.data);
                 appState.setInitialData(result.data);
-                this._renderDashboard(result.data);
-                // Suscribirse a cambios en chartData para actualizar la UI automáticamente
-                appState.subscribe('chart', (newChartData) => {
-                    console.log("app.js - chartData actualizado:", newChartData);
-                    // Combinar initialData y chartData para renderizar
-                    const initialData = appState.getInitialData();
-                    this._renderDashboard({ ...initialData, ...newChartData });
-                });
-                // Cargar scripts solo una vez
-                if (!window._scriptsLoaded) {
-                    console.log("app.js - Cargando scripts dinámicamente");
-                    const mainScript = document.createElement('script');
-                    mainScript.type = 'module';
-                    mainScript.src = 'src/adapters/main.js';
-                    document.body.appendChild(mainScript);
+                    try {
+                        await this._renderDashboard(result.data);
+                    } catch (err) {
+                        console.error("app.js - Error al renderizar el dashboard:", err);
+                        UiService.showError('Error al renderizar el dashboard.');
+                    }
+                    // Suscribirse a cambios en chartData para actualizar la UI automáticamente
+                    appState.subscribe('chart', async (newChartData) => {
+                        try {
+                            console.log("app.js - chartData actualizado:", newChartData);
+                            // Combinar initialData y chartData para renderizar
+                            const initialData = appState.getInitialData();
+                            await this._renderDashboard({ ...initialData, ...newChartData });
+                        } catch (err) {
+                            console.error("app.js - Error al actualizar chartData:", err);
+                            UiService.showError('Error al actualizar el gráfico.');
+                        }
+                    });
+                    // Cargar scripts solo una vez
+                    if (!window._scriptsLoaded) {
+                        try {
+                            console.log("app.js - Cargando scripts dinámicamente");
+                            const mainScript = document.createElement('script');
+                            mainScript.type = 'module';
+                            mainScript.src = 'src/adapters/main.js';
+                            document.body.appendChild(mainScript);
 
-                    // Corrige la ruta del ChartController
-                    const chartScript = document.createElement('script');
-                    chartScript.type = 'module';
-                    chartScript.src = 'src/adapters/controllers/chart_controller.js'; // <-- Nueva ruta
-                    document.body.appendChild(chartScript);
-                    window._scriptsLoaded = true;
-                }
+                            // Corrige la ruta del ChartController
+                            const chartScript = document.createElement('script');
+                            chartScript.type = 'module';
+                            chartScript.src = 'src/adapters/controllers/chart_controller.js';
+                            document.body.appendChild(chartScript);
+                            window._scriptsLoaded = true;
+                        } catch (err) {
+                            console.error("app.js - Error al cargar scripts dinámicos:", err);
+                            UiService.showError('Error al cargar scripts dinámicos.');
+                        }
+                    }
             } else {
                 console.error("app.js - Error en la respuesta de la API:", result);
                 UiService.showError('Error al cargar datos.');
@@ -115,32 +134,37 @@ class DashboardApp {
     }
 
     async _renderDashboard(data) {
-        if (!data) {
-            console.warn("app.js - No hay datos para renderizar el dashboard");
-            return;
+        try {
+            if (!data) {
+                console.warn("app.js - No hay datos para renderizar el dashboard");
+                return;
+            }
+            appState.periodo = data.periodo;
+            appState.data = data;
+            // Obtener la estructura de datos para el info-display
+            const infoDisplayStructure = UiService.getDashboardDataForRender(data);
+            // Renderizar el HTML usando el componente funcional
+            const { renderInfoDisplay } = await import('./controllers/info_display.js');
+            const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
+            // Actualizar el DOM
+            const container = document.getElementById('info-display-container');
+            if (container) {
+                container.innerHTML = infoDisplayHtml;
+                console.log("app.js - info-display-container actualizado");
+            } else {
+                console.warn('DashboardApp - No se encontró el contenedor info-display-container');
+            }
+            // Instanciar o actualizar ChartController con el estado
+            if (!this.chartController) {
+                this.chartController = new ChartController();
+                console.log("app.js - ChartController instanciado");
+            }
+            this.chartController.init(appState.getInitialData(), appState.getChartData());
+            console.log("app.js - ChartController inicializado");
+        } catch (err) {
+            console.error("app.js - Error en _renderDashboard:", err);
+            UiService.showError('Error al renderizar el dashboard.');
         }
-        appState.periodo = data.periodo;
-        appState.data = data;
-        // Obtener la estructura de datos para el info-display
-        const infoDisplayStructure = UiService.getDashboardDataForRender(data);
-        // Renderizar el HTML usando el componente funcional
-        const { renderInfoDisplay } = await import('./controllers/info_display.js');
-        const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
-        // Actualizar el DOM
-        const container = document.getElementById('info-display-container');
-        if (container) {
-            container.innerHTML = infoDisplayHtml;
-            console.log("app.js - info-display-container actualizado");
-        } else {
-            console.error('DashboardApp - No se encontró el contenedor info-display-container');
-        }
-        // Instanciar o actualizar ChartController con el estado
-        if (!this.chartController) {
-            this.chartController = new ChartController();
-            console.log("app.js - ChartController instanciado");
-        }
-        this.chartController.init(appState.getInitialData(), appState.getChartData());
-        console.log("app.js - ChartController inicializado");
     }
 
     async changePeriodo(periodo) {

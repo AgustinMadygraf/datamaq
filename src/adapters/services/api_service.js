@@ -17,73 +17,69 @@ class ApiService {
      * @returns {Promise<Object>} - Respuesta de la API
      */
     static async getDashboardData(periodo = null, conta = null) {
-        try {
-            // Marcar como cargando en el estado
-            appState.setLoading('dashboard', true);
-            
-            // Si no se proporcionan parámetros, intentar obtenerlos del estado
-            if (periodo === null) {
-                const initialData = appState.getInitialData();
-                periodo = initialData.periodo || 'semana';
-            }
-            
-            if (conta === null) {
-                const initialData = appState.getInitialData();
-                conta = initialData.conta;
-            }
-            
-            let url = `${this.BASE_URL}/dashboard.php?periodo=${periodo}`;
-            
-            if (conta !== null) {
-                url += `&conta=${conta}`;
-            }
-            
-            console.log(`ApiService - Obteniendo datos del dashboard: ${url}`);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+            try {
+                appState.setLoading('dashboard', true);
+                // Si no se proporcionan parámetros, intentar obtenerlos del estado
+                if (periodo === null) {
+                    const initialData = appState.getInitialData();
+                    periodo = initialData.periodo || 'semana';
                 }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                // Guardar datos en el estado centralizado
-                appState.setChartData({
-                    conta: result.data.conta,
-                    rawdata: result.data.rawdata,
-                    ls_periodos: result.data.ls_periodos,
-                    menos_periodo: result.data.menos_periodo,
-                    periodo: result.data.periodo
+                if (conta === null) {
+                    const initialData = appState.getInitialData();
+                    conta = initialData.conta;
+                }
+                let url = `${this.BASE_URL}/dashboard.php?periodo=${periodo}`;
+                if (conta !== null) {
+                    url += `&conta=${conta}`;
+                }
+                console.log(`ApiService - Obteniendo datos del dashboard: ${url}`);
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 });
-                console.log("ApiService - Datos del dashboard obtenidos y guardados en estado:", result.data);
-            } else {
-                // Registrar error en el estado
-                appState.addError('apiService', `Error en la respuesta: ${result.message || 'Respuesta inesperada'}`);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                let result;
+                try {
+                    result = await response.json();
+                } catch (jsonError) {
+                    // Si la respuesta no es JSON válida, loguear y registrar error
+                    const text = await response.text();
+                    console.error('ApiService - Error al parsear JSON:', jsonError, 'Respuesta recibida:', text);
+                    appState.addError('apiService', `Respuesta no válida: ${jsonError.message}`);
+                    return {
+                        status: 'error',
+                        message: `Respuesta no válida: ${jsonError.message}`
+                    };
+                }
+                if (result.status === 'success') {
+                    appState.setChartData({
+                        conta: result.data.conta,
+                        rawdata: result.data.rawdata,
+                        ls_periodos: result.data.ls_periodos,
+                        menos_periodo: result.data.menos_periodo,
+                        periodo: result.data.periodo
+                    });
+                    console.log("ApiService - Datos del dashboard obtenidos y guardados en estado:", result.data);
+                } else {
+                    appState.addError('apiService', `Error en la respuesta: ${result.message || 'Respuesta inesperada'}`);
+                    console.warn('ApiService - Respuesta de error recibida:', result);
+                }
+                return result;
+            } catch (error) {
+                console.error('ApiService - Error en getDashboardData:', error);
+                appState.addError('apiService', error);
+                return {
+                    status: 'error',
+                    message: error.message
+                };
+            } finally {
+                appState.setLoading('dashboard', false);
             }
-            
-            return result;
-        } catch (error) {
-            console.error('Error en ApiService.getDashboardData:', error);
-            
-            // Registrar error en el estado
-            appState.addError('apiService', error);
-            
-            return {
-                status: 'error',
-                message: error.message
-            };
-        } finally {
-            // Marcar como no cargando en el estado
-            appState.setLoading('dashboard', false);
-        }
     }
     
     /**
@@ -95,14 +91,11 @@ class ApiService {
      */
     static async sendData(endpoint, data, method = 'POST') {
         try {
-            // Obtener token CSRF desde el estado centralizado
             const initialData = appState.getInitialData();
             const csrfToken = initialData.csrfToken || '';
-            
             if (!csrfToken) {
                 console.warn('ApiService - Token CSRF no disponible en el estado');
             }
-            
             const response = await fetch(`${this.BASE_URL}/${endpoint}`, {
                 method,
                 headers: {
@@ -112,25 +105,31 @@ class ApiService {
                 },
                 body: JSON.stringify(data)
             });
-            
             if (!response.ok) {
                 throw new Error(`Error HTTP: ${response.status}`);
             }
-            
-            const result = await response.json();
-            
-            if (result.status !== 'success') {
-                // Registrar error en el estado
-                appState.addError('apiService', `Error en ${endpoint}: ${result.message || 'Error desconocido'}`);
+            // Leer el body como texto primero
+            const text = await response.text();
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (jsonError) {
+                console.error(`ApiService - Error al parsear JSON en sendData (${endpoint}):`, jsonError, 'Respuesta recibida:', text);
+                appState.addError('apiService', `Respuesta no válida en ${endpoint}: ${jsonError.message}`);
+                return {
+                    status: 'error',
+                    message: `Respuesta no válida en ${endpoint}: ${jsonError.message}`,
+                    raw: text
+                };
             }
-            
+            if (result.status !== 'success') {
+                appState.addError('apiService', `Error en ${endpoint}: ${result.message || 'Error desconocido'}`);
+                console.warn(`ApiService - Respuesta de error recibida en ${endpoint}:`, result);
+            }
             return result;
         } catch (error) {
-            console.error(`Error en ApiService.sendData (${endpoint}):`, error);
-            
-            // Registrar error en el estado
+            console.error(`ApiService - Error en sendData (${endpoint}):`, error);
             appState.addError('apiService', `Error en ${endpoint}: ${error.message}`);
-            
             return {
                 status: 'error',
                 message: error.message
