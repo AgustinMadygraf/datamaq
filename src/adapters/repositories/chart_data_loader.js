@@ -2,7 +2,7 @@
 Path: src/adapters/repositories/ChartDataLoader.js
 */
 
-import ApiService from '../services/api_service.js';
+import ApiService from '../../interface_adapters/gateways/api_service.js';
 
 export default class ChartDataLoader {
     constructor(chartController) {

@@ -1,10 +1,10 @@
 /*
-Path: js/app.js
+Path: src/adapters/app.js
 */
 
 import UiService from './services/ui_service.js';
 import appState from '../application/app_state.js';
-import ApiService from './services/api_service.js';
+import ApiService from '../interface_adapters/gateways/api_service.js';
 import ChartController from './controllers/chart_controller.js';
 
 class DashboardApp {

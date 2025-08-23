@@ -1,5 +1,5 @@
 /*
-Path: src/adapters/services/ApiService.js
+Path: src/interface_adapters/gateways/api_service.js
 */
 
 import appState from '../../application/app_state.js';
