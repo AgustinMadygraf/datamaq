@@ -1,0 +1,22 @@
+/*
+Path: src/interface_adapters/presenters/dashboard_presenter.js
+*/
+
+export default class DashboardPresenter {
+    static renderInfoDisplay(infoDisplayStructure) {
+        // Importa el componente funcional para renderizar el HTML
+        // (Se asume que renderInfoDisplay devuelve un string HTML)
+        return import('../../adapters/controllers/info_display.js')
+            .then(({ renderInfoDisplay }) => renderInfoDisplay(infoDisplayStructure));
+    }
+
+    static updateInfoDisplayContainer(html) {
+        const container = document.getElementById('info-display-container');
+        if (container) {
+            container.innerHTML = html;
+            console.log('DashboardPresenter - info-display-container actualizado');
+        } else {
+            console.warn('DashboardPresenter - No se encontró el contenedor info-display-container');
+        }
+    }
+}

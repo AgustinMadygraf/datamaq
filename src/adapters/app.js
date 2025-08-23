@@ -3,6 +3,8 @@ Path: src/adapters/app.js
 */
 
 import UiService from './services/ui_service.js';
+import ErrorPresenter from '../interface_adapters/presenters/error_presenter.js';
+import DashboardPresenter from '../interface_adapters/presenters/dashboard_presenter.js';
 import appState from '../application/app_state.js';
 import ApiService from '../interface_adapters/gateways/api_service.js';
 import ChartController from './controllers/chart_controller.js';
@@ -42,7 +44,7 @@ class DashboardApp {
                 }
             } catch (err) {
                 console.error("app.js - Error en la carga dinámica del header:", err);
-                UiService.showError('No se pudo cargar el header.');
+                ErrorPresenter.showError('No se pudo cargar el header.');
             }
 
         const loading = document.getElementById('loading-indicator');
@@ -57,7 +59,7 @@ class DashboardApp {
         const errors = appState.getErrors && appState.getErrors('apiService');
         if (errors && errors.length > 0) {
             console.error("app.js - Errores detectados en apiService:", errors);
-            UiService.showError(errors[errors.length - 1].message || 'Error desconocido');
+            ErrorPresenter.showError(errors[errors.length - 1].message || 'Error desconocido');
             return; // Detiene la inicialización si hay error crítico
         }
 
@@ -85,7 +87,7 @@ class DashboardApp {
                         await this._renderDashboard(result.data);
                     } catch (err) {
                         console.error("app.js - Error al renderizar el dashboard:", err);
-                        UiService.showError('Error al renderizar el dashboard.');
+                        ErrorPresenter.showError('Error al renderizar el dashboard.');
                     }
                     // Suscribirse a cambios en chartData para actualizar la UI automáticamente
                     appState.subscribe('chart', async (newChartData) => {
@@ -96,7 +98,7 @@ class DashboardApp {
                             await this._renderDashboard({ ...initialData, ...newChartData });
                         } catch (err) {
                             console.error("app.js - Error al actualizar chartData:", err);
-                            UiService.showError('Error al actualizar el gráfico.');
+                            ErrorPresenter.showError('Error al actualizar el gráfico.');
                         }
                     });
                     // Cargar scripts solo una vez
@@ -116,12 +118,12 @@ class DashboardApp {
                             window._scriptsLoaded = true;
                         } catch (err) {
                             console.error("app.js - Error al cargar scripts dinámicos:", err);
-                            UiService.showError('Error al cargar scripts dinámicos.');
+                            ErrorPresenter.showError('Error al cargar scripts dinámicos.');
                         }
                     }
             } else {
                 console.error("app.js - Error en la respuesta de la API:", result);
-                UiService.showError('Error al cargar datos.');
+                ErrorPresenter.showError('Error al cargar datos.');
             }
         } catch (e) {
             if (loading) {
@@ -129,7 +131,7 @@ class DashboardApp {
                 console.log("app.js - Indicador de carga ocultado por error");
             }
             console.error("app.js - Error de conexión con la API:", e);
-            UiService.showError('Error de conexión con la API.');
+            ErrorPresenter.showError('Error de conexión con la API.');
         }
     }
 
@@ -143,27 +145,21 @@ class DashboardApp {
             appState.data = data;
             // Obtener la estructura de datos para el info-display
             const infoDisplayStructure = UiService.getDashboardDataForRender(data);
-            // Renderizar el HTML usando el componente funcional
-            const { renderInfoDisplay } = await import('./controllers/info_display.js');
-            const infoDisplayHtml = renderInfoDisplay(infoDisplayStructure);
-            // Actualizar el DOM
-            const container = document.getElementById('info-display-container');
-            if (container) {
-                container.innerHTML = infoDisplayHtml;
-                console.log("app.js - info-display-container actualizado");
-            } else {
-                console.warn('DashboardApp - No se encontró el contenedor info-display-container');
-            }
-            // Instanciar o actualizar ChartController con el estado
+            // Usar el presenter para renderizar y actualizar el DOM
+            const infoDisplayHtml = await DashboardPresenter.renderInfoDisplay(infoDisplayStructure);
+            DashboardPresenter.updateInfoDisplayContainer(infoDisplayHtml);
+            // Instanciar o actualizar ChartController con el gateway y presenter inyectados
             if (!this.chartController) {
-                this.chartController = new ChartController();
-                console.log("app.js - ChartController instanciado");
+                // Importar dependencias
+                const HighchartsGateway = (await import('../interface_adapters/gateways/highcharts_gateway.js')).default;
+                this.chartController = new ChartController(new HighchartsGateway(), DashboardPresenter);
+                console.log("app.js - ChartController instanciado con dependencias");
             }
             this.chartController.init(appState.getInitialData(), appState.getChartData());
             console.log("app.js - ChartController inicializado");
         } catch (err) {
             console.error("app.js - Error en _renderDashboard:", err);
-            UiService.showError('Error al renderizar el dashboard.');
+            ErrorPresenter.showError('Error al renderizar el dashboard.');
         }
     }
 
@@ -196,13 +192,13 @@ class DashboardApp {
                 // Registrar error en el estado centralizado
                 appState.addError('dashboard', 'Error al cargar datos.');
                 console.error("app.js - Error al cargar datos del nuevo periodo:", result);
-                UiService.showError('Error al cargar datos.');
+                ErrorPresenter.showError('Error al cargar datos.');
             }
         } catch (error) {
             appState.setLoading('dashboard', false);
             appState.addError('dashboard', error);
             console.error("app.js - Error de conexión con la API al cambiar periodo:", error);
-            UiService.showError('Error de conexión con la API.');
+            ErrorPresenter.showError('Error de conexión con la API.');
         }
     }
 }

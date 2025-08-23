@@ -1,5 +1,5 @@
 /*
-Path: src/adapters/views/Botonera.js
+Path: src/adapters/views/botonera.js
 */
 
 export function renderBotonera(structure) {

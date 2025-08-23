@@ -4,7 +4,7 @@ Path: src/adapters/views/ChartRenderer.js
 
 // Importar dependencias necesarias
 import ChartConfigService from '../../application/chart_config_service.js';
-// Asume que Highcharts está disponible globalmente
+import HighchartsGateway from '../../interface_adapters/gateways/highcharts_gateway.js';
 
 export default class ChartRenderer {
     constructor(chartController) {
@@ -31,12 +31,12 @@ export default class ChartRenderer {
                 onClickHandler: this.chartController.eventManager.handleChartClick,
                 onLoadHandler: this.chartController.eventManager.handleChartLoad
             });
-            if (typeof Highcharts !== 'undefined') {
-                Highcharts.chart(container, config);
+            const chart = HighchartsGateway.createChart(container, config);
+            if (chart) {
                 console.log("ChartRenderer - Renderizado de Highcharts completado");
                 return true;
             } else {
-                throw new Error("Highcharts no está definido");
+                throw new Error("HighchartsGateway no pudo crear el gráfico");
             }
         } catch (e) {
             console.error("ChartRenderer - Error crítico en createChart:", e);

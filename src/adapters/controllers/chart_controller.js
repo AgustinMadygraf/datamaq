@@ -13,22 +13,30 @@ import ChartDataLoader          from '../repositories/chart_data_loader.js';
 import eventBus                 from '../event_bus/event_bus.js';
 import { EVENT_CONTRACT }       from '../event_bus/event_bus_contract.js';
 
+import { GatewayContract } from '../../interface_adapters/gateways/gateway_contract.js';
+import { PresenterContract } from '../../interface_adapters/presenters/presenter_contract.js';
+
 class ChartController {
-    constructor() {
+    /**
+     * @param {GatewayContract} chartGateway
+     * @param {PresenterContract} presenter
+     */
+    constructor(chartGateway, presenter) {
         this.chartInitialized = false;
         this.chartDataReceived = false;
         this.failedAttempts = 0;
         this.maxFailedAttempts = 5;
         this.chartData = null;
         this.initialData = null;
-    this.validateChartDataUseCase = new ValidateChartDataUseCase();
-    this.buildChartSeriesUseCase = new BuildChartSeriesUseCase();
-    this.eventManager = new ChartEventManager(this);
-    this.dataLoader = new ChartDataLoader(this);
-    this.chartRenderer = new ChartRenderer(this);
-    this.domManager = new ChartDomManager();
-    this.initChart = this.initChart.bind(this);
-        // Elimina los binds de los métodos que ahora delegan en eventManager
+        this.chartGateway = chartGateway;
+        this.presenter = presenter;
+        this.validateChartDataUseCase = new ValidateChartDataUseCase();
+        this.buildChartSeriesUseCase = new BuildChartSeriesUseCase();
+        this.eventManager = new ChartEventManager(this);
+        this.dataLoader = new ChartDataLoader(this);
+        this.chartRenderer = new ChartRenderer(this);
+        this.domManager = new ChartDomManager();
+        this.initChart = this.initChart.bind(this);
     }
     // Métodos requeridos por ChartEventManager
     getChartData() {
@@ -236,8 +244,16 @@ class ChartController {
     }
 
     createChart(container) {
-        // Delegar la creación del gráfico al ChartRenderer
-        this.chartRenderer.createChart(container, this.chartData, this.buildChartSeriesUseCase);
+        // Delegar la creación del gráfico al gateway inyectado
+        const series = this.buildChartSeriesUseCase.execute(this.chartData);
+        const config = this.chartRenderer.chartConfigService.getChartConfig({
+            chartData: this.chartData,
+            series,
+            title: this.chartData?.conta ? window.Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", this.chartData.conta) : '',
+            onClickHandler: this.eventManager.handleChartClick,
+            onLoadHandler: this.eventManager.handleChartLoad
+        });
+        this.chartGateway.createChart(container, config);
     }
 
     setupEventListeners() {
