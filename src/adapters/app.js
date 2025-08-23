@@ -5,6 +5,8 @@ Path: src/adapters/app.js
 import UiService from './services/ui_service.js';
 import ErrorPresenter from '../interface_adapters/presenters/error_presenter.js';
 import DashboardPresenter from '../interface_adapters/presenters/dashboard_presenter.js';
+import HeaderPresenter from '../interface_adapters/presenters/header_presenter.js';
+import LoadingPresenter from '../interface_adapters/presenters/loading_presenter.js';
 import appState from '../application/app_state.js';
 import ApiService from '../interface_adapters/gateways/api_service.js';
 import ChartController from './controllers/chart_controller.js';
@@ -27,33 +29,10 @@ class DashboardApp {
                 console.log("app.js - Valor normalizado de conta:", conta);
             }
 
-            // Cargar dinámicamente el header con manejo de errores
-            try {
-                const response = await fetch('public/templates/header.html');
-                if (!response.ok) {
-                    console.error("app.js - Error al cargar el header:", response.status);
-                    throw new Error("No se pudo cargar el header");
-                }
-                const html = await response.text();
-                const headerContainer = document.getElementById('header-container');
-                if (headerContainer) {
-                    headerContainer.innerHTML = html;
-                    console.log("app.js - Header cargado correctamente");
-                } else {
-                    console.warn("app.js - No se encontró el contenedor header-container");
-                }
-            } catch (err) {
-                console.error("app.js - Error en la carga dinámica del header:", err);
-                ErrorPresenter.showError('No se pudo cargar el header.');
-            }
+    // Cargar dinámicamente el header usando HeaderPresenter
+    await HeaderPresenter.renderHeader();
 
-        const loading = document.getElementById('loading-indicator');
-        if (loading) {
-            loading.style.display = '';
-            console.log("app.js - Indicador de carga mostrado");
-        } else {
-            console.warn("app.js - No se encontró el indicador de carga");
-        }
+    LoadingPresenter.showLoading();
 
         // Verifica errores después de cargar la configuración
         const errors = appState.getErrors && appState.getErrors('apiService');
@@ -76,10 +55,7 @@ class DashboardApp {
                 console.log("app.js - Solicitando datos sin parámetros");
                 result = await ApiService.getDashboardData();
             }
-            if (loading) {
-                loading.style.display = 'none';
-                console.log("app.js - Indicador de carga ocultado");
-            }
+            LoadingPresenter.hideLoading();
             if (result.status === 'success') {
                 console.log("app.js - Datos recibidos correctamente:", result.data);
                 appState.setInitialData(result.data);
@@ -126,10 +102,7 @@ class DashboardApp {
                 ErrorPresenter.showError('Error al cargar datos.');
             }
         } catch (e) {
-            if (loading) {
-                loading.style.display = 'none';
-                console.log("app.js - Indicador de carga ocultado por error");
-            }
+            LoadingPresenter.hideLoading();
             console.error("app.js - Error de conexión con la API:", e);
             ErrorPresenter.showError('Error de conexión con la API.');
         }

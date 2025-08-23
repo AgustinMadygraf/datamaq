@@ -1,7 +1,9 @@
 // src/interface_adapters/gateways/highcharts_gateway.js
 // Gateway para encapsular el uso de Highcharts
 
-export default class HighchartsGateway {
+import { GatewayContract } from './gateway_contract.js';
+
+export default class HighchartsGateway extends GatewayContract {
     /**
      * Crea y renderiza un gráfico usando Highcharts
      * @param {string|HTMLElement} container - ID o elemento del contenedor

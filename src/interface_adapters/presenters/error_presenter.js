@@ -1,7 +1,9 @@
 // src/interface_adapters/presenters/error_presenter.js
 // Presenter para mostrar notificaciones y errores en la UI
 
-export default class ErrorPresenter {
+import { PresenterContract } from './presenter_contract.js';
+
+export default class ErrorPresenter extends PresenterContract {
     static showError(message) {
         let errorContainer = document.getElementById('error-notification');
         if (!errorContainer) {
