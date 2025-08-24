@@ -8,7 +8,7 @@ export default class DashboardPresenter extends PresenterContract {
     static renderInfoDisplay(infoDisplayStructure) {
         // Importa el componente funcional para renderizar el HTML
         // (Se asume que renderInfoDisplay devuelve un string HTML)
-        return import('../../adapters/controllers/info_display.js')
+        return import('../../interface_adapters/controllers/info_display.js')
             .then(({ renderInfoDisplay }) => renderInfoDisplay(infoDisplayStructure));
     }
 

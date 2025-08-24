@@ -1,6 +1,6 @@
 Actúa como un auditor experto en Arquitectura de Software, especializado en la implementación y saneamiento de proyectos según el paradigma de Arquitectura Limpia (Clean Architecture).
 
-Estoy trabajando en un proyecto que intenta seguir la Clean Architecture, pero actualmente presenta inconsistencias estructurales. A continuación, detallo la situación actual y los objetivos deseados:
+Estoy trabajando en un proyecto que intenta seguir la Clean Architecture, detallo la situación actual y los objetivos deseados:
 
 ### Situación actual del proyecto:
 - Se están utilizando los siguientes directorios como base:
@@ -9,13 +9,10 @@ Estoy trabajando en un proyecto que intenta seguir la Clean Architecture, pero a
   - interface_adapters/presenter/
   - interface_adapters/gateway/
   - interface_adapters/controllers/
-- El directorio `infrastructure/` está vacío (aún no implementado).
-- Existe un directorio adicional llamado `adapters/` que contiene archivos desorganizados y sin una clasificación clara.
+  - infrastructure/
 
 ### Objetivo:
-- Confirmar que los archivos dentro de las carpetas `entities/`, `use_cases/`, `interface_adapters/presenter/`, `gateway/`, y `controllers/` estén correctamente organizados y alineados con los principios de Clean Architecture.
-- Posteriormente, auditar el contenido de `adapters/` para:
-  - Mover archivos a las carpetas correctas dentro de la estructura mencionada, **si aplica**.
+- Confirmar que los archivos dentro de las carpetas `entities/`, `use_cases/`, `interface_adapters/presenter/`, `interface_adapters/gateway/`, `interface_adapters/controllers/` y `infrastructure/` estén correctamente organizados y alineados con los principios de Clean Architecture.
   - Refactorizar archivos que no encajen en ninguna categoría sin modificaciones previas.
   - Eliminar duplicados o archivos innecesarios.
 
@@ -34,7 +31,6 @@ Estoy trabajando en un proyecto que intenta seguir la Clean Architecture, pero a
 - Notas y advertencias relevantes sobre la estructura o el código si las hubiera.
 
 ---
-
 
 Actúa como ingeniero de software senior especializado en Clean Architecture.
 

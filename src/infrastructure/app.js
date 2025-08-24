@@ -9,7 +9,7 @@ import HeaderPresenter from '../interface_adapters/presenters/header_presenter.j
 import LoadingPresenter from '../interface_adapters/presenters/loading_presenter.js';
 import appState from '../application/app_state.js';
 import ApiService from '../interface_adapters/gateways/api_service.js';
-import ChartController from './controllers/chart_controller.js';
+import ChartController from '../interface_adapters/controllers/chart_controller.js';
 
 class DashboardApp {
     constructor() {
@@ -83,13 +83,13 @@ class DashboardApp {
                             console.log("app.js - Cargando scripts dinámicamente");
                             const mainScript = document.createElement('script');
                             mainScript.type = 'module';
-                            mainScript.src = 'src/adapters/main.js';
+                            mainScript.src = 'src/infrastructure/main.js';
                             document.body.appendChild(mainScript);
 
                             // Corrige la ruta del ChartController
                             const chartScript = document.createElement('script');
                             chartScript.type = 'module';
-                            chartScript.src = 'src/adapters/controllers/chart_controller.js';
+                            chartScript.src = 'src/interface_adapters/controllers/chart_controller.js';
                             document.body.appendChild(chartScript);
                             window._scriptsLoaded = true;
                         } catch (err) {
