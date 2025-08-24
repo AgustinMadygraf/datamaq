@@ -5,7 +5,6 @@ Path: src/infrastructure/main.js
 import appState from '../application/app_state.js';
 import eventBus from './event_bus.js';
 
-
 console.log("main.js cargado correctamente.");
 
 // Emitir evento global mouseup
@@ -46,3 +45,7 @@ window.addEventListener('error', function(event) {
 window.checkChartDataAvailability = function() {
     eventBus.emit('CHECK_CHART_DATA', { chartData: appState.getState().chartData });
 };
+
+document.addEventListener('mouseup', function(e) {
+    eventBus.emit('MOUSE_UP_RAW', e);
+});
