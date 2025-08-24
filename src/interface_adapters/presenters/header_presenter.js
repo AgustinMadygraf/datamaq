@@ -32,7 +32,8 @@ export default class HeaderPresenter {
     }
 
     static showError(message) {
-        // Aquí podrías delegar a ErrorPresenter si lo deseas
-        alert(message); // Simple para ejemplo, reemplazar por presenter de error si existe
+        import('./error_presenter.js').then(({ default: ErrorPresenter }) => {
+            ErrorPresenter.showError(message);
+        });
     }
 }

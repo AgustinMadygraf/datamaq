@@ -57,24 +57,22 @@ class DashboardApp {
                     }
                 });
                 if (!window._scriptsLoaded) {
-                        try {
-                            console.log("app.js - Cargando scripts dinámicamente");
-                            const mainScript = document.createElement('script');
-                            mainScript.type = 'module';
-                            mainScript.src = 'src/infrastructure/main.js';
-                            document.body.appendChild(mainScript);
+                    try {
+                        // Delegar notificación de carga de scripts a ErrorPresenter en caso de error
+                        const mainScript = document.createElement('script');
+                        mainScript.type = 'module';
+                        mainScript.src = 'src/infrastructure/main.js';
+                        document.body.appendChild(mainScript);
 
-                            // Corrige la ruta del ChartController
-                            const chartScript = document.createElement('script');
-                            chartScript.type = 'module';
-                            chartScript.src = 'src/interface_adapters/controllers/chart_controller.js';
-                            document.body.appendChild(chartScript);
-                            window._scriptsLoaded = true;
-                        } catch (err) {
-                            console.error("app.js - Error al cargar scripts dinámicos:", err);
-                            ErrorPresenter.showError('Error al cargar scripts dinámicos.');
-                        }
+                        const chartScript = document.createElement('script');
+                        chartScript.type = 'module';
+                        chartScript.src = 'src/interface_adapters/controllers/chart_controller.js';
+                        document.body.appendChild(chartScript);
+                        window._scriptsLoaded = true;
+                    } catch (err) {
+                        ErrorPresenter.showError('Error al cargar scripts dinámicos.');
                     }
+                }
             } else {
                 ErrorPresenter.showError('Error al cargar datos.');
             }

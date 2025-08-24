@@ -213,8 +213,10 @@ class UiService {
      * @param {string} message - Mensaje de error a mostrar
      */
     static showError(message) {
-        // Puedes personalizar esto para mostrar el error en un modal, toast, etc.
-        alert(`Error: ${message}`);
+        // Delegar el manejo de errores a ErrorPresenter para mantener consistencia
+        import('./error_presenter.js').then(({ default: ErrorPresenter }) => {
+            ErrorPresenter.showError(message);
+        });
     }
 }
 

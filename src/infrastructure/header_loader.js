@@ -1,5 +1,5 @@
 /*
-Path: public/js/headerLoader.js
+Path: public/js/header_loader.js
 */
 
 export function loadHeader(headerPath = 'public/templates/header.html', containerId = 'header-container') {
