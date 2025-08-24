@@ -1,5 +1,5 @@
 /*
-Path: src/adapters/eventBus/eventBus.contract.js
+Path: src/infrastructure/event_bus.contract.js
 */
 
 export const EVENT_CONTRACT = {

@@ -2,7 +2,7 @@
 Path: src/adapters/app.js
 */
 
-import UiService from './services/ui_service.js';
+import UiService from '../interface_adapters/presenters/ui_presenter.js';
 import ErrorPresenter from '../interface_adapters/presenters/error_presenter.js';
 import DashboardPresenter from '../interface_adapters/presenters/dashboard_presenter.js';
 import HeaderPresenter from '../interface_adapters/presenters/header_presenter.js';

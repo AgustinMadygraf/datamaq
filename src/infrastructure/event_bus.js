@@ -1,5 +1,5 @@
 /*
-Path: src/adapters/eventBus/EventBus.js
+Path: src/infrastructure/event_bus.js
 */
 
 class EventBus {

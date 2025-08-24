@@ -1,12 +1,10 @@
 /*
-Path: js/services/ui_service.js
+Path: src/interface_adapters/presenters/ui_presenter.js
 Este servicio se encarga de actualizar la interfaz de usuario con los datos recibidos de la API.
 */
 
-import { sanitizeHTML } from '../utils/dom_utils.js';
 import appState from '../../application/app_state.js';
-import eventBus from '../event_bus/event_bus.js';
-import { EVENT_CONTRACT } from '../event_bus/event_bus_contract.js';
+import eventBus from '../../infrastructure/event_bus.js';
 class UiService {
     /**
      * Actualiza el dashboard completo con los datos recibidos

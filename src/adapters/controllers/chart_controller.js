@@ -10,8 +10,8 @@ import ChartDomManager          from './chart_dom_manager.js';
 import ChartEventManager        from './chart_event_manager.js';
 import ChartRenderer            from '../../infrastructure/ui/chart_renderer.js';
 import ChartDataLoader          from '../repositories/chart_data_loader.js';
-import eventBus                 from '../event_bus/event_bus.js';
-import { EVENT_CONTRACT }       from '../event_bus/event_bus_contract.js';
+import eventBus                 from '../../infrastructure/event_bus.js';
+import { EVENT_CONTRACT }       from '../../infrastructure/event_bus_contract.js';
 
 import { GatewayContract } from '../../interface_adapters/gateways/gateway_contract.js';
 import { PresenterContract } from '../../interface_adapters/presenters/presenter_contract.js';

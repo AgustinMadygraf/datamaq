@@ -8,8 +8,8 @@ window.addEventListener('mouseup', (e) => {
 });
 
 import appState from '../application/app_state.js';
-import eventBus from './event_bus/event_bus.js';
-import { EVENT_CONTRACT } from './event_bus/event_bus_contract.js';
+import eventBus from '../infrastructure/event_bus.js';
+import { EVENT_CONTRACT } from '../infrastructure/event_bus_contract.js';
 
 console.log("main.js cargado correctamente.");
 

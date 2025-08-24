@@ -1,5 +1,5 @@
 /*
-Path: js/utils/DomUtils.js
+Path: src/infrastructure/dom_utils.js
 */
 
 /**
