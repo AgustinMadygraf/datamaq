@@ -1,10 +1,10 @@
 /*
-Path: src/adapters/repositories/ChartDataLoader.js
+Path: src/interface_adapters/gateways/chart_data_gateway.js
 */
 
-import ApiService from '../../interface_adapters/gateways/api_service.js';
+import ApiService from './api_service.js';
 
-export default class ChartDataLoader {
+export default class ChartDataGateway {
     constructor(chartController) {
         this.chartController = chartController;
         this.failedAttempts = 0;
