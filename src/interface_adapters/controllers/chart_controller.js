@@ -1,5 +1,5 @@
 /*
-Path: src/adapters/controllers/ChartController.js
+Path: src/interface_adapters/controllers/chart_controller.js
 */
 
 import ValidateChartDataUseCase from '../../use_cases/validate_chart_data.js';
