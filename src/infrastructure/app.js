@@ -60,11 +60,6 @@ class DashboardApp {
                 if (!window._scriptsLoaded) {
                     try {
                         // Delegar notificación de carga de scripts a ErrorPresenter en caso de error
-                        const mainScript = document.createElement('script');
-                        mainScript.type = 'module';
-                        mainScript.src = 'src/infrastructure/main.js';
-                        document.body.appendChild(mainScript);
-
                         const chartScript = document.createElement('script');
                         chartScript.type = 'module';
                         chartScript.src = 'src/interface_adapters/controllers/chart_controller.js';
@@ -120,7 +115,6 @@ class DashboardApp {
 
 
 
-console.log("main.js cargado correctamente.");
 
 // Emitir evento global mouseup
 window.addEventListener('mouseup', (e) => {
@@ -129,7 +123,6 @@ window.addEventListener('mouseup', (e) => {
 
 // Emitir evento cuando el DOM está listo
 window.addEventListener("DOMContentLoaded", () => {
-    console.log("main.js - DOMContentLoaded iniciado");
     eventBus.emit('appDomReady', { timestamp: Date.now() });
 });
 

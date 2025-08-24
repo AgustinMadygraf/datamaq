@@ -71,7 +71,6 @@ class ChartController {
         this.initialData = initialData;
     }
     
-    // Método para forzar la carga de datos del gráfico desde main.js
     async forceChartDataLoad() {
         try {
             console.log("ChartController - Intentando forzar carga de datos desde ChartDataLoader");
