@@ -1,6 +1,5 @@
 /*
-Path: src/adapters/views/info_display_view.js
-Responsabilidad: Renderizar el info-display y actualizar el DOM, desacoplado de la lógica de negocio.
+Path: src/infrastructure/ui/info_display_view.js
 */
 
 export class InfoDisplayView {
@@ -15,7 +14,7 @@ export class InfoDisplayView {
         if (!structure) return '';
         // Se asume que existe src/adapters/controllers/info_display.js con renderInfoDisplay
         // Si no existe, implementar aquí la lógica
-        return import('../controllers/info_display.js')
+        return import('../../adapters/controllers/info_display.js')
             .then(({ renderInfoDisplay }) => renderInfoDisplay(structure));
     }
 

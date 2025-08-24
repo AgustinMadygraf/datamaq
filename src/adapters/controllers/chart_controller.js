@@ -8,7 +8,7 @@ import BuildChartSeriesUseCase  from '../../use_cases/build_chart_series.js';
 import { onDbClick }            from './double_click_handler.js';
 import ChartDomManager          from './chart_dom_manager.js';
 import ChartEventManager        from './chart_event_manager.js';
-import ChartRenderer            from '../views/chart_renderer.js';
+import ChartRenderer            from '../../infrastructure/ui/chart_renderer.js';
 import ChartDataLoader          from '../repositories/chart_data_loader.js';
 import eventBus                 from '../event_bus/event_bus.js';
 import { EVENT_CONTRACT }       from '../event_bus/event_bus_contract.js';

@@ -1,28 +1,37 @@
-Actúa como un auditor experto en Arquitectura de Software, especializado en la implementación de Arquitectura Limpia (Clean Architecture) en sistemas existentes.
+Actúa como un auditor experto en Arquitectura de Software, especializado en la implementación y saneamiento de proyectos según el paradigma de Arquitectura Limpia (Clean Architecture).
 
-Quiero adaptar el proyecto a una estructura basada en Clean Architecture, incorporando los siguientes módulos:
+Estoy trabajando en un proyecto que intenta seguir la Clean Architecture, pero actualmente presenta inconsistencias estructurales. A continuación, detallo la situación actual y los objetivos deseados:
 
-- entities/
-- use_cases/
-- interface_adapters/presenter/
-- interface_adapters/gateway/
-- interface_adapters/controllers/
-- infrastructure/
+### Situación actual del proyecto:
+- Se están utilizando los siguientes directorios como base:
+  - entities/
+  - use_cases/
+  - interface_adapters/presenter/
+  - interface_adapters/gateway/
+  - interface_adapters/controllers/
+- El directorio `infrastructure/` está vacío (aún no implementado).
+- Existe un directorio adicional llamado `adapters/` que contiene archivos desorganizados y sin una clasificación clara.
 
-### Instrucciones
+### Objetivo:
+- Confirmar que los archivos dentro de las carpetas `entities/`, `use_cases/`, `interface_adapters/presenter/`, `gateway/`, y `controllers/` estén correctamente organizados y alineados con los principios de Clean Architecture.
+- Posteriormente, auditar el contenido de `adapters/` para:
+  - Mover archivos a las carpetas correctas dentro de la estructura mencionada, **si aplica**.
+  - Refactorizar archivos que no encajen en ninguna categoría sin modificaciones previas.
+  - Eliminar duplicados o archivos innecesarios.
 
-1. Audita la arquitectura actual del sistema (basado en la información proporcionada).
-2. Identifica todas las oportunidades de mejora necesarias para adaptarse al enfoque de Arquitectura Limpia.
-3. Lista las tareas necesarias para esa transición, ordenadas por:
-   - Impacto en la calidad del sistema
-   - Riesgo asociado al cambio
-   - Esfuerzo estimado requerido
+### Tareas solicitadas:
+
+1. Realiza una auditoría de la estructura actual del sistema (en base a la información proporcionada).
+2. Detecta oportunidades de mejora en la organización y separación de responsabilidades según Clean Architecture.
+3. Entrega una lista priorizada de tareas necesarias para una migración o refactorización efectiva, categorizadas por:
+   - **[Impacto: Alto/Medio/Bajo]**
+   - **[Riesgo: Alto/Medio/Bajo]**
+   - **[Esfuerzo: Alto/Medio/Bajo]**
 
 ### Entregables esperados:
-- Informe de auditoría breve.
-- Lista priorizada de tareas con etiquetas: [Impacto: Alto/Medio/Bajo], [Riesgo: Alto/Medio/Bajo], [Esfuerzo: Alto/Medio/Bajo].
-- Notas o advertencias relevantes (si las hay).
-
+- Informe breve de auditoría y evaluación.
+- Lista priorizada de tareas de reestructuración.
+- Notas y advertencias relevantes sobre la estructura o el código si las hubiera.
 
 ---
 
