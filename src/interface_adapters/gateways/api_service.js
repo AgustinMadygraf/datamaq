@@ -3,12 +3,14 @@ Path: src/interface_adapters/gateways/api_service.js
 */
 
 import appState from '../../application/app_state.js';
+import { API_BASE_URL, API_VERSION } from '../../infrastructure/config.js';
 
 class ApiService {
     /**
      * URL base para las peticiones API
      */
-    static BASE_URL = '/datamaq_php/backend/api';
+    static BASE_URL = API_BASE_URL;
+    static VERSION = API_VERSION;
     
     /**
      * Obtiene los datos del dashboard desde la API
@@ -28,7 +30,7 @@ class ApiService {
                     const initialData = appState.getInitialData();
                     conta = initialData.conta;
                 }
-                let url = `${this.BASE_URL}/v0/dashboard.php?periodo=${periodo}`;
+                let url = `${this.BASE_URL}/${this.VERSION}/dashboard.php?periodo=${periodo}`;
                 if (conta !== null) {
                     url += `&conta=${conta}`;
                 }
