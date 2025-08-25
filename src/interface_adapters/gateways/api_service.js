@@ -28,7 +28,7 @@ class ApiService {
                     const initialData = appState.getInitialData();
                     conta = initialData.conta;
                 }
-                let url = `${this.BASE_URL}/dashboard.php?periodo=${periodo}`;
+                let url = `${this.BASE_URL}/v0/dashboard.php?periodo=${periodo}`;
                 if (conta !== null) {
                     url += `&conta=${conta}`;
                 }
