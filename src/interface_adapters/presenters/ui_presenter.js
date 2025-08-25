@@ -36,9 +36,23 @@ class UiService {
      * @returns {Object} Estructura del info-display
      */
     static getInfoDisplayStructure(data) {
-        const { vel_ult_calculada, formatoData, uiData } = data;
-        const { formato, ancho_bobina } = formatoData;
-        const { estiloFondo } = uiData;
+        const { vel_ult_calculada, formatoData } = data;
+        const { formato, ancho_bobina } = formatoData || {};
+        // Soporte dual: si uiData existe, úsalo; si no, deriva estilos localmente
+        let estiloFondo = '';
+        if (data.uiData && data.uiData.estiloFondo) {
+            estiloFondo = data.uiData.estiloFondo;
+        } else {
+            // Derivar estilo localmente usando datos numéricos (ejemplo básico)
+            // Puedes mejorar esta lógica según tus reglas de negocio
+            if (vel_ult_calculada > 100) {
+                estiloFondo = 'background: linear-gradient(90deg, #6baa22, #6baa22);';
+            } else if (vel_ult_calculada > 50) {
+                estiloFondo = 'background: linear-gradient(90deg, #6baa22, #6baa22);';
+            } else {
+                estiloFondo = 'background: linear-gradient(90deg, #6baa22, #6baa22);';
+            }
+        }
         const containerId = 'container';
         return {
             type: 'hoja',
@@ -88,7 +102,18 @@ class UiService {
      */
     static getBotoneraStructure(data) {
         const { periodo, conta } = data;
-        const { refClass, preConta, postConta } = data.uiData;
+        // Soporte dual: si uiData existe, úsalo; si no, deriva localmente
+        let refClass, preConta, postConta;
+        if (data.uiData) {
+            refClass = data.uiData.refClass;
+            preConta = data.uiData.preConta;
+            postConta = data.uiData.postConta;
+        } else {
+            // Derivar clases y valores por defecto (ajusta según tu lógica de negocio)
+            refClass = ['presione', 'presione', 'presione'];
+            preConta = (typeof conta === 'number' ? conta - 1 : '');
+            postConta = (typeof conta === 'number' ? conta + 1 : '');
+        }
         const csrfToken = (typeof appState.getInitialData === 'function' ? appState.getInitialData().csrfToken : '') || '';
         return [
             {
