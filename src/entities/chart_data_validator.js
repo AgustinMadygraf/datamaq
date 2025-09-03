@@ -30,13 +30,6 @@ export default class ChartDataValidator {
                 console.error("ChartDataValidator - Error: chartData.rawdata no es un array válido:", chartData.rawdata);
                 return false;
             }
-            
-            console.log("ChartDataValidator - chartData validado correctamente:", {
-                conta: chartData.conta,
-                rawdataLength: chartData.rawdata.length,
-                periodo: chartData.periodo
-            });
-            
             return true;
         } catch (validationError) {
             console.error("ChartDataValidator - Error validando chartData:", validationError);

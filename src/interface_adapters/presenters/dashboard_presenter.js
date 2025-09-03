@@ -16,7 +16,6 @@ export default class DashboardPresenter extends PresenterContract {
         const container = document.getElementById('info-display-container');
         if (container) {
             container.innerHTML = html;
-            console.log('DashboardPresenter - info-display-container actualizado');
         } else {
             console.warn('DashboardPresenter - No se encontró el contenedor info-display-container');
         }

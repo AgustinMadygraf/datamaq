@@ -78,7 +78,6 @@ export default class ChartEventManager {
             if (!chartData) return;
 
             const xValue = event.xAxis[0].value;
-            console.log("ChartEventManager - Clic en X:", xValue);
 
             // Actualizar estado con la posición seleccionada
             if (this.chartController && typeof this.chartController.updateChartSelection === 'function') {
@@ -108,7 +107,6 @@ export default class ChartEventManager {
      */
     handleChartLoad(event) {
         try {
-            console.log("ChartEventManager - Gráfico cargado completamente");
 
             // Actualizar estado en el controlador si existe método
             if (this.chartController && typeof this.chartController.updateChartStatus === 'function') {

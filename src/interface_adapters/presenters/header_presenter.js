@@ -25,7 +25,6 @@ export default class HeaderPresenter {
         const headerContainer = document.getElementById('header-container');
         if (headerContainer) {
             headerContainer.innerHTML = html;
-            console.log('HeaderPresenter - Header cargado correctamente');
         } else {
             console.warn('HeaderPresenter - No se encontró el contenedor header-container');
         }

@@ -34,7 +34,6 @@ class ApiService {
                 if (conta !== null) {
                     url += `&conta=${conta}`;
                 }
-                console.log(`ApiService - Obteniendo datos del dashboard: ${url}`);
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
@@ -66,7 +65,6 @@ class ApiService {
                         menos_periodo: result.data.menos_periodo,
                         periodo: result.data.periodo
                     });
-                    console.log("ApiService - Datos del dashboard obtenidos y guardados en estado:", result.data);
                 } else {
                     appState.addError('apiService', `Error en la respuesta: ${result.message || 'Respuesta inesperada'}`);
                     console.warn('ApiService - Respuesta de error recibida:', result);

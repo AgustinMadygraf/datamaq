@@ -20,7 +20,6 @@ export default class ChartRenderer {
      */
     createChart(container, chartData, buildChartSeriesUseCase) {
         try {
-            console.log("ChartRenderer - Creando gráfico...");
             // Obtener series desde el caso de uso
             const series = buildChartSeriesUseCase.execute(chartData);
             // Obtener configuración desde el servicio de application
@@ -33,7 +32,6 @@ export default class ChartRenderer {
             });
             const chart = HighchartsGateway.createChart(container, config);
             if (chart) {
-                console.log("ChartRenderer - Renderizado de Highcharts completado");
                 return true;
             } else {
                 throw new Error("HighchartsGateway no pudo crear el gráfico");

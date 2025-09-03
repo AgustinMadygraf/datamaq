@@ -18,7 +18,6 @@ export default class ChartDataGateway {
      */
     async loadChartData(initialData) {
         try {
-            console.log("ChartDataLoader - Cargando datos del gráfico");
             if (!initialData) {
                 console.warn("ChartDataLoader - initialData no proporcionado");
                 this.failedAttempts++;

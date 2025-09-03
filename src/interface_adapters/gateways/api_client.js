@@ -12,7 +12,6 @@ let csrfToken = '';
  */
 function initApiClient(token) {
     csrfToken = token;
-    console.log('API Client inicializado con token CSRF');
 }
 
 

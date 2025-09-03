@@ -47,13 +47,11 @@ class ChartController {
         // Puedes guardar la selección en el estado o emitir un evento
         this.chartSelection = selection;
         // Opcional: emitir evento o log
-        console.log('ChartController - chartSelection actualizada:', selection);
     }
 
     updateChartStatus(status) {
         this.chartStatus = status;
         this.chartInitialized = !!status.loaded;
-        console.log('ChartController - chartStatus actualizado:', status);
     }
 
     addError(context, error) {
@@ -73,7 +71,6 @@ class ChartController {
     
     async forceChartDataLoad() {
         try {
-            console.log("ChartController - Intentando forzar carga de datos desde ChartDataLoader");
             const initialData = this.initialData;
             if (!initialData) {
                 console.warn("ChartController - initialData no encontrado");
@@ -98,31 +95,6 @@ class ChartController {
         try {
             const chartData = this.chartData;
             const chartDataExists = chartData !== undefined && chartData !== null;
-            const chartDataType = chartDataExists ? typeof chartData : 'undefined';
-            const chartDataIsObject = chartDataExists && typeof chartData === 'object';
-            const chartDataIsNull = chartDataExists && chartData === null;
-
-            console.log("ChartController - Estado detallado de chartData:", {
-                exists: chartDataExists,
-                type: chartDataType,
-                isObject: chartDataIsObject,
-                isNull: chartDataIsNull,
-                value: chartDataExists ? chartData : undefined,
-                chartInitialized: this.chartInitialized,
-                dataReceived: this.chartDataReceived,
-                failedAttempts: this.failedAttempts
-            });
-
-            // Inspeccionar contexto global y estado centralizado
-            const initialData = this.initialData;
-            console.log("ChartController - Objetos relevantes presentes:", {
-                initialData: initialData !== undefined && initialData !== null,
-                Highcharts: typeof window.Highcharts !== 'undefined',
-                Chart: typeof window.Chart !== 'undefined',
-                jQuery: typeof window.jQuery !== 'undefined',
-                $: typeof window.$ !== 'undefined',
-            });
-
             return chartDataExists;
         } catch (e) {
             console.error("ChartController - Error al registrar estado de chartData:", e);
@@ -132,14 +104,12 @@ class ChartController {
 
     // Método para esperar a que el contenedor esté disponible
     waitForContainer(maxWaitTime = 5000, interval = 200) {
-        console.log("ChartController - Esperando a que el contenedor esté disponible");
         return this.domManager.waitForContainer('container', maxWaitTime, interval);
     }
 
     // Inicializa el gráfico Highcharts con manejo mejorado de errores
     async initChart() {
         try {
-            console.log("ChartController - Iniciando initChart()...");
             const chartData = this.chartData;
             if (!chartData) {
                 console.error("ChartController - chartData no existe, no se puede inicializar el gráfico");
@@ -148,7 +118,6 @@ class ChartController {
                 if (this.failedAttempts >= this.maxFailedAttempts) {
                     console.error("ChartController - Máximo de intentos de inicialización alcanzado");
                 } else {
-                    console.log("ChartController - Intentando cargar datos...");
                     this.loadChartData();
                 }
                 return;
@@ -164,34 +133,18 @@ class ChartController {
             let container;
             try {
                 container = await this.domManager.waitForContainer('container');
-                console.log("ChartController - Container obtenido correctamente");
             } catch (containerError) {
                 console.error("ChartController - Error esperando al contenedor:", containerError);
                 // Verificar si el contenedor hay que crearlo
                 container = this.domManager.createContainer('info-display-container', 'container', 'graf');
                 if (container) {
-                    console.log("ChartController - Contenedor creado manualmente:", container);
                 } else {
                     console.error("ChartController - No se puede crear el contenedor, no se encontró el contenedor padre");
                     // Imprimir todos los elementos con clase 'graf' para depuración
-                    const grafElements = document.querySelectorAll('.graf');
-                    console.log(`ChartController - Encontrados ${grafElements.length} elementos con clase 'graf':`, Array.from(grafElements));
-                    // Verificar la estructura DOM
-                    console.log("ChartController - Estructura del DOM:", {
-                        body: document.body.innerHTML.substring(0, 500) + '...'
-                    });
                     return;
                 }
             }
             
-            console.log("ChartController - Container encontrado:", {
-                id: container.id,
-                className: container.className,
-                parentNode: container.parentNode?.tagName,
-                isVisible: this.domManager.isContainerVisible(container),
-                dimensions: this.domManager.getContainerDimensions(container)
-            });
-
                 // Validar los datos usando el caso de uso
                 if (!this.validateChartDataUseCase.execute(this.chartData)) {
                     console.error("ChartController - Validación de chartData falló");
@@ -204,15 +157,12 @@ class ChartController {
             // Crear el gráfico
             this.createChart(container);
 
-            console.log("ChartController - Inicialización del gráfico completada");
         } catch (e) {
             console.error("ChartController - Error crítico durante la inicialización del gráfico:", e);
-            console.log("ChartController - Stack trace:", e.stack);
             
             // Intentar recuperación
             this.failedAttempts++;
             if (this.failedAttempts < this.maxFailedAttempts) {
-                console.log(`ChartController - Intentando recuperación (intento ${this.failedAttempts}/${this.maxFailedAttempts})...`);
                 
                 // Dar tiempo al DOM para actualizarse
                 setTimeout(() => {
@@ -225,7 +175,6 @@ class ChartController {
     // Resto de métodos con try-catch mejorado
     handleChartClick(event) {
         try {
-            console.log("ChartController - Evento de clic en gráfico");
             onDbClick(event);
         } catch (err) {
             console.error("ChartController - Error al manejar clic en gráfico:", err);
@@ -234,7 +183,6 @@ class ChartController {
 
     handleChartLoad() {
         try {
-            console.log("ChartController - Gráfico cargado exitosamente");
             this.chartInitialized = true;
             this.failedAttempts = 0; // Resetear contador de fallos
         } catch (err) {
@@ -257,23 +205,15 @@ class ChartController {
 
     setupEventListeners() {
         try {
-            console.log("ChartController - Configurando event listeners");
-            
-
             // Escuchar cuando el DOM esté listo
             eventBus.subscribe('appDomReady', () => {
-                console.log("ChartController - Evento appDomReady recibido (event bus)");
                 try {
                     const chartDataExists = this.logChartDataStatus();
                     if (chartDataExists) {
-                        console.log("ChartController - chartData encontrado en appDomReady, iniciando gráfico");
                         this.initChart();
                     } else {
                         console.warn("ChartController - chartData no encontrado. Esperando evento CHART_DATA_UPDATED");
                         const initialData = appState.getInitialData();
-                        console.log("ChartController - Estado de módulos:", {
-                            initialData: initialData !== undefined && initialData !== null ? "disponible" : "no disponible"
-                        });
                     }
                 } catch (err) {
                     console.error("ChartController - Error en el manejador de appDomReady:", err);
@@ -282,7 +222,6 @@ class ChartController {
 
             // Escuchar el evento chartDataReady usando event bus local
             eventBus.subscribe(EVENT_CONTRACT.CHART_DATA_UPDATED, (payload) => {
-                console.log("ChartController - Evento CHART_DATA_UPDATED recibido", payload);
                 try {
                     if (payload && payload.chartData) {
                         this.setChartData(payload.chartData);
@@ -293,7 +232,6 @@ class ChartController {
                         this.forceChartDataLoad();
                         return;
                     }
-                    console.log("ChartController - Iniciando gráfico desde evento chartDataReady");
                     setTimeout(this.initChart, 100);
                 } catch (err) {
                     console.error("ChartController - Error en el manejador de chartDataReady:", err);
@@ -302,13 +240,10 @@ class ChartController {
 
             // Nueva verificación: Custom event para cuando el container se haga visible
             eventBus.subscribe('containerReady', (payload) => {
-                console.log("ChartController - Evento containerReady recibido (event bus)", payload);
                 if (this.chartData && !this.chartInitialized) {
                     setTimeout(this.initChart, 100);
                 }
             });
-            
-            console.log("ChartController - Event listeners configurados correctamente");
         } catch (e) {
             console.error("ChartController - Error al configurar event listeners:", e);
         }
@@ -316,15 +251,11 @@ class ChartController {
 
     startPeriodicCheck() {
         try {
-            console.log("ChartController - Iniciando verificación periódica");
-            
             let checkAttempts = 0;
             const maxAttempts = 15; // Aumentado para dar más tiempo
             
             const checkInterval = setInterval(() => {
                 checkAttempts++;
-                console.log(`ChartController - Verificación periódica #${checkAttempts}`);
-                
                 try {
                     // Verificar si chartData existe usando el estado centralizado
                     const chartData = this.chartData;
@@ -332,11 +263,7 @@ class ChartController {
                     
                     // Verificar si el contenedor existe
                     const containerExists = document.getElementById('container') !== null;
-                    
-                    console.log(`ChartController - Verificación #${checkAttempts}: chartData=${chartDataExists}, container=${containerExists}, initialized=${this.chartInitialized}`);
-                    
                     if (chartDataExists && containerExists && !this.chartInitialized) {
-                        console.log("ChartController - Condiciones cumplidas en verificación periódica");
                         clearInterval(checkInterval);
                         this.initChart();
                     } else if (checkAttempts >= maxAttempts) {
@@ -345,28 +272,23 @@ class ChartController {
                         
                         // Último intento de recuperación
                         if (!this.chartInitialized) {
-                            console.log("ChartController - Último intento de recuperación");
                             this.forceChartDataLoad();
                         }
                     } else if (checkAttempts % 3 === 0) {
                         // Cada 3 intentos, intentar forzar la carga si no hay datos
                         if (!chartDataExists && this.failedAttempts < this.maxFailedAttempts) {
-                            console.log("ChartController - Intentando forzar carga de datos en verificación periódica");
                             this.forceChartDataLoad();
                         }
                         
                         // Verificar el DOM
                         if (!containerExists) {
-                            console.log("ChartController - El contenedor 'container' no existe en verificación periódica");
                             // Buscar elementos que podrían contener el gráfico
                             const infoDisplay = document.getElementById('info-display-container');
                             if (infoDisplay) {
-                                console.log("ChartController - info-display-container encontrado, verificando contenido");
-                                
+
                                 // Verificar si hay elementos con clase 'graf'
                                 const grafElements = infoDisplay.querySelectorAll('.graf');
                                 if (grafElements.length > 0) {
-                                    console.log("ChartController - Elementos .graf encontrados:", grafElements);
                                 }
                             }
                         }
@@ -383,13 +305,11 @@ class ChartController {
     // Método de inicialización mejorado
     init(initialData, chartData) {
         try {
-            console.log("ChartController - Inicializando...");
             this.setInitialData(initialData);
             this.setChartData(chartData);
             this.logChartDataStatus();
             this.setupEventListeners();
             this.startPeriodicCheck();
-            console.log("ChartController - Inicialización completada");
         } catch (e) {
             console.error("ChartController - Error durante la inicialización:", e);
         }

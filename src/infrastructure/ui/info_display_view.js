@@ -27,7 +27,6 @@ export class InfoDisplayView {
         const container = document.getElementById(containerId);
         if (container) {
             container.innerHTML = html;
-            console.log('InfoDisplayView - Contenedor actualizado');
         } else {
             console.warn('InfoDisplayView - No se encontró el contenedor', containerId);
         }

@@ -20,7 +20,6 @@ export class StreamWebSocketHandler {
             this.ws = new WebSocket(wsUrl);
             
             this.ws.onopen = () => {
-                console.log('WebSocket conectado');
                 this.reconnectAttempts = 0;
                 showNotification('Conexión establecida con el servidor', 'success');
             };
@@ -37,7 +36,6 @@ export class StreamWebSocketHandler {
             };
             
             this.ws.onclose = () => {
-                console.log('WebSocket desconectado');
                 this.tryReconnect();
             };
             
@@ -51,7 +49,6 @@ export class StreamWebSocketHandler {
     }
     
     handleMessage(data) {
-        console.log('Mensaje recibido:', data);
         
         switch(data.event) {
             case 'status':
@@ -67,7 +64,6 @@ export class StreamWebSocketHandler {
                 this.refreshStream();
                 break;
             default:
-                console.log('Evento desconocido:', data.event);
         }
     }
     
@@ -88,7 +84,6 @@ export class StreamWebSocketHandler {
             showNotification(`Intentando reconectar (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`, 'warning');
             
             this.reconnectTimeout = setTimeout(() => {
-                console.log(`Intento de reconexión ${this.reconnectAttempts}...`);
                 this.connect();
             }, delay);
         } else {

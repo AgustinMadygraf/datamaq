@@ -16,7 +16,6 @@ class UiService {
      */
     static getDashboardDataForRender(data) {
         try {
-            console.log("UiService - Preparando estructura para renderizar dashboard");
             const infoDisplayStructure = this.getInfoDisplayStructure(data);
             return infoDisplayStructure;
         } catch (error) {

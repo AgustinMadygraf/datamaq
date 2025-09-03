@@ -35,7 +35,6 @@ class AppState {
             'errors': [],
             'all': []
         };
-        console.log("AppState - Estado centralizado inicializado (con entidad y caso de uso)");
     }
 
     getState() {
@@ -105,10 +104,8 @@ class AppState {
             key = 'all';
         }
         this._subscribers[key].push(callback);
-        console.log(`AppState - Nueva suscripción a ${key}, total: ${this._subscribers[key].length}`);
         return () => {
             this._subscribers[key] = this._subscribers[key].filter(cb => cb !== callback);
-            console.log(`AppState - Suscripción a ${key} cancelada, restantes: ${this._subscribers[key].length}`);
         };
     }
 

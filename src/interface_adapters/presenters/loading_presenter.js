@@ -8,7 +8,6 @@ export default class LoadingPresenter {
         const loading = document.getElementById('loading-indicator');
         if (loading) {
             loading.style.display = '';
-            console.log('LoadingPresenter - Indicador de carga mostrado');
         } else {
             console.warn('LoadingPresenter - No se encontró el indicador de carga');
         }
@@ -18,7 +17,6 @@ export default class LoadingPresenter {
         const loading = document.getElementById('loading-indicator');
         if (loading) {
             loading.style.display = 'none';
-            console.log('LoadingPresenter - Indicador de carga ocultado');
         } else {
             console.warn('LoadingPresenter - No se encontró el indicador de carga');
         }

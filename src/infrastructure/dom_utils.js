@@ -30,13 +30,11 @@ export function sanitizeHTML(html) {
  * @returns {Promise<HTMLElement>} - Promesa que se resuelve con el elemento o se rechaza si no se encuentra
  */
 export function waitForElement(elementId, maxWaitTime = 5000, interval = 200) {
-    console.log(`DomUtils - Esperando a que el elemento '${elementId}' esté disponible`);
     
     return new Promise((resolve, reject) => {
         // Si ya está disponible, resolvemos inmediatamente
         const element = document.getElementById(elementId);
         if (element) {
-            console.log(`DomUtils - Elemento '${elementId}' encontrado inmediatamente`);
             resolve(element);
             return;
         }
@@ -51,7 +49,6 @@ export function waitForElement(elementId, maxWaitTime = 5000, interval = 200) {
             
             if (element) {
                 clearInterval(checkInterval);
-                console.log(`DomUtils - Elemento '${elementId}' encontrado después de esperar`);
                 resolve(element);
             } else if (Date.now() - startTime > maxWaitTime) {
                 clearInterval(checkInterval);

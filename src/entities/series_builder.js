@@ -42,7 +42,6 @@ export default class SeriesBuilder {
                     data.push([1000 * point.unixtime, point.HR_COUNTER1 / 5]);
                 }
             });
-            console.log(`SeriesBuilder - Serie 'Sensor inductivo' generada: ${data.length} puntos`);
             return data;
         } catch (err) {
             console.error("SeriesBuilder - Error generando serie 'Sensor inductivo':", err);
@@ -76,7 +75,6 @@ export default class SeriesBuilder {
                     data.push([1000 * point.unixtime, point.HR_COUNTER2 / 5]);
                 }
             });
-            console.log(`SeriesBuilder - Serie 'Sensor optico' generada: ${data.length} puntos`);
             return data;
         } catch (err) {
             console.error("SeriesBuilder - Error generando serie 'Sensor optico':", err);
@@ -110,7 +108,6 @@ export default class SeriesBuilder {
                     data.push([1000 * point.unixtime, 20]);
                 }
             });
-            console.log(`SeriesBuilder - Serie 'marcha' generada: ${data.length} puntos`);
             return data;
         } catch (err) {
             console.error("SeriesBuilder - Error generando serie 'marcha':", err);
