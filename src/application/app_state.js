@@ -1,4 +1,3 @@
-
 /*
 Path: src/application/app_state.js
  */
@@ -15,10 +14,10 @@ class AppState {
                 rawdata: [],
                 ls_periodos: [],
                 menos_periodo: null,
-                periodo: 'semana'
+                periodo: 'hora'
             },
             initial: {
-                periodo: 'semana',
+                periodo: 'hora', 
                 conta: null,
                 csrfToken: null
             },
@@ -140,10 +139,10 @@ class AppState {
                 rawdata: [],
                 ls_periodos: [],
                 menos_periodo: null,
-                periodo: 'semana'
+                periodo: 'hora' // Cambia 'semana' por 'hora'
             },
             initial: {
-                periodo: 'semana',
+                periodo: 'hora', // Cambia 'semana' por 'hora'
                 conta: null,
                 csrfToken: null
             },
