@@ -110,9 +110,11 @@ class DashboardApp {
                     timestamp: new Date().getTime()
                 });
             }
+            return result.hasUpdates; // <-- Agrega este return
         } catch (error) {
             appState.addError('periodicUpdate', error);
             console.error('Error en actualización periódica:', error);
+            return false; // <-- O retorna false en caso de error
         }
     }
 

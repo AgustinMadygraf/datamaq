@@ -66,7 +66,7 @@ class UiService {
                                 {
                                     type: 'c1',
                                     children: [
-                                        { type: 'p2', text: `Velocidad ${vel_ult_calculada} unidades por minuto` },
+                                        { type: 'p2', text: `Velocidad ${vel_ult_calculada / 5} unidades por minuto` },
                                         { type: 'p1', text: `Formato ${formato}` },
                                         { type: 'p2', text: `Ancho Bobina ${ancho_bobina}` }
                                     ]
