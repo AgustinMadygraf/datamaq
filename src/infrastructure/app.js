@@ -11,10 +11,15 @@ import ApiService from '../interface_adapters/gateways/api_service.js';
 import ChartController from '../interface_adapters/controllers/chart_controller.js';
 import appState from '../application/app_state.js';
 import eventBus from './event_bus.js';
+import PeriodicUpdateService from './periodic_update_service.js';
+import FetchDashboardUpdatesUseCase from '../use_cases/fetch_dashboard_updates.js';
+import ChartDataValidator from '../entities/chart_data_validator.js';
 
 class DashboardApp {
     constructor() {
         this.chartController = null;
+        this.updateService = new PeriodicUpdateService();
+        this.fetchUpdatesUseCase = new FetchDashboardUpdatesUseCase(new ChartDataValidator());
     }
 
     async init() {
@@ -75,6 +80,39 @@ class DashboardApp {
         } catch (e) {
             LoadingPresenter.hideLoading();
             ErrorPresenter.showError('Error de conexión con la API.');
+        }
+
+        // Iniciar el servicio de actualización periódica
+        this.updateService.start(async () => {
+            await this.checkForUpdates();
+        });
+    }
+
+    async checkForUpdates() {
+        try {
+            const currentData = appState.getChartData();
+            const initialData = appState.getInitialData();
+            const periodo = initialData.periodo;
+            const conta = initialData.conta;
+
+            // Usar el caso de uso para verificar actualizaciones
+            const result = await this.fetchUpdatesUseCase.execute(
+                currentData, 
+                periodo, 
+                conta
+            );
+
+            if (result.hasUpdates) {
+                // Actualizar el estado y notificar a través del event bus
+                appState.setChartData(result.newData);
+                eventBus.emit('AUTO_DATA_UPDATED', { 
+                    chartData: result.newData,
+                    timestamp: new Date().getTime()
+                });
+            }
+        } catch (error) {
+            appState.addError('periodicUpdate', error);
+            console.error('Error en actualización periódica:', error);
         }
     }
 

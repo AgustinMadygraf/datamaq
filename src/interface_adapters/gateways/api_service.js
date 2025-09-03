@@ -136,6 +136,61 @@ class ApiService {
             };
         }
     }
+
+    /**
+     * Verifica si hay actualizaciones en los datos del dashboard sin modificar el estado global
+     * @param {string} periodo
+     * @param {number|null} conta
+     * @returns {Promise<Object>} - Respuesta de la API
+     */
+    static async checkForUpdates(periodo = null, conta = null) {
+        try {
+            // Si no se proporcionan parámetros, intentar obtenerlos del estado
+            if (periodo === null) {
+                const initialData = appState.getInitialData();
+                periodo = initialData.periodo || 'semana';
+            }
+            if (conta === null) {
+                const initialData = appState.getInitialData();
+                conta = initialData.conta;
+            }
+            let url = `${this.BASE_URL}/${this.VERSION}/dashboard.php?periodo=${periodo}`;
+            if (conta !== null) {
+                url += `&conta=${conta}`;
+            }
+            // Añadir parámetro para indicar que es una verificación de actualización (opcional)
+            url += '&check_updates=1';
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            let result;
+            try {
+                result = await response.json();
+            } catch (jsonError) {
+                const text = await response.text();
+                console.error('ApiService - Error al parsear JSON en checkForUpdates:', jsonError, 'Respuesta recibida:', text);
+                return {
+                    status: 'error',
+                    message: `Respuesta no válida: ${jsonError.message}`
+                };
+            }
+            return result;
+        } catch (error) {
+            console.error('ApiService - Error en checkForUpdates:', error);
+            return {
+                status: 'error',
+                message: error.message
+            };
+        }
+    }
 }
 
 export default ApiService;

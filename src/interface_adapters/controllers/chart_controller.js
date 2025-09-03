@@ -244,8 +244,38 @@ class ChartController {
                     setTimeout(this.initChart, 100);
                 }
             });
+
+            // Escuchar actualizaciones automáticas
+            eventBus.subscribe('AUTO_DATA_UPDATED', (payload) => {
+                try {
+                    if (payload && payload.chartData) {
+                        this.setChartData(payload.chartData);
+                        // Actualizar el gráfico con los nuevos datos
+                        this.updateChart();
+                    }
+                } catch (err) {
+                    console.error("ChartController - Error en el manejador de AUTO_DATA_UPDATED:", err);
+                }
+            });
         } catch (e) {
             console.error("ChartController - Error al configurar event listeners:", e);
+        }
+    }
+
+    // Método para actualizar el gráfico con los nuevos datos
+    updateChart() {
+        if (!this.chartData || !this.chartInitialized) return;
+        
+        try {
+            const container = document.getElementById('container');
+            if (!container) return;
+            
+            // Actualizar el gráfico sin recrearlo completamente
+            const series = this.buildChartSeriesUseCase.execute(this.chartData);
+            // Aquí accederías al objeto chart ya creado y actualizarías sus series
+            // Esto depende de cómo esté implementado el gateway de Highcharts
+        } catch (error) {
+            console.error("ChartController - Error al actualizar el gráfico:", error);
         }
     }
 
