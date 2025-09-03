@@ -2,7 +2,7 @@
 import eventBus from './event_bus.js';
 
 export default class PeriodicUpdateService {
-    constructor(updateIntervalMs = 30000) {
+    constructor(updateIntervalMs = 5000) {
         this.updateIntervalMs = updateIntervalMs;
         this.intervalId = null;
         this.isRunning = false;
@@ -14,12 +14,16 @@ export default class PeriodicUpdateService {
         this.isRunning = true;
         this.intervalId = setInterval(async () => {
             try {
-                await callback();
+                const necesitaActualizar = await callback();
+                if (necesitaActualizar) {
+                    console.log("Es necesario actualizar la página.");
+                } else {
+                    console.log("Verificando si es tiempo de actualizar la página: No es necesario actualizar la página.");
+                }
             } catch (error) {
                 eventBus.emit('PERIODIC_UPDATE_ERROR', { error });
             }
         }, this.updateIntervalMs);
-        
         eventBus.emit('PERIODIC_UPDATE_STARTED', { interval: this.updateIntervalMs });
     }
 

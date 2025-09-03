@@ -193,10 +193,16 @@ class ChartController {
     createChart(container) {
         // Delegar la creación del gráfico al gateway inyectado
         const series = this.buildChartSeriesUseCase.execute(this.chartData);
+        let title = "";
+        if (this.chartData?.conta) {
+            // Restar 3 horas (en milisegundos) al timestamp
+            const timestampBuenosAires = this.chartData.conta - (3 * 60 * 60 * 1000);
+            title = window.Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", timestampBuenosAires);
+        }
         const config = this.chartRenderer.chartConfigService.getChartConfig({
             chartData: this.chartData,
             series,
-            title: this.chartData?.conta ? window.Highcharts.dateFormat("%A, %d %B %Y - %H:%M:%S", this.chartData.conta) : '',
+            title,
             onClickHandler: this.eventManager.handleChartClick,
             onLoadHandler: this.eventManager.handleChartLoad
         });
